@@ -10,6 +10,7 @@ import { snapshotLookup, snapshotFetcher, type SnapshotFile } from "../src/engin
 import type { RyoResult, RyoTool } from "../src/engine/ryo";
 import { sha256Hex } from "./hash";
 import { collectFeeds } from "./feeds";
+import { claudeDebate } from "./llmDebate";
 import { canonical } from "../src/engine/ryo";
 import { runPipeline } from "../src/engine/pipeline";
 import { DEFAULT_MANDATE, compile } from "../src/engine/legalAstCompiler";
@@ -206,6 +207,21 @@ export async function handleApi(req: IncomingMessage, res: ServerResponse): Prom
       const ref = typeof referenceTime === "string" && Number.isFinite(Date.parse(referenceTime)) ? referenceTime : new Date().toISOString();
       const ch = Array.isArray(channels) ? channels.filter((c: unknown) => typeof c === "string" && /^[A-Za-z0-9_]{4,32}$/.test(c)).slice(0, 20) : undefined;
       send(res, 200, await collectFeeds(tokens, ref, ch));
+      return true;
+    }
+    if (url.pathname === "/api/ai/debate" && req.method === "GET") {
+      send(res, 200, { configured: !!(process.env.ANTHROPIC_API_KEY || process.env.ANTHROPIC_AUTH_TOKEN) });
+      return true;
+    }
+    if (url.pathname === "/api/ai/debate" && req.method === "POST") {
+      if (!(process.env.ANTHROPIC_API_KEY || process.env.ANTHROPIC_AUTH_TOKEN)) return send(res, 503, { ok: false, error: "Claude analyst not configured: set ANTHROPIC_API_KEY in the server's .env" }), true;
+      const body = await readBody(req);
+      if (typeof body.symbol !== "string" || !Array.isArray(body.deterministicArgs) || !Array.isArray(body.gates)) return send(res, 400, { ok: false, error: "bad debate payload" }), true;
+      try {
+        send(res, 200, await claudeDebate(body));
+      } catch (e: any) {
+        send(res, e?.status && e.status < 600 ? e.status : 502, { ok: false, error: String(e?.message ?? e).slice(0, 300) });
+      }
       return true;
     }
     if (url.pathname === "/api/ledger" && req.method === "GET") {
