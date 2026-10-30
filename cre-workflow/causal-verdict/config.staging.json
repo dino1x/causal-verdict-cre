@@ -1,0 +1,107 @@
+{
+  "schedule": "0 */15 * * * *",
+  "ryoMcpUrl": "https://app-ryochan.com/api/mcp",
+  "ryoTransport": "confidential",
+  "watchlist": [
+    "SOL"
+  ],
+  "equityUsd": 100000,
+  "x402": {
+    "priceUsdc6": 10000,
+    "payTo": "0x0000000000000000000000000000000000000000"
+  },
+  "authorizedGatewayKey": "0x0000000000000000000000000000000000000000",
+  "mandate": {
+    "name": "Prudent Practice Desk v1",
+    "hash": "0x44be16dadff7c6c169523f71beba3705c299c2bce1be2bb9fe6bdc717aa96e00",
+    "clauses": [
+      {
+        "id": "C1",
+        "kind": "risk_per_trade",
+        "maxPct": 1
+      },
+      {
+        "id": "C2",
+        "kind": "max_position",
+        "maxPct": 10
+      },
+      {
+        "id": "C3",
+        "kind": "require_status",
+        "allowed": [
+          "ok",
+          "partial"
+        ]
+      },
+      {
+        "id": "C4",
+        "kind": "min_confluence",
+        "min": 0.6
+      },
+      {
+        "id": "C5",
+        "kind": "min_turnover",
+        "min": 0.05
+      },
+      {
+        "id": "C6",
+        "kind": "max_atr",
+        "maxPct": 25
+      },
+      {
+        "id": "C7",
+        "kind": "require_measurement",
+        "field": "rsi_14"
+      },
+      {
+        "id": "C8",
+        "kind": "require_measurement",
+        "field": "atr_14_pct"
+      },
+      {
+        "id": "C9",
+        "kind": "reject_verdict",
+        "verdicts": [
+          "avoid"
+        ]
+      },
+      {
+        "id": "C10",
+        "kind": "perp_veto"
+      },
+      {
+        "id": "C11",
+        "kind": "stop_rule",
+        "atrMult": 1.5,
+        "maxPct": 8
+      },
+      {
+        "id": "C12",
+        "kind": "anti_exit_liquidity",
+        "windowMin": 90
+      },
+      {
+        "id": "C13",
+        "kind": "anti_touting",
+        "minKols": 5,
+        "windowMin": 30
+      },
+      {
+        "id": "C14",
+        "kind": "regime_scaling",
+        "factor": 0.5,
+        "regime": "risk_off"
+      },
+      {
+        "id": "C15",
+        "kind": "min_planes",
+        "n": 2
+      }
+    ]
+  },
+  "evm": {
+    "chainSelectorName": "ethereum-testnet-sepolia",
+    "vaultAddress": "0x0000000000000000000000000000000000000000",
+    "gasLimit": "600000"
+  }
+}

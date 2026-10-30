@@ -1,0 +1,20 @@
+== Causal-Verdict CRE local DON round — 4 nodes, RYO LIVE ==
+mandate "Prudent Practice Desk v1" hash 0x44be16dadff7c6c169523f71beba3705c299c2bce1be2bb9fe6bdc717aa96e00 (15 clauses)
+agent trace root 0xced423415c4ef7bb6f57868684814a911a0777a8c9a97d024ee3834e5ce2c39f
+vault deployed in-process at 0xe61244bb1242d392fb53df4979a62e955a9bc70d
+
+-- trigger: HTTP (x402 paid 10000 USDC 6dp) symbol=SOL
+  node 0: deep_analysis live (remaining 59); sentiment live (remaining 58); overview live (remaining 57)
+  consensus: status=ok regime=risk_off verdict=cautious confluence=0.67 rsi=29.4 atr%=4.33
+  mandate: SELECT failed=[] sizeBps=770 entryE8=9377780000 stopE8=8768693189
+  onReport OK gas=294891 runId=0x214cd803d74fd9c2452e2253c08732bbb57a081761f054b76df09cd32f8807e3 evidenceRoot=0xf60c4817dcb0740e57d9965a22635349c7894ddb4a50c9b88e7376f52c99808e logs=1
+
+-- trigger: HTTP (x402 paid 10000 USDC 6dp) symbol=BEAM
+  node 0: deep_analysis live (remaining 56); sentiment live (remaining 55); overview live (remaining 54)
+  consensus: status=unavailable regime=risk_off verdict=constructive confluence=1 rsi=unavailable atr%=unavailable
+  mandate: REJECT failed=[C3:require_status, C7:require_measurement, C8:require_measurement, C12:anti_exit_liquidity, C13:anti_touting, C15:min_planes] sizeBps=0 entryE8=0 stopE8=0
+  onReport OK gas=173341 runId=0xc1016734013f03f9c2e40ffb24261d07a87e2c1510966e2935fb6da2e6dec8a5 evidenceRoot=0xc56b4b7ed715295b4faee3f398559395ac989adde0c47102eec1edb796ca5c9e logs=1
+
+non-forwarder onReport reverts: true
+vault.verdictCount() = 2
+vault.verdict(0) = SOL decision=SELECT entryE8=9377780000 stopE8=8768693189 sizeBps=770

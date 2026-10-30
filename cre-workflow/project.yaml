@@ -1,0 +1,5 @@
+# CRE project settings (layout follows `cre init`, TypeScript template).
+staging-settings:
+  rpcs:
+    - chain-name: ethereum-testnet-sepolia
+      url: https://ethereum-sepolia-rpc.publicnode.com

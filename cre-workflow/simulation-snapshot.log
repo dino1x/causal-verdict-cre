@@ -1,0 +1,26 @@
+== Causal-Verdict CRE local DON round — 4 nodes, RYO SNAPSHOT replay ==
+mandate "Prudent Practice Desk v1" hash 0x44be16dadff7c6c169523f71beba3705c299c2bce1be2bb9fe6bdc717aa96e00 (15 clauses)
+agent trace root 0x38ee42f346c592e9c2d68ead7b7c6803a0d900c0d7294f5c0747121363e9920f
+vault deployed in-process at 0xe61244bb1242d392fb53df4979a62e955a9bc70d
+
+-- trigger: HTTP (x402 paid 10000 USDC 6dp) symbol=SOL
+  node 0: deep_analysis snapshot 2026-10-30T19:27:58.818Z; sentiment snapshot 2026-10-30T19:23:03.274Z; overview snapshot 2026-10-30T19:22:59.246Z
+  node 1: deep_analysis snapshot 2026-10-30T19:27:58.818Z; sentiment snapshot 2026-10-30T19:23:03.274Z; overview snapshot 2026-10-30T19:22:59.246Z
+  node 2: deep_analysis snapshot 2026-10-30T19:27:58.818Z; sentiment snapshot 2026-10-30T19:23:03.274Z; overview snapshot 2026-10-30T19:22:59.246Z
+  node 3: deep_analysis snapshot 2026-10-30T19:27:58.818Z; sentiment snapshot 2026-10-30T19:23:03.274Z; overview snapshot 2026-10-30T19:22:59.246Z
+  consensus: status=ok regime=risk_off verdict=cautious confluence=0.67 rsi=29.4 atr%=4.33
+  mandate: SELECT failed=[] sizeBps=770 entryE8=9425420000 stopE8=8813238971
+  onReport OK gas=294891 runId=0xc41aae888eb80957cdf69a2a1967c3178e5b04e9afd5671aaa126e6cf6409c8b evidenceRoot=0x29d70bb2e999470467d0fda8b40b14226f7be01e0822f943428a75211b136d3f logs=1
+
+-- trigger: HTTP (x402 paid 10000 USDC 6dp) symbol=BEAM
+  node 0: deep_analysis snapshot 2026-10-30T19:26:50.105Z; sentiment snapshot 2026-10-30T19:23:03.274Z; overview snapshot 2026-10-30T19:22:59.246Z
+  node 1: deep_analysis snapshot 2026-10-30T19:26:50.105Z; sentiment snapshot 2026-10-30T19:23:03.274Z; overview snapshot 2026-10-30T19:22:59.246Z
+  node 2: deep_analysis snapshot 2026-10-30T19:26:50.105Z; sentiment snapshot 2026-10-30T19:23:03.274Z; overview snapshot 2026-10-30T19:22:59.246Z
+  node 3: deep_analysis snapshot 2026-10-30T19:26:50.105Z; sentiment snapshot 2026-10-30T19:23:03.274Z; overview snapshot 2026-10-30T19:22:59.246Z
+  consensus: status=partial regime=risk_off verdict=constructive confluence=1 rsi=unavailable atr%=unavailable
+  mandate: REJECT failed=[C7:require_measurement, C8:require_measurement, C12:anti_exit_liquidity, C13:anti_touting, C15:min_planes] sizeBps=0 entryE8=0 stopE8=0
+  onReport OK gas=173341 runId=0x1c011a374ebd3800dcd5c11a0d132bbd21bdb6c42b2bdc537606b37e12e8ee21 evidenceRoot=0x811e905f82298d5fbc024e5976d86b0ccde730d53356e6af910a817d71a40314 logs=1
+
+non-forwarder onReport reverts: true
+vault.verdictCount() = 2
+vault.verdict(0) = SOL decision=SELECT entryE8=9425420000 stopE8=8813238971 sizeBps=770

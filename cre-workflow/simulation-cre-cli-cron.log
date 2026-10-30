@@ -1,0 +1,30 @@
+# cre workflow simulate ./causal-verdict --target staging-settings --trigger-index 0   (CRE CLI v1.39.0, @chainlink/cre-sdk 1.23.0)
+Initializing...
+Loading settings...
+Checking RPC connectivity...
+Compiling workflow...
+✓ Workflow compiled
+✓ Simulation limits enabled
+  HTTP: req=120kb resp=250kb timeout=10s | ConfHTTP: req=125kb resp=500kb timeout=1m30s | Consensus obs=25kb | ChainWrite evm_report=50kb evm_gas=10000000 solana_report=265b solana_cu=300000 | WASM binary=100mb compressed=20mb
+  Binary hash: 0cbf3e78f0a4fd49c8cd4d185ec9753523b35d7893afca0f5b5bbc4693936c42
+  Config hash: 592eb6c7b7069596e883d877b8b03b0a91ec348a1399b1b641928d8b780b388f
+2026-10-30T22:29:58Z [SIMULATION] Simulator Initialized
+
+2026-10-30T22:29:58Z [SIMULATION] Running trigger trigger=cron-trigger@1.0.0
+2026-10-30T22:30:28Z [USER LOG] [SOL] deep_analysis failed: [3]InvalidArgument: failed to execute HTTP request: Post "https://app-ryochan.com/api/mcp/tools/deep_analysis/call": context deadline exceeded (Client.Timeout e
+2026-10-30T22:30:30Z [USER LOG] [SOL] using analyze_token fallback: confluence, derivatives and trade_plan lanes are unavailable
+2026-10-30T22:30:32Z [USER LOG] [SOL] confidential observation: status=partial regime=risk_off verdict=unknown confluence=unavailable rsi=29.4 atr%=4.33
+2026-10-30T22:30:32Z [USER LOG] [SOL] mandate Prudent Practice Desk v1: REJECT failed=[C4:min_confluence, C15:min_planes] sizeBps=0
+2026-10-30T22:30:33Z [USER LOG] [SOL] report written runId=0x9d9fe5c5907bb8c078eb0e8357239584cc41b86476d89210f9ecbbacc078b5d5 evidenceRoot=0xe06add10b79860d1d932af15baef487a333a7f8da01ef5a0a492bd8053b4c351 txStatus=2
+
+✓ Workflow Simulation Result:
+"{\"symbol\":\"SOL\",\"decision\":\"REJECT\",\"failed\":[\"C4:min_confluence\",\"C15:min_planes\"],\"runId\":\"0x9d9fe5c5907bb8c078eb0e8357239584cc41b86476d89210f9ecbbacc078b5d5\",\"evidenceRoot\":\"0xe06add10b79860d1d932af15baef487a333a7f8da01ef5a0a492bd8053b4c351\"}"
+
+2026-10-30T22:30:33Z [SIMULATION] Execution finished signal received
+2026-10-30T22:30:33Z [SIMULATION] Skipping WorkflowEngineV2
+
+╭──────────────────────────────────────────────────────╮
+│ Simulation complete! Ready to deploy your workflow?  │
+│                                                      │
+│ Run cre account access to request deployment access. │
+╰──────────────────────────────────────────────────────╯

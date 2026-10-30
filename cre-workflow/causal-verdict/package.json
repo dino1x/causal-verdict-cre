@@ -1,0 +1,21 @@
+{
+  "name": "causal-verdict-workflow",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "dist/main.js",
+  "scripts": {
+    "postinstall": "bun x cre-setup",
+    "typecheck": "tsc --noEmit",
+    "compile": "bun x cre-compile main.ts dist/workflow.wasm"
+  },
+  "dependencies": {
+    "@chainlink/cre-sdk": "1.23.0",
+    "viem": "^2.54.2",
+    "zod": "3.25.76"
+  },
+  "devDependencies": {
+    "bun": "^1.3.6",
+    "typescript": "5.6.3"
+  }
+}

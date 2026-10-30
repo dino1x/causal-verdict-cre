@@ -1,0 +1,2260 @@
+{
+  "source": "RYO-CHAN MCP (https://app-ryochan.com/api/mcp) — REST /tools/<tool>/call",
+  "note": "Envelopes are verbatim RYO responses. envelope_sha256 = SHA-256 of key-sorted JSON, computed by Causal-Verdict at capture time.",
+  "captured_at": "2026-10-30T19:28:30.793Z",
+  "shortlist": [
+    "BEAM",
+    "Q",
+    "MAGMA",
+    "GROW"
+  ],
+  "universe": [
+    "BEAM",
+    "Q",
+    "MAGMA",
+    "GROW",
+    "SOL",
+    "PEPE"
+  ],
+  "snapshots": [
+    {
+      "id": "market_overview:{}",
+      "tool": "market_overview",
+      "args": {},
+      "captured_at": "2026-10-30T19:22:59.246Z",
+      "http_status": 200,
+      "rate_limit": {
+        "limit": "60",
+        "remaining": "59",
+        "reset": "1793388237",
+        "retryAfter": null
+      },
+      "attempts": 1,
+      "ok": true,
+      "error": null,
+      "envelope": {
+        "schema_version": "1.0",
+        "tool": "market_overview",
+        "status": "ok",
+        "data_mode": "live",
+        "as_of": "2026-10-30T19:22:58Z",
+        "request": {},
+        "data": {
+          "regime": "risk_off",
+          "sentiment": {
+            "fear_greed_index": 34,
+            "label": "fear"
+          },
+          "market": {
+            "total_market_cap_usd": 2570435386125.3457,
+            "total_volume_24h_usd": 151528902525.17,
+            "market_cap_change_24h_pct": -4.77340594,
+            "btc_dominance_pct": 59.633863687927,
+            "eth_dominance_pct": 10.553837229591,
+            "breadth": 0.0543,
+            "breadth_details": {
+              "universe_size": 92,
+              "advancing": 5,
+              "declining": 87,
+              "unchanged": 0,
+              "method": "share_of_non_stable_top_listings_with_positive_24h_change"
+            }
+          },
+          "top_movers": {
+            "gainers": [
+              {
+                "symbol": "XPL",
+                "name": "Plasma",
+                "chain": null,
+                "price_usd": 0.07831407779178157,
+                "change_24h_pct": 2.88315841
+              },
+              {
+                "symbol": "SKY",
+                "name": "Sky",
+                "chain": null,
+                "price_usd": 0.06726923316516846,
+                "change_24h_pct": 1.20798442
+              },
+              {
+                "symbol": "NIGHT",
+                "name": "Midnight",
+                "chain": null,
+                "price_usd": 0.03899847279191656,
+                "change_24h_pct": 0.91026375
+              },
+              {
+                "symbol": "ZRO",
+                "name": "LayerZero",
+                "chain": null,
+                "price_usd": 1.698691181460196,
+                "change_24h_pct": 0.81934861
+              },
+              {
+                "symbol": "USDG",
+                "name": "Global Dollar",
+                "chain": null,
+                "price_usd": 1.000025602584606,
+                "change_24h_pct": 0.00437009
+              }
+            ],
+            "losers": [
+              {
+                "symbol": "TIA",
+                "name": "Celestia",
+                "chain": null,
+                "price_usd": 0.4493303996745691,
+                "change_24h_pct": -16.19597261
+              },
+              {
+                "symbol": "INJ",
+                "name": "Injective",
+                "chain": null,
+                "price_usd": 6.952797221584425,
+                "change_24h_pct": -12.82312908
+              },
+              {
+                "symbol": "CRV",
+                "name": "Curve DAO Token",
+                "chain": null,
+                "price_usd": 0.28141016193851803,
+                "change_24h_pct": -12.54120607
+              },
+              {
+                "symbol": "LIT",
+                "name": "Lighter",
+                "chain": null,
+                "price_usd": 2.7301585596041265,
+                "change_24h_pct": -12.06651057
+              },
+              {
+                "symbol": "VVV",
+                "name": "Venice Token",
+                "chain": null,
+                "price_usd": 21.89134186750998,
+                "change_24h_pct": -11.74018103
+              }
+            ]
+          }
+        },
+        "summary": {
+          "headline": "Market regime: risk off; sentiment: fear (34/100).",
+          "key_points": [
+            "24h market-cap change: -4.77%.",
+            "BTC dominance: +59.63%.",
+            "ETH dominance: +10.55%.",
+            "Total market cap: $2.57T.",
+            "24h market volume: $151.53B."
+          ]
+        },
+        "availability": {
+          "market_regime": "available",
+          "market_totals": "available",
+          "market_sentiment": "available",
+          "market_breadth": "available",
+          "top_movers": "available"
+        },
+        "warnings": []
+      },
+      "envelope_sha256": "b807c1934da8fbfaf212db72b6f5508d979ea38a8c39d3c3fd3b686935df362c"
+    },
+    {
+      "id": "monitor_market_sentiment_shift:{\"time_window\":\"7d\"}",
+      "tool": "monitor_market_sentiment_shift",
+      "args": {
+        "time_window": "7d"
+      },
+      "captured_at": "2026-10-30T19:23:03.274Z",
+      "http_status": 200,
+      "rate_limit": {
+        "limit": "60",
+        "remaining": "58",
+        "reset": "1793388237",
+        "retryAfter": null
+      },
+      "attempts": 1,
+      "ok": true,
+      "error": null,
+      "envelope": {
+        "schema_version": "1.0",
+        "tool": "monitor_market_sentiment_shift",
+        "status": "ok",
+        "data_mode": "live",
+        "as_of": "2026-10-30T19:23:01Z",
+        "request": {
+          "time_window": "7d"
+        },
+        "data": {
+          "observation_as_of": "2026-10-30T19:23:01Z",
+          "status": "ok",
+          "source_attribution": "Powered by CoinMarketCap",
+          "summary": "Fear & Greed is 34, down 13 points over seven days (a material move). BTC perpetual daily funding averages 0.801971 bps per day over the latest seven days, up 0.125514 bps per day week over week, with long-side funding crowding. BTC perpetual daily liquidations total $235.19 million, with long liquidations dominant and extreme pressure. Overall sentiment regime: mixed sentiment.",
+          "evidence": {
+            "fear_greed": {
+              "data_date": "2026-10-30",
+              "value": 34,
+              "label": "fear",
+              "baseline_7d_date": "2026-10-23",
+              "baseline_7d_value": 47,
+              "change_7d_points": -13,
+              "change_direction": "down",
+              "material_shift": true
+            },
+            "funding": {
+              "data_date": "2026-10-29",
+              "latest_bps": 0.8259,
+              "current_7d_window": {
+                "start_date": "2026-10-23",
+                "end_date": "2026-10-29",
+                "mean_bps": 0.801971
+              },
+              "previous_7d_window": {
+                "start_date": "2026-10-16",
+                "end_date": "2026-10-22",
+                "mean_bps": 0.676457
+              },
+              "wow_change_bps": 0.125514,
+              "current_7d_percentile_90d": 100,
+              "crowding_state": "long_crowding",
+              "wow_change_pct": 18.554655
+            },
+            "liquidation": {
+              "data_date": "2026-10-29",
+              "total_usd": 235186796.89,
+              "dominant_liquidated_side": "longs",
+              "percentile_90d": 96.666667,
+              "pressure_state": "extreme",
+              "coverage_scope": "BTC perpetuals across major derivatives markets",
+              "long_share_pct": 86.573746
+            },
+            "altseason": {
+              "data_date": "2026-10-30",
+              "index": 50,
+              "phase": "transition"
+            },
+            "sentiment_regime": "mixed_sentiment"
+          },
+          "source": {
+            "type": "evidence_pack",
+            "skill_id": "monitor_market_sentiment_shift",
+            "timestamp": "2026-10-30T19:23:01Z",
+            "attribution": "Powered by CoinMarketCap"
+          },
+          "diagnostics": {
+            "execution": {
+              "status": "completed",
+              "elapsed_ms": 727
+            }
+          }
+        },
+        "summary": {
+          "headline": "Fear & Greed is 34, down 13 points over seven days (a material move). BTC perpetual daily funding averages 0.801971 bps per day over the latest seven days, up 0.125514 bps per day week over week, with long-side funding crowding. BTC perpetual daily liquidations total $235.19 million, with long liquidations dominant and extreme pressure. Overall sentiment regime: mixed sentiment.",
+          "key_points": [
+            "Sentiment regime: mixed sentiment."
+          ]
+        },
+        "availability": {
+          "research": "available",
+          "evidence": "available",
+          "diagnostics": "available"
+        },
+        "warnings": []
+      },
+      "envelope_sha256": "b718b930095ab243dd016f6cd8a0259ae3eb1d17d025fcc1cea50feb0e58639c"
+    },
+    {
+      "id": "scan_market:{\"filter_direction\":\"all\",\"top_n\":10}",
+      "tool": "scan_market",
+      "args": {
+        "top_n": 10,
+        "filter_direction": "all"
+      },
+      "captured_at": "2026-10-30T19:23:07.177Z",
+      "http_status": 200,
+      "rate_limit": {
+        "limit": "60",
+        "remaining": "57",
+        "reset": "1793388237",
+        "retryAfter": null
+      },
+      "attempts": 1,
+      "ok": true,
+      "error": null,
+      "envelope": {
+        "schema_version": "1.0",
+        "tool": "scan_market",
+        "status": "ok",
+        "data_mode": "live",
+        "as_of": "2026-10-30T19:23:05Z",
+        "request": {
+          "top_n": 10,
+          "filter_direction": "all"
+        },
+        "data": {
+          "filters": {
+            "chain": null,
+            "theme": null,
+            "limit": 10
+          },
+          "selection_method": "Ranked by 24-hour momentum and market activity.",
+          "candidate_count": 10,
+          "candidates": [
+            {
+              "rank": 1,
+              "symbol": "BEAM",
+              "name": "Beam",
+              "chain": null,
+              "contract": "0x62D0A8458eD7719FDAF978fe5929C6D342B0bFcE",
+              "price_usd": 0.004545082839635153,
+              "change_24h_pct": 34.16,
+              "market_cap_usd": 228690094.12403822,
+              "volume_24h_usd": 116442174.49403836,
+              "turnover_ratio": 0.51,
+              "momentum_score": 0.89,
+              "established_asset": true,
+              "reason": "#1 momentum · +34.16% over 24h · 0.51 turnover ratio · momentum score 0.89"
+            },
+            {
+              "rank": 2,
+              "symbol": "Q",
+              "name": "Quack AI",
+              "chain": null,
+              "contract": "0xc07e1300dc138601FA6B0b59f8D0FA477e690589",
+              "price_usd": 0.04471349503158206,
+              "change_24h_pct": 23.54,
+              "market_cap_usd": 210461016.56422627,
+              "volume_24h_usd": 126051092.48667131,
+              "turnover_ratio": 0.6,
+              "momentum_score": 0.71,
+              "established_asset": true,
+              "reason": "#2 momentum · +23.54% over 24h · 0.60 turnover ratio · momentum score 0.71"
+            },
+            {
+              "rank": 3,
+              "symbol": "MAGMA",
+              "name": "Magma Finance",
+              "chain": null,
+              "contract": "0x9f854b3ad20f8161ec0886f15f4a1752bf75d22261556f14cc8d3a1c5d50e529::magma::MAGMA",
+              "price_usd": 0.3598204904002416,
+              "change_24h_pct": 25.05,
+              "market_cap_usd": 110419912.99157414,
+              "volume_24h_usd": 3254752.23701252,
+              "turnover_ratio": 0.03,
+              "momentum_score": 0.51,
+              "established_asset": true,
+              "reason": "#3 momentum · +25.05% over 24h · 0.03 turnover ratio · momentum score 0.51"
+            },
+            {
+              "rank": 4,
+              "symbol": "GROW",
+              "name": "Grow",
+              "chain": null,
+              "contract": "0x1223334444A7466fBf985B14E1F4EdAf3883bCa6",
+              "price_usd": 0.016316269508898695,
+              "change_24h_pct": 24.86,
+              "market_cap_usd": 642849659.7011961,
+              "volume_24h_usd": 521838.08899933,
+              "turnover_ratio": 0,
+              "momentum_score": 0.5,
+              "established_asset": true,
+              "reason": "#4 momentum · +24.86% over 24h · 0.00 turnover ratio · momentum score 0.50"
+            },
+            {
+              "rank": 5,
+              "symbol": "USDSUI",
+              "name": "USDsui",
+              "chain": null,
+              "contract": "0x44f838219cf67b058f3b37907b655f226153c18e33dfcd0da559a844fea9b1c1::usdsui::USDSUI",
+              "price_usd": 0.9996704586003738,
+              "change_24h_pct": -0.04,
+              "market_cap_usd": 75375780.15158868,
+              "volume_24h_usd": 142434044.3507066,
+              "turnover_ratio": 1.89,
+              "momentum_score": 0.4,
+              "established_asset": true,
+              "reason": "#5 momentum · -0.04% over 24h · 1.89 turnover ratio · momentum score 0.40"
+            },
+            {
+              "rank": 6,
+              "symbol": "W",
+              "name": "Wormhole",
+              "chain": null,
+              "contract": "0xB0fFa8000886e57F86dd5264b9582b2Ad87b2b91",
+              "price_usd": 0.011193886301080772,
+              "change_24h_pct": -7.43,
+              "market_cap_usd": 75289793.38040704,
+              "volume_24h_usd": 92680987.4582063,
+              "turnover_ratio": 1.23,
+              "momentum_score": 0.4,
+              "established_asset": true,
+              "reason": "#6 momentum · -7.43% over 24h · 1.23 turnover ratio · momentum score 0.40"
+            },
+            {
+              "rank": 7,
+              "symbol": "SNDKB",
+              "name": "SanDisk Tokenized bStocks",
+              "chain": null,
+              "contract": "0x3ee4df61bd4f867e349beae8bfe07bc31b4850fb",
+              "price_usd": 1130.926414587203,
+              "change_24h_pct": -14.86,
+              "market_cap_usd": 75366247.13433029,
+              "volume_24h_usd": 146101468.5626429,
+              "turnover_ratio": 1.94,
+              "momentum_score": 0.4,
+              "established_asset": true,
+              "reason": "#7 momentum · -14.86% over 24h · 1.94 turnover ratio · momentum score 0.40"
+            },
+            {
+              "rank": 8,
+              "symbol": "PEPE",
+              "name": "Pepe",
+              "chain": null,
+              "contract": "0x6982508145454ce325ddbe47a25d4ec3d2311933",
+              "price_usd": 0.000004990439948951123,
+              "change_24h_pct": -5.51,
+              "market_cap_usd": 2064906065.7011,
+              "volume_24h_usd": 1986172743.2684283,
+              "turnover_ratio": 0.96,
+              "momentum_score": 0.38,
+              "established_asset": true,
+              "reason": "#8 momentum · -5.51% over 24h · 0.96 turnover ratio · momentum score 0.38"
+            },
+            {
+              "rank": 9,
+              "symbol": "MSTRB",
+              "name": "Strategy Tokenized bStocks",
+              "chain": null,
+              "contract": "0xe87afb3076aeb0f9b14e368de8145ae6a2826a14",
+              "price_usd": 129.94376050070815,
+              "change_24h_pct": -7.87,
+              "market_cap_usd": 98503045.14008373,
+              "volume_24h_usd": 78942190.41377653,
+              "turnover_ratio": 0.8,
+              "momentum_score": 0.32,
+              "established_asset": true,
+              "reason": "#9 momentum · -7.87% over 24h · 0.80 turnover ratio · momentum score 0.32"
+            },
+            {
+              "rank": 10,
+              "symbol": "SPCXB",
+              "name": "SpaceX Tokenized bStocks",
+              "chain": null,
+              "contract": "0xbe9d156892e55e7154bcd3cb0fea677f9d3103e1",
+              "price_usd": 135.34926507195772,
+              "change_24h_pct": -5.71,
+              "market_cap_usd": 171897092.55067432,
+              "volume_24h_usd": 114553501.34038538,
+              "turnover_ratio": 0.67,
+              "momentum_score": 0.27,
+              "established_asset": true,
+              "reason": "#10 momentum · -5.71% over 24h · 0.67 turnover ratio · momentum score 0.27"
+            }
+          ],
+          "excluded_candidate_count": 0
+        },
+        "summary": {
+          "headline": "Found 10 ranked candidates.",
+          "key_points": [
+            "Highest-ranked candidates: BEAM, Q, MAGMA."
+          ]
+        },
+        "availability": {
+          "ranked_candidates": "available",
+          "theme_filter": "not_requested"
+        },
+        "warnings": []
+      },
+      "envelope_sha256": "f5f76473300c1a0d5c15c53245cb09d00a131f7be0d75cf186107c7323c35925"
+    },
+    {
+      "id": "scan_market:{\"filter_direction\":\"negative\",\"top_n\":8}",
+      "tool": "scan_market",
+      "args": {
+        "top_n": 8,
+        "filter_direction": "negative"
+      },
+      "captured_at": "2026-10-30T19:23:09.093Z",
+      "http_status": 200,
+      "rate_limit": {
+        "limit": "60",
+        "remaining": "56",
+        "reset": "1793388237",
+        "retryAfter": null
+      },
+      "attempts": 1,
+      "ok": true,
+      "error": null,
+      "envelope": {
+        "schema_version": "1.0",
+        "tool": "scan_market",
+        "status": "ok",
+        "data_mode": "live",
+        "as_of": "2026-10-30T19:23:08Z",
+        "request": {
+          "top_n": 8,
+          "filter_direction": "negative"
+        },
+        "data": {
+          "filters": {
+            "chain": null,
+            "theme": null,
+            "limit": 8
+          },
+          "selection_method": "Ranked by 24-hour momentum and market activity.",
+          "candidate_count": 8,
+          "candidates": [
+            {
+              "rank": 1,
+              "symbol": "AKE",
+              "name": "AKEDO",
+              "chain": null,
+              "contract": "0x2c3a8Ee94dDD97244a93Bc48298f97d2C412F7Db",
+              "price_usd": 0.01432112163297649,
+              "change_24h_pct": -29.08,
+              "market_cap_usd": 326467869.0257403,
+              "volume_24h_usd": 32913418.80904414,
+              "turnover_ratio": 0.1,
+              "momentum_score": 0.04,
+              "established_asset": true,
+              "reason": "#1 momentum · -29.08% over 24h · 0.10 turnover ratio · momentum score 0.04"
+            },
+            {
+              "rank": 2,
+              "symbol": "RED",
+              "name": "RedStone",
+              "chain": null,
+              "contract": "0xc43c6bfeda065fe2c4c11765bf838789bd0bb5de",
+              "price_usd": 0.1229267439829967,
+              "change_24h_pct": -16.99,
+              "market_cap_usd": 68837714.78745116,
+              "volume_24h_usd": 15912655.77201076,
+              "turnover_ratio": 0.23,
+              "momentum_score": 0.09,
+              "established_asset": true,
+              "reason": "#2 momentum · -16.99% over 24h · 0.23 turnover ratio · momentum score 0.09"
+            },
+            {
+              "rank": 3,
+              "symbol": "ORE",
+              "name": "Ore",
+              "chain": null,
+              "contract": "oreoU2P8bN6jkk3jbaiVxYnG1dCXcYxwhwyK9jSybcp",
+              "price_usd": 132.7620104061053,
+              "change_24h_pct": -16.92,
+              "market_cap_usd": 65960891.345133215,
+              "volume_24h_usd": 2840190.94329228,
+              "turnover_ratio": 0.04,
+              "momentum_score": 0.02,
+              "established_asset": true,
+              "reason": "#3 momentum · -16.92% over 24h · 0.04 turnover ratio · momentum score 0.02"
+            },
+            {
+              "rank": 4,
+              "symbol": "TIA",
+              "name": "Celestia",
+              "chain": null,
+              "contract": "ibc/D79E7D83AB399BFFF93433E54FAA480C191248FC556924A2A8351AE2638B3877",
+              "price_usd": 0.4493303996745691,
+              "change_24h_pct": -16.2,
+              "market_cap_usd": 443739468.9387653,
+              "volume_24h_usd": 79716185.63556254,
+              "turnover_ratio": 0.18,
+              "momentum_score": 0.07,
+              "established_asset": true,
+              "reason": "#4 momentum · -16.20% over 24h · 0.18 turnover ratio · momentum score 0.07"
+            },
+            {
+              "rank": 5,
+              "symbol": "B",
+              "name": "BUILDon",
+              "chain": null,
+              "contract": "0x6bdcce4a559076e37755a78ce0c06214e59e4444",
+              "price_usd": 0.11441138292014198,
+              "change_24h_pct": -16.03,
+              "market_cap_usd": 114411382.92014198,
+              "volume_24h_usd": 5930823.67971701,
+              "turnover_ratio": 0.05,
+              "momentum_score": 0.02,
+              "established_asset": true,
+              "reason": "#5 momentum · -16.03% over 24h · 0.05 turnover ratio · momentum score 0.02"
+            },
+            {
+              "rank": 6,
+              "symbol": "USELESS",
+              "name": "Useless Coin",
+              "chain": null,
+              "contract": "Dz9mQ9NzkBcCsuGPFJ3r1bS4wgqKMHBPiVuniW8Mbonk",
+              "price_usd": 0.1306895394686717,
+              "change_24h_pct": -15.06,
+              "market_cap_usd": 130569057.93744546,
+              "volume_24h_usd": 34858994.21220803,
+              "turnover_ratio": 0.27,
+              "momentum_score": 0.11,
+              "established_asset": true,
+              "reason": "#6 momentum · -15.06% over 24h · 0.27 turnover ratio · momentum score 0.11"
+            },
+            {
+              "rank": 7,
+              "symbol": "SNDKB",
+              "name": "SanDisk Tokenized bStocks",
+              "chain": null,
+              "contract": "0x3ee4df61bd4f867e349beae8bfe07bc31b4850fb",
+              "price_usd": 1130.926414587203,
+              "change_24h_pct": -14.86,
+              "market_cap_usd": 75366247.13433029,
+              "volume_24h_usd": 146101468.5626429,
+              "turnover_ratio": 1.94,
+              "momentum_score": 0.4,
+              "established_asset": true,
+              "reason": "#7 momentum · -14.86% over 24h · 1.94 turnover ratio · momentum score 0.40"
+            },
+            {
+              "rank": 8,
+              "symbol": "STONK",
+              "name": "STONK (stonkfun.xyz)",
+              "chain": null,
+              "contract": "6GmAFSYs4gk3FDao5FzzySQpPZaWsa4rUJHacpMpUNgx",
+              "price_usd": 0.12545491824215552,
+              "change_24h_pct": -14.33,
+              "market_cap_usd": 97976334.08978619,
+              "volume_24h_usd": 16808150.32360569,
+              "turnover_ratio": 0.17,
+              "momentum_score": 0.07,
+              "established_asset": true,
+              "reason": "#8 momentum · -14.33% over 24h · 0.17 turnover ratio · momentum score 0.07"
+            }
+          ],
+          "excluded_candidate_count": 0
+        },
+        "summary": {
+          "headline": "Found 8 ranked candidates.",
+          "key_points": [
+            "Highest-ranked candidates: AKE, RED, ORE."
+          ]
+        },
+        "availability": {
+          "ranked_candidates": "available",
+          "theme_filter": "not_requested"
+        },
+        "warnings": []
+      },
+      "envelope_sha256": "b360ba23a9381e5a5f64bbb2b761abc6ecc90774cf18fa2d7b789965f4ccfa8e"
+    },
+    {
+      "id": "scan_market:{\"theme\":\"meme\",\"top_n\":6}",
+      "tool": "scan_market",
+      "args": {
+        "top_n": 6,
+        "theme": "meme"
+      },
+      "captured_at": "2026-10-30T19:23:11.119Z",
+      "http_status": 200,
+      "rate_limit": {
+        "limit": "60",
+        "remaining": "55",
+        "reset": "1793388237",
+        "retryAfter": null
+      },
+      "attempts": 1,
+      "ok": true,
+      "error": null,
+      "envelope": {
+        "schema_version": "1.0",
+        "tool": "scan_market",
+        "status": "ok",
+        "data_mode": "live",
+        "as_of": "2026-10-30T19:23:10Z",
+        "request": {
+          "top_n": 6,
+          "theme": "meme"
+        },
+        "data": {
+          "filters": {
+            "chain": null,
+            "theme": "meme",
+            "limit": 6
+          },
+          "selection_method": "Ranked by 24-hour momentum and market activity.",
+          "candidate_count": 6,
+          "candidates": [
+            {
+              "rank": 1,
+              "symbol": "BEAM",
+              "name": "Beam",
+              "chain": null,
+              "contract": "0x62D0A8458eD7719FDAF978fe5929C6D342B0bFcE",
+              "price_usd": 0.004545082839635153,
+              "change_24h_pct": 34.16,
+              "market_cap_usd": 228690094.12403822,
+              "volume_24h_usd": 116442174.49403836,
+              "turnover_ratio": 0.51,
+              "momentum_score": 0.89,
+              "established_asset": true,
+              "reason": "#1 momentum · +34.16% over 24h · 0.51 turnover ratio · momentum score 0.89"
+            },
+            {
+              "rank": 2,
+              "symbol": "Q",
+              "name": "Quack AI",
+              "chain": null,
+              "contract": "0xc07e1300dc138601FA6B0b59f8D0FA477e690589",
+              "price_usd": 0.04471349503158206,
+              "change_24h_pct": 23.54,
+              "market_cap_usd": 210461016.56422627,
+              "volume_24h_usd": 126051092.48667131,
+              "turnover_ratio": 0.6,
+              "momentum_score": 0.71,
+              "established_asset": true,
+              "reason": "#2 momentum · +23.54% over 24h · 0.60 turnover ratio · momentum score 0.71"
+            },
+            {
+              "rank": 3,
+              "symbol": "MAGMA",
+              "name": "Magma Finance",
+              "chain": null,
+              "contract": "0x9f854b3ad20f8161ec0886f15f4a1752bf75d22261556f14cc8d3a1c5d50e529::magma::MAGMA",
+              "price_usd": 0.3598204904002416,
+              "change_24h_pct": 25.05,
+              "market_cap_usd": 110419912.99157414,
+              "volume_24h_usd": 3254752.23701252,
+              "turnover_ratio": 0.03,
+              "momentum_score": 0.51,
+              "established_asset": true,
+              "reason": "#3 momentum · +25.05% over 24h · 0.03 turnover ratio · momentum score 0.51"
+            },
+            {
+              "rank": 4,
+              "symbol": "GROW",
+              "name": "Grow",
+              "chain": null,
+              "contract": "0x1223334444A7466fBf985B14E1F4EdAf3883bCa6",
+              "price_usd": 0.016316269508898695,
+              "change_24h_pct": 24.86,
+              "market_cap_usd": 642849659.7011961,
+              "volume_24h_usd": 521838.08899933,
+              "turnover_ratio": 0,
+              "momentum_score": 0.5,
+              "established_asset": true,
+              "reason": "#4 momentum · +24.86% over 24h · 0.00 turnover ratio · momentum score 0.50"
+            },
+            {
+              "rank": 5,
+              "symbol": "USDSUI",
+              "name": "USDsui",
+              "chain": null,
+              "contract": "0x44f838219cf67b058f3b37907b655f226153c18e33dfcd0da559a844fea9b1c1::usdsui::USDSUI",
+              "price_usd": 0.9996704586003738,
+              "change_24h_pct": -0.04,
+              "market_cap_usd": 75375780.15158868,
+              "volume_24h_usd": 142434044.3507066,
+              "turnover_ratio": 1.89,
+              "momentum_score": 0.4,
+              "established_asset": true,
+              "reason": "#5 momentum · -0.04% over 24h · 1.89 turnover ratio · momentum score 0.40"
+            },
+            {
+              "rank": 6,
+              "symbol": "W",
+              "name": "Wormhole",
+              "chain": null,
+              "contract": "0xB0fFa8000886e57F86dd5264b9582b2Ad87b2b91",
+              "price_usd": 0.011193886301080772,
+              "change_24h_pct": -7.43,
+              "market_cap_usd": 75289793.38040704,
+              "volume_24h_usd": 92680987.4582063,
+              "turnover_ratio": 1.23,
+              "momentum_score": 0.4,
+              "established_asset": true,
+              "reason": "#6 momentum · -7.43% over 24h · 1.23 turnover ratio · momentum score 0.40"
+            }
+          ],
+          "excluded_candidate_count": 0
+        },
+        "summary": {
+          "headline": "Found 6 ranked candidates.",
+          "key_points": [
+            "Highest-ranked candidates: BEAM, Q, MAGMA."
+          ]
+        },
+        "availability": {
+          "ranked_candidates": "available",
+          "theme_filter": "context_only"
+        },
+        "warnings": [
+          "The theme is supplied as builder context; the current scanner ranks market momentum and does not strictly filter by theme."
+        ]
+      },
+      "envelope_sha256": "65f27244eb2bc786f2a6833ce3fa0d5c21dae87001c64d22c6d5c9356c9d9287"
+    },
+    {
+      "id": "compare_tokens:{\"intent\":\"swing\",\"symbols\":\"BEAM, Q, MAGMA, GROW\"}",
+      "tool": "compare_tokens",
+      "args": {
+        "symbols": "BEAM, Q, MAGMA, GROW",
+        "intent": "swing"
+      },
+      "captured_at": "2026-10-30T19:23:55.245Z",
+      "http_status": 200,
+      "rate_limit": {
+        "limit": "60",
+        "remaining": "54",
+        "reset": "1793388237",
+        "retryAfter": null
+      },
+      "attempts": 1,
+      "ok": true,
+      "error": null,
+      "envelope": {
+        "schema_version": "1.0",
+        "tool": "compare_tokens",
+        "status": "ok",
+        "data_mode": "live",
+        "as_of": "2026-10-30T19:23:54Z",
+        "request": {
+          "symbols": "BEAM, Q, MAGMA, GROW",
+          "intent": "swing"
+        },
+        "data": {
+          "intent": "swing",
+          "tokens": [
+            {
+              "symbol": "BEAM",
+              "name": "Beam",
+              "chain": null,
+              "rank": 118,
+              "price_usd": 0.004545082839635153,
+              "changes": {
+                "h1": -3.32917569,
+                "h24": 34.15531307,
+                "d7": 34.2299527,
+                "d30": 132.8077188
+              },
+              "metrics": {
+                "market_cap_usd": 228690094.12403822,
+                "volume_24h_usd": 116442174.49403836,
+                "rsi_14": null,
+                "atr_14_pct": null,
+                "trend": "up"
+              },
+              "verdict": "constructive",
+              "token_profile": null
+            },
+            {
+              "symbol": "Q",
+              "name": "Quack AI",
+              "chain": null,
+              "rank": 225,
+              "price_usd": 0.04471349503158206,
+              "changes": {
+                "h1": -2.22931239,
+                "h24": 23.53956193,
+                "d7": -60.64698154,
+                "d30": 101.40886626
+              },
+              "metrics": {
+                "market_cap_usd": 210461016.56422627,
+                "volume_24h_usd": 126051092.48667131,
+                "rsi_14": 46.8,
+                "atr_14_pct": 85.35,
+                "trend": "down"
+              },
+              "verdict": "cautious",
+              "token_profile": null
+            },
+            {
+              "symbol": "MAGMA",
+              "name": "Magma Finance",
+              "chain": null,
+              "rank": 251,
+              "price_usd": 0.3598204904002416,
+              "changes": {
+                "h1": -3.68092939,
+                "h24": 25.04835027,
+                "d7": -10.49150374,
+                "d30": 87.06650225
+              },
+              "metrics": {
+                "market_cap_usd": 110419912.99157414,
+                "volume_24h_usd": 3254752.23701252,
+                "rsi_14": 51.2,
+                "atr_14_pct": 19.77,
+                "trend": "up"
+              },
+              "verdict": "cautious",
+              "token_profile": {
+                "ok": true,
+                "data": {
+                  "type": "evidence_pack",
+                  "skill_id": "altcoin_token_profile",
+                  "timestamp": "2026-10-30T19:23:27.285149+00:00",
+                  "data": {
+                    "status": "partial",
+                    "confidence": "low",
+                    "missing_or_stale_inputs": [
+                      "live holder coverage",
+                      "24h fees lane",
+                      "24h protocol revenue lane"
+                    ],
+                    "decision_report": {
+                      "title": "MAGMA Token Profile",
+                      "brand_line": "Powered By CoinMarketCap",
+                      "conclusion": "Magma Finance (MAGMA) token profile has resolved identity, current market snapshot, and basic protocol context, with explicit coverage gaps that limit full fundamental confidence.",
+                      "analysis": "### Token Identity\nMAGMA resolves to Magma Finance, a token ranked #251 by market capitalization. The project launched on December 17, 2025, and is deployed on the Sui network with a verified contract address. Public tags classify it as a DeFi and governance asset within the Sui ecosystem, part of the Hashkey Capital portfolio, and associated with Binance Alpha listings and the broader Binance ecosystem.\n\n### Market Context\nAs of the latest market update at 2026-10-30 19:22 UTC:\n- Current price: $0.35982\n- Market capitalization: ~$110.42M\n- Fully diluted valuation: ~$359.82M\n- 24h trading volume: ~$3.25M, representing a 2.95% volume-to-market-cap ratio\n- Price performance: +25.05% over the last 24 hours, -10.49% over 7 days, +87.07% over 30 days, +29.97% over 90 days\n- MAGMA outperformed BTC by 32.39% in the 24h period prior to the snapshot.\n\n### Protocol Context\nMagma Finance is successfully matched to on-chain protocol data. Current total value locked (TVL) stands at ~$102.76k, with a 7-day TVL decline of 9.53%. 30-day TVL trend, 24h protocol fees, and 24h protocol revenue data are not currently available as part of this profile, and no estimated values have been substituted for these missing lanes.\n\n### Coverage Gaps\nExplicit unresolved gaps in the current profile include:\n1.  **Live holder coverage unavailable**: Multiple attempts to fetch holder distribution data returned no usable results. Ownership concentration, whale holdings, and holder distribution metrics cannot be assessed at this time.\n2.  **24h fees coverage gap**: No on-chain fee data is returned for the protocol in the current snapshot window.\n3.  **24h protocol revenue coverage gap**: No protocol revenue data is returned for the current window.\n4.  Recent public content coverage is thin, with no news items returned in the latest snapshot.\n\nAll missing lanes are treated as explicit unconfirmed gaps, not implicitly neutral or positive signals. Confidence in the profile is low until these coverage lanes become available for validation."
+                    },
+                    "action_guidance": {
+                      "bias": "context_only",
+                      "reference_action": "Use this package as pre-research token profile context before deeper investigation. Do not use as trade execution guidance, and do not treat missing data lanes as implicitly healthy or neutral. Confirm holder, fee, and revenue coverage status before proceeding with downstream analysis."
+                    }
+                  }
+                },
+                "execution": {
+                  "status": "completed",
+                  "elapsed_ms": 34477
+                }
+              }
+            },
+            {
+              "symbol": "GROW",
+              "name": "Grow",
+              "chain": null,
+              "rank": 213,
+              "price_usd": 0.016316269508898695,
+              "changes": {
+                "h1": -1.03174462,
+                "h24": 24.86123178,
+                "d7": 40.91640629,
+                "d30": 11574.82331326
+              },
+              "metrics": {
+                "market_cap_usd": 642849659.7011961,
+                "volume_24h_usd": 521838.08899933,
+                "rsi_14": 48.7,
+                "atr_14_pct": 55.5,
+                "trend": "up"
+              },
+              "verdict": "constructive",
+              "token_profile": null
+            }
+          ],
+          "factors": [
+            {
+              "key": "momentum",
+              "label": "Momentum / relative strength",
+              "winner": "GROW",
+              "scores": {
+                "BEAM": 39.229953,
+                "Q": -65.646982,
+                "MAGMA": -5.491504,
+                "GROW": 45.916406
+              }
+            },
+            {
+              "key": "market_activity",
+              "label": "Market activity",
+              "winner": "Q",
+              "scores": {
+                "BEAM": 0.50917,
+                "Q": 0.598928,
+                "MAGMA": 0.029476,
+                "GROW": 0.000812
+              }
+            },
+            {
+              "key": "volatility",
+              "label": "Lower measured volatility",
+              "winner": "MAGMA",
+              "scores": {
+                "BEAM": null,
+                "Q": -85.35,
+                "MAGMA": -19.77,
+                "GROW": -55.5
+              }
+            }
+          ],
+          "winner": "GROW",
+          "conclusion": {
+            "pick": "GROW",
+            "headline": "GROW leads this comparison.",
+            "rationale": "It leads on Momentum / relative strength.",
+            "runner_up_case": "BEAM can take the lead if the measured factors rotate.",
+            "confidence": "low",
+            "method": "deterministic"
+          },
+          "coverage_by_token": {
+            "BEAM": {
+              "market_data": "available",
+              "token_profile": "unavailable"
+            },
+            "Q": {
+              "market_data": "available",
+              "token_profile": "unavailable"
+            },
+            "MAGMA": {
+              "market_data": "available",
+              "token_profile": "partial"
+            },
+            "GROW": {
+              "market_data": "available",
+              "token_profile": "unavailable"
+            }
+          }
+        },
+        "summary": {
+          "headline": "GROW leads this comparison.",
+          "key_points": [
+            "It leads on Momentum / relative strength.",
+            "BEAM can take the lead if the measured factors rotate."
+          ]
+        },
+        "availability": {
+          "token_market_data": "available",
+          "comparison_factors": "available",
+          "token_profiles": "partial",
+          "conclusion": "available"
+        },
+        "warnings": [
+          "Token profiles are incomplete or unavailable. BEAM: The Skill Hub returned no token profile for this token. GROW: The Skill Hub returned no token profile for this token. MAGMA: The Skill Hub reported incomplete profile evidence: live holder coverage, 24h fees lane, 24h protocol revenue lane. Q: The Skill Hub returned no token profile for this token.",
+          "The conclusion was calculated from the returned factors; no narrative model was used."
+        ]
+      },
+      "envelope_sha256": "da38cc040d7b6aadf1634a1ee5eb0d175319c9d281ddc5226dddfaee2d88c581"
+    },
+    {
+      "id": "compare_tokens:{\"intent\":\"swing\",\"symbols\":\"SOL, PEPE, BEAM\"}",
+      "tool": "compare_tokens",
+      "args": {
+        "symbols": "SOL, PEPE, BEAM",
+        "intent": "swing"
+      },
+      "captured_at": "2026-10-30T19:25:06.527Z",
+      "http_status": 200,
+      "rate_limit": {
+        "limit": "60",
+        "remaining": "58",
+        "reset": "1793388296",
+        "retryAfter": null
+      },
+      "attempts": 2,
+      "ok": true,
+      "error": null,
+      "envelope": {
+        "schema_version": "1.0",
+        "tool": "compare_tokens",
+        "status": "ok",
+        "data_mode": "live",
+        "as_of": "2026-10-30T19:25:06Z",
+        "request": {
+          "symbols": "SOL, PEPE, BEAM",
+          "intent": "swing"
+        },
+        "data": {
+          "intent": "swing",
+          "tokens": [
+            {
+              "symbol": "SOL",
+              "name": "Solana",
+              "chain": null,
+              "rank": 7,
+              "price_usd": 94.00808103470257,
+              "changes": {
+                "h1": -0.00836917,
+                "h24": -6.17446927,
+                "d7": -9.25233667,
+                "d30": -20.16209644
+              },
+              "metrics": {
+                "market_cap_usd": 55468504602.55183,
+                "volume_24h_usd": 6607634761.879548,
+                "rsi_14": 29.4,
+                "atr_14_pct": 4.33,
+                "trend": "down"
+              },
+              "verdict": "cautious",
+              "token_profile": null
+            },
+            {
+              "symbol": "PEPE",
+              "name": "Pepe",
+              "chain": null,
+              "rank": 40,
+              "price_usd": 0.000004993573750516,
+              "changes": {
+                "h1": -1.23281863,
+                "h24": -5.43948874,
+                "d7": 6.29931887,
+                "d30": 17.37917818
+              },
+              "metrics": {
+                "market_cap_usd": 2066202746.1393263,
+                "volume_24h_usd": 1986841884.4225698,
+                "rsi_14": null,
+                "atr_14_pct": null,
+                "trend": "sideways"
+              },
+              "verdict": "neutral",
+              "token_profile": null
+            },
+            {
+              "symbol": "BEAM",
+              "name": "Beam",
+              "chain": null,
+              "rank": 118,
+              "price_usd": 0.004545082839635153,
+              "changes": {
+                "h1": -3.32917569,
+                "h24": 34.15531307,
+                "d7": 34.2299527,
+                "d30": 132.8077188
+              },
+              "metrics": {
+                "market_cap_usd": 228690094.12403822,
+                "volume_24h_usd": 116442174.49403836,
+                "rsi_14": null,
+                "atr_14_pct": null,
+                "trend": "up"
+              },
+              "verdict": "constructive",
+              "token_profile": null
+            }
+          ],
+          "factors": [
+            {
+              "key": "momentum",
+              "label": "Momentum / relative strength",
+              "winner": "BEAM",
+              "scores": {
+                "SOL": -14.252337,
+                "PEPE": 6.299319,
+                "BEAM": 39.229953
+              }
+            },
+            {
+              "key": "market_activity",
+              "label": "Market activity",
+              "winner": "PEPE",
+              "scores": {
+                "SOL": 0.119124,
+                "PEPE": 0.961591,
+                "BEAM": 0.50917
+              }
+            }
+          ],
+          "winner": "BEAM",
+          "conclusion": {
+            "pick": "BEAM",
+            "headline": "BEAM leads this comparison.",
+            "rationale": "It leads on Momentum / relative strength.",
+            "runner_up_case": "SOL can take the lead if the measured factors rotate.",
+            "confidence": "low",
+            "method": "deterministic"
+          },
+          "coverage_by_token": {
+            "SOL": {
+              "market_data": "available",
+              "token_profile": "unavailable"
+            },
+            "PEPE": {
+              "market_data": "available",
+              "token_profile": "unavailable"
+            },
+            "BEAM": {
+              "market_data": "available",
+              "token_profile": "unavailable"
+            }
+          }
+        },
+        "summary": {
+          "headline": "BEAM leads this comparison.",
+          "key_points": [
+            "It leads on Momentum / relative strength.",
+            "SOL can take the lead if the measured factors rotate."
+          ]
+        },
+        "availability": {
+          "token_market_data": "available",
+          "comparison_factors": "available",
+          "token_profiles": "unavailable",
+          "conclusion": "available"
+        },
+        "warnings": [
+          "Token profiles are incomplete or unavailable. BEAM: The Skill Hub returned no token profile for this token. PEPE: The Skill Hub returned no token profile for this token. SOL: The Skill Hub returned no token profile for this token.",
+          "The conclusion was calculated from the returned factors; no narrative model was used."
+        ]
+      },
+      "envelope_sha256": "6991b0ef1ea5f0c291e5aec83c59f8c058bffccbb2cdc835b056af857866ec66"
+    },
+    {
+      "id": "analyze_token:{\"symbol\":\"BEAM\"}",
+      "tool": "analyze_token",
+      "args": {
+        "symbol": "BEAM"
+      },
+      "captured_at": "2026-10-30T19:25:16.381Z",
+      "http_status": 200,
+      "rate_limit": {
+        "limit": "60",
+        "remaining": "58",
+        "reset": "1793388318",
+        "retryAfter": null
+      },
+      "attempts": 1,
+      "ok": true,
+      "error": null,
+      "envelope": {
+        "schema_version": "1.0",
+        "tool": "analyze_token",
+        "status": "partial",
+        "data_mode": "live",
+        "as_of": "2026-10-30T19:25:14Z",
+        "request": {
+          "symbol": "BEAM"
+        },
+        "data": {
+          "asset": {
+            "symbol": "BEAM",
+            "name": "Beam",
+            "chain": null,
+            "contract": null,
+            "rank": 118
+          },
+          "market": {
+            "price_usd": 0.004545082839635153,
+            "market_cap_usd": 228690094.12403822,
+            "fully_diluted_value_usd": 265751833.05,
+            "volume_24h_usd": 116442174.49403836
+          },
+          "performance": {
+            "change_1h_pct": -3.32917569,
+            "change_24h_pct": 34.15531307,
+            "change_7d_pct": 34.2299527,
+            "change_30d_pct": 132.8077188
+          },
+          "technical_analysis": {
+            "trend": "up",
+            "rsi_14": null,
+            "momentum_30d_pct": 132.8077188,
+            "atr_14_pct": null
+          },
+          "intelligence": {
+            "narrative": "Beam ranks #118 by market cap (token) — gaming, ethereum-ecosystem, binance-chain",
+            "catalysts": [
+              "+34.2% over 7d — momentum building",
+              "Price trend is up"
+            ],
+            "risks": []
+          },
+          "verdict": "neutral"
+        },
+        "summary": {
+          "headline": "BEAM analysis: neutral.",
+          "key_points": [
+            "Price: $0.00.",
+            "24h change: +34.16%."
+          ]
+        },
+        "availability": {
+          "market_data": "available",
+          "technical_analysis": "partial",
+          "market_intelligence": "available"
+        },
+        "warnings": [
+          "Technical indicators were not calculated; null values must not be treated as neutral or zero."
+        ]
+      },
+      "envelope_sha256": "c33d703d4831d1616efa966e6dbd3620473ec62031d7703709764a84f1670783"
+    },
+    {
+      "id": "analyze_token:{\"symbol\":\"Q\"}",
+      "tool": "analyze_token",
+      "args": {
+        "symbol": "Q"
+      },
+      "captured_at": "2026-10-30T19:25:19.004Z",
+      "http_status": 200,
+      "rate_limit": {
+        "limit": "60",
+        "remaining": "57",
+        "reset": "1793388318",
+        "retryAfter": null
+      },
+      "attempts": 1,
+      "ok": true,
+      "error": null,
+      "envelope": {
+        "schema_version": "1.0",
+        "tool": "analyze_token",
+        "status": "ok",
+        "data_mode": "live",
+        "as_of": "2026-10-30T19:25:18Z",
+        "request": {
+          "symbol": "Q"
+        },
+        "data": {
+          "asset": {
+            "symbol": "Q",
+            "name": "Quack AI",
+            "chain": null,
+            "contract": null,
+            "rank": 225
+          },
+          "market": {
+            "price_usd": 0.044848486749436735,
+            "market_cap_usd": 211096406.26363087,
+            "fully_diluted_value_usd": 448484867.49,
+            "volume_24h_usd": 126075778.41078384
+          },
+          "performance": {
+            "change_1h_pct": -1.80488028,
+            "change_24h_pct": 23.58417348,
+            "change_7d_pct": -61.15445841,
+            "change_30d_pct": 102.77820006
+          },
+          "technical_analysis": {
+            "trend": "down",
+            "rsi_14": 46.8,
+            "momentum_30d_pct": 102.77820006,
+            "atr_14_pct": 85.35
+          },
+          "intelligence": {
+            "narrative": "Quack AI ranks #225 by market cap (token) — ai-big-data, ethereum-ecosystem, governance",
+            "catalysts": [],
+            "risks": [
+              "High volatility — ATR 85.3%",
+              "FDV ≫ market cap — heavy future unlocks"
+            ]
+          },
+          "verdict": "neutral"
+        },
+        "summary": {
+          "headline": "Q analysis: neutral.",
+          "key_points": [
+            "Price: $0.04.",
+            "24h change: +23.58%."
+          ]
+        },
+        "availability": {
+          "market_data": "available",
+          "technical_analysis": "available",
+          "market_intelligence": "available"
+        },
+        "warnings": []
+      },
+      "envelope_sha256": "50c913549b227e668ad5a063dcde55c3007f015bf72eddc2bdca06eab5d520f5"
+    },
+    {
+      "id": "analyze_token:{\"symbol\":\"MAGMA\"}",
+      "tool": "analyze_token",
+      "args": {
+        "symbol": "MAGMA"
+      },
+      "captured_at": "2026-10-30T19:25:21.545Z",
+      "http_status": 200,
+      "rate_limit": {
+        "limit": "60",
+        "remaining": "57",
+        "reset": "1793388367",
+        "retryAfter": null
+      },
+      "attempts": 1,
+      "ok": true,
+      "error": null,
+      "envelope": {
+        "schema_version": "1.0",
+        "tool": "analyze_token",
+        "status": "ok",
+        "data_mode": "live",
+        "as_of": "2026-10-30T19:25:21Z",
+        "request": {
+          "symbol": "MAGMA"
+        },
+        "data": {
+          "asset": {
+            "symbol": "MAGMA",
+            "name": "Magma Finance",
+            "chain": null,
+            "contract": null,
+            "rank": 251
+          },
+          "market": {
+            "price_usd": 0.3602035707785796,
+            "market_cap_usd": 110537470.7826766,
+            "fully_diluted_value_usd": 360203570.78,
+            "volume_24h_usd": 3248900.57308975
+          },
+          "performance": {
+            "change_1h_pct": -3.27591745,
+            "change_24h_pct": 25.15789804,
+            "change_7d_pct": -10.30671258,
+            "change_30d_pct": 87.26682799
+          },
+          "technical_analysis": {
+            "trend": "up",
+            "rsi_14": 51.2,
+            "momentum_30d_pct": 87.26682799,
+            "atr_14_pct": 19.77
+          },
+          "intelligence": {
+            "narrative": "Magma Finance ranks #251 by market cap (token) — defi, governance, hashkey-capital-portfolio",
+            "catalysts": [
+              "EMA trend is up"
+            ],
+            "risks": [
+              "High volatility — ATR 19.8%",
+              "FDV ≫ market cap — heavy future unlocks"
+            ]
+          },
+          "verdict": "neutral"
+        },
+        "summary": {
+          "headline": "MAGMA analysis: neutral.",
+          "key_points": [
+            "Price: $0.36.",
+            "24h change: +25.16%."
+          ]
+        },
+        "availability": {
+          "market_data": "available",
+          "technical_analysis": "available",
+          "market_intelligence": "available"
+        },
+        "warnings": []
+      },
+      "envelope_sha256": "ea6de5065233ff56801ebb578d5dd15764bd1587154874ea62aa3a9129d7ca44"
+    },
+    {
+      "id": "analyze_token:{\"symbol\":\"GROW\"}",
+      "tool": "analyze_token",
+      "args": {
+        "symbol": "GROW"
+      },
+      "captured_at": "2026-10-30T19:25:24.103Z",
+      "http_status": 200,
+      "rate_limit": {
+        "limit": "60",
+        "remaining": "56",
+        "reset": "1793388367",
+        "retryAfter": null
+      },
+      "attempts": 1,
+      "ok": true,
+      "error": null,
+      "envelope": {
+        "schema_version": "1.0",
+        "tool": "analyze_token",
+        "status": "ok",
+        "data_mode": "live",
+        "as_of": "2026-10-30T19:25:23Z",
+        "request": {
+          "symbol": "GROW"
+        },
+        "data": {
+          "asset": {
+            "symbol": "GROW",
+            "name": "Grow",
+            "chain": null,
+            "contract": null,
+            "rank": 213
+          },
+          "market": {
+            "price_usd": 0.016315012707640422,
+            "market_cap_usd": 642800142.6065714,
+            "fully_diluted_value_usd": 815750635.38,
+            "volume_24h_usd": 519335.64241627
+          },
+          "performance": {
+            "change_1h_pct": 0.60622565,
+            "change_24h_pct": 24.74821258,
+            "change_7d_pct": 40.90555185,
+            "change_30d_pct": 11573.92403095
+          },
+          "technical_analysis": {
+            "trend": "up",
+            "rsi_14": 48.7,
+            "momentum_30d_pct": 11573.92403095,
+            "atr_14_pct": 55.5
+          },
+          "intelligence": {
+            "narrative": "Grow ranks #213 by market cap (token) — agriculture, ethereum-ecosystem, bnb-chain-ecosystem",
+            "catalysts": [
+              "+40.9% over 7d — momentum building",
+              "EMA trend is up"
+            ],
+            "risks": [
+              "High volatility — ATR 55.5%"
+            ]
+          },
+          "verdict": "accumulate"
+        },
+        "summary": {
+          "headline": "GROW analysis: accumulate.",
+          "key_points": [
+            "Price: $0.02.",
+            "24h change: +24.75%."
+          ]
+        },
+        "availability": {
+          "market_data": "available",
+          "technical_analysis": "available",
+          "market_intelligence": "available"
+        },
+        "warnings": []
+      },
+      "envelope_sha256": "66ef6b65fe2203db7f7ac46dc0eb8dad21c932020746117473ff4c03c78e0c92"
+    },
+    {
+      "id": "analyze_token:{\"symbol\":\"SOL\"}",
+      "tool": "analyze_token",
+      "args": {
+        "symbol": "SOL"
+      },
+      "captured_at": "2026-10-30T19:25:31.728Z",
+      "http_status": 200,
+      "rate_limit": {
+        "limit": "60",
+        "remaining": "55",
+        "reset": "1793388367",
+        "retryAfter": null
+      },
+      "attempts": 1,
+      "ok": true,
+      "error": null,
+      "envelope": {
+        "schema_version": "1.0",
+        "tool": "analyze_token",
+        "status": "ok",
+        "data_mode": "live",
+        "as_of": "2026-10-30T19:25:31Z",
+        "request": {
+          "symbol": "SOL"
+        },
+        "data": {
+          "asset": {
+            "symbol": "SOL",
+            "name": "Solana",
+            "chain": null,
+            "contract": null,
+            "rank": 7
+          },
+          "market": {
+            "price_usd": 94.07056468818745,
+            "market_cap_usd": 55505372441.81376,
+            "fully_diluted_value_usd": 59894742181.27,
+            "volume_24h_usd": 6609060846.635188
+          },
+          "performance": {
+            "change_1h_pct": 0.03518072,
+            "change_24h_pct": -6.11298743,
+            "change_7d_pct": -9.18448955,
+            "change_30d_pct": -20.08358289
+          },
+          "technical_analysis": {
+            "trend": "down",
+            "rsi_14": 29.4,
+            "momentum_30d_pct": -20.08358289,
+            "atr_14_pct": 4.33
+          },
+          "intelligence": {
+            "narrative": "Solana ranks #7 by market cap (coin) — pos, platform, solana-ecosystem",
+            "catalysts": [
+              "Top-7 asset — deep liquidity",
+              "RSI oversold — mean-reversion setup"
+            ],
+            "risks": [
+              "-20% over 30d — sustained downtrend"
+            ]
+          },
+          "verdict": "avoid"
+        },
+        "summary": {
+          "headline": "SOL analysis: avoid.",
+          "key_points": [
+            "Price: $94.07.",
+            "24h change: -6.11%."
+          ]
+        },
+        "availability": {
+          "market_data": "available",
+          "technical_analysis": "available",
+          "market_intelligence": "available"
+        },
+        "warnings": []
+      },
+      "envelope_sha256": "2fe91e3740e239c57ca684a49fa63d2a140a92757df08c9aad8ec61550f82bbe"
+    },
+    {
+      "id": "analyze_token:{\"symbol\":\"PEPE\"}",
+      "tool": "analyze_token",
+      "args": {
+        "symbol": "PEPE"
+      },
+      "captured_at": "2026-10-30T19:25:36.207Z",
+      "http_status": 200,
+      "rate_limit": {
+        "limit": "60",
+        "remaining": "54",
+        "reset": "1793388367",
+        "retryAfter": null
+      },
+      "attempts": 1,
+      "ok": true,
+      "error": null,
+      "envelope": {
+        "schema_version": "1.0",
+        "tool": "analyze_token",
+        "status": "partial",
+        "data_mode": "live",
+        "as_of": "2026-10-30T19:25:35Z",
+        "request": {
+          "symbol": "PEPE"
+        },
+        "data": {
+          "asset": {
+            "symbol": "PEPE",
+            "name": "Pepe",
+            "chain": null,
+            "contract": null,
+            "rank": 40
+          },
+          "market": {
+            "price_usd": 0.000004992807887343,
+            "market_cap_usd": 2065885853.1342196,
+            "fully_diluted_value_usd": 2065885853.13,
+            "volume_24h_usd": 1986573720.842723
+          },
+          "performance": {
+            "change_1h_pct": -1.14777148,
+            "change_24h_pct": -5.49634185,
+            "change_7d_pct": 6.22700066,
+            "change_30d_pct": 17.35538031
+          },
+          "technical_analysis": {
+            "trend": "sideways",
+            "rsi_14": null,
+            "momentum_30d_pct": 17.35538031,
+            "atr_14_pct": null
+          },
+          "intelligence": {
+            "narrative": "Pepe ranks #40 by market cap (token) — memes, ethereum-ecosystem, solana-ecosystem",
+            "catalysts": [
+              "+6.2% over 7d — momentum building"
+            ],
+            "risks": []
+          },
+          "verdict": "neutral"
+        },
+        "summary": {
+          "headline": "PEPE analysis: neutral.",
+          "key_points": [
+            "Price: $0.00.",
+            "24h change: -5.50%."
+          ]
+        },
+        "availability": {
+          "market_data": "available",
+          "technical_analysis": "partial",
+          "market_intelligence": "available"
+        },
+        "warnings": [
+          "Technical indicators were not calculated; null values must not be treated as neutral or zero."
+        ]
+      },
+      "envelope_sha256": "bf0c2d3cb388787bbb0579f60e54b54a2c91e855e931dea33ad7bcfb60de5f0f"
+    },
+    {
+      "id": "deep_analysis:{\"include_perp\":true,\"symbol\":\"BEAM\"}",
+      "tool": "deep_analysis",
+      "args": {
+        "symbol": "BEAM",
+        "include_perp": true
+      },
+      "captured_at": "2026-10-30T19:26:50.105Z",
+      "http_status": 200,
+      "rate_limit": {
+        "limit": "60",
+        "remaining": "53",
+        "reset": "1793388380",
+        "retryAfter": null
+      },
+      "attempts": 3,
+      "ok": true,
+      "error": null,
+      "envelope": {
+        "schema_version": "1.0",
+        "tool": "deep_analysis",
+        "status": "partial",
+        "data_mode": "live",
+        "as_of": "2026-10-30T19:26:49Z",
+        "request": {
+          "symbol": "BEAM",
+          "include_perp": true
+        },
+        "data": {
+          "asset": {
+            "symbol": "BEAM",
+            "name": "Beam",
+            "chain": null,
+            "contract": null,
+            "rank": 118
+          },
+          "market": {
+            "mcap_usd": 230627681.2925186,
+            "fdv_usd": 268003427.48,
+            "volume_24h_usd": 116847384.53551812,
+            "dominance_pct": 0.009,
+            "circulating_supply": 50315935307,
+            "max_supply": 58470184687,
+            "price_usd": 0.004583591259614992
+          },
+          "performance": {
+            "h1": -2.6342635,
+            "h24": 35.27284233,
+            "d7": 35.26183639,
+            "d30": 134.94329051
+          },
+          "technical_analysis": {
+            "trend": "up",
+            "rsi_14": null,
+            "momentum_30d_pct": 134.94329051,
+            "atr_14_pct": null
+          },
+          "confluence": {
+            "state": "CONFIRMED",
+            "score": 1,
+            "gates": [
+              {
+                "name": "momentum",
+                "passed": null,
+                "detail": {
+                  "trend": "up",
+                  "rsi_14": null
+                }
+              },
+              {
+                "name": "market_activity",
+                "passed": true,
+                "detail": {
+                  "volume_to_market_cap": 0.5066
+                }
+              },
+              {
+                "name": "derivatives",
+                "passed": true,
+                "detail": {
+                  "veto": false
+                }
+              }
+            ],
+            "status": "available"
+          },
+          "verdict": {
+            "call": "constructive",
+            "headline": "BEAM deep analysis: constructive.",
+            "bottom_line": "Positive seven-day momentum with an upward technical trend.",
+            "key_driver": "Positive seven-day momentum with an upward technical trend.",
+            "what_changes_it": "A material change in trend, momentum, activity, or derivatives posture.",
+            "confluence_score": 1
+          },
+          "token_profile": null,
+          "derivatives": {
+            "symbol": "BEAM",
+            "funding_rate_bps": 0,
+            "funding_trend": "stable",
+            "open_interest_change_24h_pct": 18.27,
+            "long_short_ratio": null,
+            "liquidation_pressure": "balanced",
+            "squeeze_risk": "low",
+            "veto": false,
+            "veto_reason": null
+          },
+          "trade_plan": null,
+          "intelligence": {
+            "narrative": "token, gaming, ethereum-ecosystem, binance-chain, binance-launchpool",
+            "catalysts": [
+              "Positive seven-day price momentum.",
+              "Daily technical trend is upward."
+            ],
+            "risks": []
+          }
+        },
+        "summary": {
+          "headline": "BEAM deep analysis: constructive.",
+          "key_points": [
+            "Positive seven-day momentum with an upward technical trend.",
+            "Key driver: Positive seven-day momentum with an upward technical trend.",
+            "What changes the view: A material change in trend, momentum, activity, or derivatives posture."
+          ]
+        },
+        "availability": {
+          "market_data": "available",
+          "technical_analysis": "partial",
+          "token_profile": "unavailable",
+          "derivatives": "available",
+          "trade_plan": "unavailable"
+        },
+        "warnings": [
+          "Technical indicators were not calculated; null values must not be treated as neutral or zero.",
+          "The Skill Hub returned no token profile for this token.",
+          "No preview trade plan could be calculated."
+        ]
+      },
+      "envelope_sha256": "bcaae100ed02b9ea5dbada6e9243c9df15f08ae09197690d2bf6b4304bc76784"
+    },
+    {
+      "id": "deep_analysis:{\"include_perp\":true,\"symbol\":\"Q\"}",
+      "tool": "deep_analysis",
+      "args": {
+        "symbol": "Q",
+        "include_perp": true
+      },
+      "captured_at": "2026-10-30T19:27:18.275Z",
+      "http_status": 200,
+      "rate_limit": {
+        "limit": "60",
+        "remaining": "57",
+        "reset": "1793388418",
+        "retryAfter": null
+      },
+      "attempts": 1,
+      "ok": true,
+      "error": null,
+      "envelope": {
+        "schema_version": "1.0",
+        "tool": "deep_analysis",
+        "status": "partial",
+        "data_mode": "live",
+        "as_of": "2026-10-30T19:27:17Z",
+        "request": {
+          "symbol": "Q",
+          "include_perp": true
+        },
+        "data": {
+          "asset": {
+            "symbol": "Q",
+            "name": "Quack AI",
+            "chain": null,
+            "contract": null,
+            "rank": 225
+          },
+          "market": {
+            "mcap_usd": 211048735.27605295,
+            "fdv_usd": 448383588.1,
+            "volume_24h_usd": 126059188.61414483,
+            "dominance_pct": 0,
+            "circulating_supply": 4706879129.34503,
+            "max_supply": 10000000000,
+            "price_usd": 0.04483835880982581
+          },
+          "performance": {
+            "h1": -2.64102501,
+            "h24": 22.81237314,
+            "d7": -60.97372373,
+            "d30": 102.37329994
+          },
+          "technical_analysis": {
+            "trend": "down",
+            "rsi_14": 46.8,
+            "momentum_30d_pct": 102.37329994,
+            "atr_14_pct": 85.35
+          },
+          "confluence": {
+            "state": "MIXED",
+            "score": 0.67,
+            "gates": [
+              {
+                "name": "momentum",
+                "passed": false,
+                "detail": {
+                  "trend": "down",
+                  "rsi_14": 46.8
+                }
+              },
+              {
+                "name": "market_activity",
+                "passed": true,
+                "detail": {
+                  "volume_to_market_cap": 0.5973
+                }
+              },
+              {
+                "name": "derivatives",
+                "passed": true,
+                "detail": {
+                  "veto": false
+                }
+              }
+            ],
+            "status": "available"
+          },
+          "verdict": {
+            "call": "cautious",
+            "headline": "Q deep analysis: cautious.",
+            "bottom_line": "Weak momentum or a downward technical trend.",
+            "key_driver": "Weak momentum or a downward technical trend.",
+            "what_changes_it": "A material change in trend, momentum, activity, or derivatives posture.",
+            "confluence_score": 0.67
+          },
+          "token_profile": null,
+          "derivatives": {
+            "symbol": "Q",
+            "funding_rate_bps": 0,
+            "funding_trend": "stable",
+            "open_interest_change_24h_pct": 18.27,
+            "long_short_ratio": null,
+            "liquidation_pressure": "balanced",
+            "squeeze_risk": "low",
+            "veto": false,
+            "veto_reason": null
+          },
+          "trade_plan": null,
+          "intelligence": {
+            "narrative": "token, ai-big-data, ethereum-ecosystem, governance, kenetic-capital-portfolio",
+            "catalysts": [],
+            "risks": [
+              "Daily technical trend is downward."
+            ]
+          }
+        },
+        "summary": {
+          "headline": "Q deep analysis: cautious.",
+          "key_points": [
+            "Weak momentum or a downward technical trend.",
+            "Key driver: Weak momentum or a downward technical trend.",
+            "What changes the view: A material change in trend, momentum, activity, or derivatives posture."
+          ]
+        },
+        "availability": {
+          "market_data": "available",
+          "technical_analysis": "available",
+          "token_profile": "unavailable",
+          "derivatives": "available",
+          "trade_plan": "unavailable"
+        },
+        "warnings": [
+          "The Skill Hub returned no token profile for this token.",
+          "No preview trade plan could be calculated."
+        ]
+      },
+      "envelope_sha256": "9b24aa21a249b4205f56f1519336801cc6fa5e73e175eef953d27d3d2d3d8ba8"
+    },
+    {
+      "id": "deep_analysis:{\"include_perp\":true,\"symbol\":\"SOL\"}",
+      "tool": "deep_analysis",
+      "args": {
+        "symbol": "SOL",
+        "include_perp": true
+      },
+      "captured_at": "2026-10-30T19:27:58.818Z",
+      "http_status": 200,
+      "rate_limit": {
+        "limit": "60",
+        "remaining": "57",
+        "reset": "1793388439",
+        "retryAfter": null
+      },
+      "attempts": 1,
+      "ok": true,
+      "error": null,
+      "envelope": {
+        "schema_version": "1.0",
+        "tool": "deep_analysis",
+        "status": "ok",
+        "data_mode": "live",
+        "as_of": "2026-10-30T19:27:58Z",
+        "request": {
+          "symbol": "SOL",
+          "include_perp": true
+        },
+        "data": {
+          "asset": {
+            "symbol": "SOL",
+            "name": "Solana",
+            "chain": null,
+            "contract": null,
+            "rank": 7
+          },
+          "market": {
+            "mcap_usd": 55613736406.19358,
+            "fdv_usd": 60011675577.49,
+            "volume_24h_usd": 6614536285.690499,
+            "dominance_pct": 2.1626,
+            "circulating_supply": 590039749.689986,
+            "max_supply": null,
+            "price_usd": 94.25422005112996
+          },
+          "performance": {
+            "h1": 0.09303215,
+            "h24": -5.9800482,
+            "d7": -9.11197157,
+            "d30": -19.86999754
+          },
+          "technical_analysis": {
+            "trend": "down",
+            "rsi_14": 29.4,
+            "momentum_30d_pct": -19.86999754,
+            "atr_14_pct": 4.33
+          },
+          "confluence": {
+            "state": "MIXED",
+            "score": 0.67,
+            "gates": [
+              {
+                "name": "momentum",
+                "passed": false,
+                "detail": {
+                  "trend": "down",
+                  "rsi_14": 29.4
+                }
+              },
+              {
+                "name": "market_activity",
+                "passed": true,
+                "detail": {
+                  "volume_to_market_cap": 0.1189
+                }
+              },
+              {
+                "name": "derivatives",
+                "passed": true,
+                "detail": {
+                  "veto": false
+                }
+              }
+            ],
+            "status": "available"
+          },
+          "verdict": {
+            "call": "cautious",
+            "headline": "SOL deep analysis: cautious.",
+            "bottom_line": "Weak momentum or a downward technical trend.",
+            "key_driver": "Weak momentum or a downward technical trend.",
+            "what_changes_it": "A material change in trend, momentum, activity, or derivatives posture.",
+            "confluence_score": 0.67
+          },
+          "token_profile": {
+            "ok": true,
+            "data": {
+              "type": "evidence_pack",
+              "skill_id": "altcoin_token_profile",
+              "timestamp": "2026-10-30T19:27:20Z",
+              "data": {
+                "status": "partial",
+                "confidence": "low",
+                "missing_or_stale_inputs": [
+                  "live holder coverage",
+                  "stable protocol-history deltas"
+                ],
+                "decision_report": {
+                  "title": "SOL Token Profile",
+                  "brand_line": "Powered By CoinMarketCap",
+                  "conclusion": "Solana (SOL) token profile has fully resolved identity, current market snapshot, and partial protocol context, with explicit unresolved coverage gaps for live holder data and stable protocol-history metrics limiting full fundamental confidence.",
+                  "analysis": "### Token Identity\nSolana (SOL) is a layer-1 platform coin launched on March 16, 2020, currently ranked 7th by overall market capitalization. Its native SPL contract is deployed on the Solana mainnet, and the asset is tagged as a proof-of-stake platform, part of the Solana ecosystem, classified as a digital commodity in SEC/CFTC token taxonomies, and included in multiple notable venture and reserve portfolios.\n\n### Market Context\nThe latest market snapshot reports SOL trading at $94.25 USD, with a circulating market capitalization of ~$55.61 billion and fully diluted valuation of ~$60.01 billion. 24h trading volume stands at ~$6.61 billion, equal to 11.89% of current market cap, indicating very high near-term liquidity. Recent price performance shows a 5.98% decline over the trailing 24 hours, a 9.11% drop over 7 days, and a 19.87% decline over the past 30 days, though the asset remains up 32.51% over the trailing 90 day window. SOL underperformed BTC by a marginal 0.61% over the last 24 hours.\n\n### Protocol Context\nProtocol matching confirms the asset maps directly to the core Solana layer-1 network. Reported 24h protocol fees total $564,523, while 24h protocol revenue is $38,828. Current total value locked and TVL trend metrics are not available in this coverage run. Recent public content includes near-term price support analysis around the $98 level, and an announcement that Polygon is expanding its Open Money Stack to add Solana support targeting $2 trillion in stablecoin volume.\n\n### Coverage Gaps\nLive holder coverage is currently unavailable, so no analysis of ownership concentration, distribution, or holder behavior can be included in this profile. Stable protocol-history deltas including historical TVL trends and longer-term protocol performance metrics are also unavailable, limiting the depth of fundamental trend analysis. No values have been inferred or fabricated to fill these gaps, and they remain explicitly marked as unresolved.\n"
+                },
+                "action_guidance": {
+                  "bias": "context_only",
+                  "reference_action": "Use as research context, not as an execution instruction. Do not treat missing coverage lanes as implicitly healthy or neutral, and recheck the latest market snapshot before proceeding with deeper research work."
+                }
+              }
+            },
+            "execution": {
+              "status": "completed",
+              "elapsed_ms": 37453
+            }
+          },
+          "derivatives": {
+            "symbol": "SOL",
+            "funding_rate_bps": 0,
+            "funding_trend": "stable",
+            "open_interest_change_24h_pct": 18.27,
+            "long_short_ratio": null,
+            "liquidation_pressure": "balanced",
+            "squeeze_risk": "low",
+            "veto": false,
+            "veto_reason": null
+          },
+          "trade_plan": {
+            "entry": 94.2542,
+            "stop": 88.1324,
+            "targets": [
+              100.376,
+              106.4978
+            ],
+            "atr_14_usd": 4.0812,
+            "atr_14_pct": 4.33,
+            "atr_multiplier": 1.5,
+            "risk_reward": [
+              1,
+              2
+            ],
+            "method": "wilder_atr_14_from_daily_ohlcv",
+            "preview_only": true
+          },
+          "intelligence": {
+            "narrative": "coin, pos, platform, solana-ecosystem, cms-holdings-portfolio",
+            "catalysts": [],
+            "risks": [
+              "Daily technical trend is downward."
+            ]
+          }
+        },
+        "summary": {
+          "headline": "SOL deep analysis: cautious.",
+          "key_points": [
+            "Weak momentum or a downward technical trend.",
+            "Key driver: Weak momentum or a downward technical trend.",
+            "What changes the view: A material change in trend, momentum, activity, or derivatives posture."
+          ]
+        },
+        "availability": {
+          "market_data": "available",
+          "technical_analysis": "available",
+          "token_profile": "partial",
+          "derivatives": "available",
+          "trade_plan": "available"
+        },
+        "warnings": [
+          "The Skill Hub reported incomplete profile evidence: live holder coverage, stable protocol-history deltas."
+        ]
+      },
+      "envelope_sha256": "e57fc5702ab8e14f44045ff09a5fb6621084515df369c40c78cc17774849dd3f"
+    },
+    {
+      "id": "deep_analysis:{\"include_perp\":true,\"symbol\":\"PEPE\"}",
+      "tool": "deep_analysis",
+      "args": {
+        "symbol": "PEPE",
+        "include_perp": true
+      },
+      "captured_at": "2026-10-30T19:28:29.590Z",
+      "http_status": 200,
+      "rate_limit": {
+        "limit": "60",
+        "remaining": "58",
+        "reset": "1793388499",
+        "retryAfter": null
+      },
+      "attempts": 1,
+      "ok": true,
+      "error": null,
+      "envelope": {
+        "schema_version": "1.0",
+        "tool": "deep_analysis",
+        "status": "partial",
+        "data_mode": "live",
+        "as_of": "2026-10-30T19:28:29Z",
+        "request": {
+          "symbol": "PEPE",
+          "include_perp": true
+        },
+        "data": {
+          "asset": {
+            "symbol": "PEPE",
+            "name": "Pepe",
+            "chain": null,
+            "contract": null,
+            "rank": 40
+          },
+          "market": {
+            "mcap_usd": 2069503738.566769,
+            "fdv_usd": 2069503738.57,
+            "volume_24h_usd": 1988041602.71916,
+            "dominance_pct": 0.0805,
+            "circulating_supply": 413772350098130.44,
+            "max_supply": 413772350098130.44,
+            "price_usd": 0.000005001551549
+          },
+          "performance": {
+            "h1": -0.9936203,
+            "h24": -5.22428995,
+            "d7": 6.52745736,
+            "d30": 17.47897757
+          },
+          "technical_analysis": {
+            "trend": "sideways",
+            "rsi_14": null,
+            "momentum_30d_pct": 17.47897757,
+            "atr_14_pct": null
+          },
+          "confluence": {
+            "state": "CONFIRMED",
+            "score": 1,
+            "gates": [
+              {
+                "name": "momentum",
+                "passed": null,
+                "detail": {
+                  "trend": "sideways",
+                  "rsi_14": null
+                }
+              },
+              {
+                "name": "market_activity",
+                "passed": true,
+                "detail": {
+                  "volume_to_market_cap": 0.9606
+                }
+              },
+              {
+                "name": "derivatives",
+                "passed": true,
+                "detail": {
+                  "veto": false
+                }
+              }
+            ],
+            "status": "available"
+          },
+          "verdict": {
+            "call": "neutral",
+            "headline": "PEPE deep analysis: neutral.",
+            "bottom_line": "The measured market and technical signals are mixed.",
+            "key_driver": "The measured market and technical signals are mixed.",
+            "what_changes_it": "A material change in trend, momentum, activity, or derivatives posture.",
+            "confluence_score": 1
+          },
+          "token_profile": null,
+          "derivatives": {
+            "symbol": "PEPE",
+            "funding_rate_bps": 0,
+            "funding_trend": "stable",
+            "open_interest_change_24h_pct": 18.47,
+            "long_short_ratio": null,
+            "liquidation_pressure": "balanced",
+            "squeeze_risk": "low",
+            "veto": false,
+            "veto_reason": null
+          },
+          "trade_plan": null,
+          "intelligence": {
+            "narrative": "token, memes, ethereum-ecosystem, solana-ecosystem, binance-ecosystem",
+            "catalysts": [
+              "Positive seven-day price momentum."
+            ],
+            "risks": []
+          }
+        },
+        "summary": {
+          "headline": "PEPE deep analysis: neutral.",
+          "key_points": [
+            "The measured market and technical signals are mixed.",
+            "Key driver: The measured market and technical signals are mixed.",
+            "What changes the view: A material change in trend, momentum, activity, or derivatives posture."
+          ]
+        },
+        "availability": {
+          "market_data": "available",
+          "technical_analysis": "partial",
+          "token_profile": "unavailable",
+          "derivatives": "available",
+          "trade_plan": "unavailable"
+        },
+        "warnings": [
+          "Technical indicators were not calculated; null values must not be treated as neutral or zero.",
+          "The Skill Hub returned no token profile for this token.",
+          "No preview trade plan could be calculated."
+        ]
+      },
+      "envelope_sha256": "157fae0fcd2449c155b0306996fd511190d2972a07b55e6eaab3852b96952390"
+    }
+  ],
+  "bundle_sha256": "78bd26676a70fceb0eec28fe537a33086e1b98825f814e20767d91f42095490d"
+}

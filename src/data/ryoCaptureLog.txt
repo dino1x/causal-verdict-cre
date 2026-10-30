@@ -1,0 +1,17 @@
+OK  200 market_overview {} status=ok remaining=59
+OK  200 monitor_market_sentiment_shift {"time_window":"7d"} status=ok remaining=58
+OK  200 scan_market {"top_n":10,"filter_direction":"all"} status=ok remaining=57
+OK  200 scan_market {"top_n":8,"filter_direction":"negative"} status=ok remaining=56
+OK  200 scan_market {"top_n":6,"theme":"meme"} status=ok remaining=55
+OK  200 compare_tokens {"symbols":"BEAM, Q, MAGMA, GROW","intent":"swing"} status=ok remaining=54
+OK  200 compare_tokens {"symbols":"SOL, PEPE, BEAM","intent":"swing"} status=ok remaining=58
+OK  200 analyze_token {"symbol":"BEAM"} status=partial remaining=58
+OK  200 analyze_token {"symbol":"Q"} status=ok remaining=57
+OK  200 analyze_token {"symbol":"MAGMA"} status=ok remaining=57
+OK  200 analyze_token {"symbol":"GROW"} status=ok remaining=56
+OK  200 analyze_token {"symbol":"SOL"} status=ok remaining=55
+OK  200 analyze_token {"symbol":"PEPE"} status=partial remaining=54
+OK  200 deep_analysis {"symbol":"BEAM","include_perp":true} status=partial remaining=53
+OK  200 deep_analysis {"symbol":"Q","include_perp":true} status=partial remaining=57
+OK  200 deep_analysis {"symbol":"SOL","include_perp":true} status=ok remaining=57
+OK  200 deep_analysis {"symbol":"PEPE","include_perp":true} status=partial remaining=58

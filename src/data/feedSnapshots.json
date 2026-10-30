@@ -1,0 +1,390 @@
+{
+  "tokens": [
+    {
+      "symbol": "BEAM",
+      "name": "Beam",
+      "contract": "0x62D0A8458eD7719FDAF978fe5929C6D342B0bFcE",
+      "priceUsd": 0.004545082839635153
+    },
+    {
+      "symbol": "Q",
+      "name": "Quack AI",
+      "contract": "0xc07e1300dc138601FA6B0b59f8D0FA477e690589",
+      "priceUsd": 0.044848486749436735
+    },
+    {
+      "symbol": "MAGMA",
+      "name": "Magma Finance",
+      "contract": "0x9f854b3ad20f8161ec0886f15f4a1752bf75d22261556f14cc8d3a1c5d50e529::magma::MAGMA",
+      "priceUsd": 0.3602035707785796
+    },
+    {
+      "symbol": "GROW",
+      "name": "Grow",
+      "contract": "0x1223334444A7466fBf985B14E1F4EdAf3883bCa6",
+      "priceUsd": 0.016315012707640422
+    },
+    {
+      "symbol": "SOL",
+      "name": "Solana",
+      "contract": null,
+      "priceUsd": 94.07056468818745
+    },
+    {
+      "symbol": "PEPE",
+      "name": "Pepe",
+      "contract": "0x6982508145454ce325ddbe47a25d4ec3d2311933",
+      "priceUsd": 0.000004992807887343
+    }
+  ],
+  "channels": [
+    "WatcherGuru",
+    "cointelegraph",
+    "whale_alert_io"
+  ],
+  "captured_at": "2026-10-30T19:49:25.337Z",
+  "referenceTime": "2026-10-30T19:22:58Z",
+  "voices": [
+    {
+      "handle": "t.me/WatcherGuru",
+      "channel": "telegram",
+      "followers": null,
+      "weight": 0.5
+    },
+    {
+      "handle": "t.me/cointelegraph",
+      "channel": "telegram",
+      "followers": null,
+      "weight": 0.5
+    },
+    {
+      "handle": "t.me/whale_alert_io",
+      "channel": "telegram",
+      "followers": null,
+      "weight": 0.5
+    }
+  ],
+  "posts": [],
+  "whales": [
+    {
+      "id": "bsc:0x011e9914360bdbc177fbe8f7cddeeec39a54ebbe32214daa9eaf843715c5fe61:266",
+      "wallet": "0x0ea3…18f7",
+      "symbol": "Q",
+      "minutes": -85,
+      "kind": "exchange_withdrawal",
+      "usd": 40678,
+      "source": "https://bscscan.com/tx/0x011e9914360bdbc177fbe8f7cddeeec39a54ebbe32214daa9eaf843715c5fe61",
+      "counterparty": "Gate.io"
+    },
+    {
+      "id": "ethereum:0x0364fd3ec5e1682f0b83b10f32b287daebb4052f12c2aca64d9d7dcfd0960dbf:235",
+      "wallet": "0x4302…c9ff",
+      "symbol": "PEPE",
+      "minutes": -164,
+      "kind": "exchange_deposit",
+      "usd": 661778,
+      "source": "https://etherscan.io/tx/0x0364fd3ec5e1682f0b83b10f32b287daebb4052f12c2aca64d9d7dcfd0960dbf",
+      "counterparty": "Coinbase 10"
+    },
+    {
+      "id": "ethereum:0x0e500dba7262a9ef49eeb4a1ec0f444f6fd5a72874b6be686ce744ccbc98d1a8:706",
+      "wallet": "0xe48b…1b26",
+      "symbol": "PEPE",
+      "minutes": -180,
+      "kind": "exchange_deposit",
+      "usd": 614581,
+      "source": "https://etherscan.io/tx/0x0e500dba7262a9ef49eeb4a1ec0f444f6fd5a72874b6be686ce744ccbc98d1a8",
+      "counterparty": "Coinbase 10"
+    },
+    {
+      "id": "ethereum:0x277ce9cccaeab1e467fded72b402452d5e264daa9d09ff54db83da207b514638:862",
+      "wallet": "0x841e…3a34",
+      "symbol": "PEPE",
+      "minutes": -173,
+      "kind": "dex_sell",
+      "usd": 280497,
+      "source": "https://etherscan.io/tx/0x277ce9cccaeab1e467fded72b402452d5e264daa9d09ff54db83da207b514638",
+      "counterparty": "contract (DEX/router)"
+    },
+    {
+      "id": "ethereum:0x2a3d48c3aff8406f1abceb9f1d6339d77b873bcd30521f6eb5bda00e373c4482:155",
+      "wallet": "0x2f1a…da19",
+      "symbol": "PEPE",
+      "minutes": -133,
+      "kind": "exchange_withdrawal",
+      "usd": 345420,
+      "source": "https://etherscan.io/tx/0x2a3d48c3aff8406f1abceb9f1d6339d77b873bcd30521f6eb5bda00e373c4482",
+      "counterparty": "Coinbase 10"
+    },
+    {
+      "id": "ethereum:0x2ab7e2f0a42ef01f219689ff7548bfcd17b0690caf1e08f78bdce0e602064ba1:142",
+      "wallet": "0x15da…b0d7",
+      "symbol": "PEPE",
+      "minutes": -167,
+      "kind": "exchange_withdrawal",
+      "usd": 249640,
+      "source": "https://etherscan.io/tx/0x2ab7e2f0a42ef01f219689ff7548bfcd17b0690caf1e08f78bdce0e602064ba1",
+      "counterparty": "Coinbase 10"
+    },
+    {
+      "id": "ethereum:0x2c6e5bf422bf96a4c813b9c9a6d7c4b8b61f7bc0cd1d2a56771eec4d4e8a64c5:347",
+      "wallet": "0x1757…cd90",
+      "symbol": "PEPE",
+      "minutes": -134,
+      "kind": "exchange_deposit",
+      "usd": 491418,
+      "source": "https://etherscan.io/tx/0x2c6e5bf422bf96a4c813b9c9a6d7c4b8b61f7bc0cd1d2a56771eec4d4e8a64c5",
+      "counterparty": "Coinbase 10"
+    },
+    {
+      "id": "ethereum:0x3776a8f52c5e29b4a88fbfcd1d8164f11afb993615cbbd172e7963a4b2bfcc38:744",
+      "wallet": "0x260c…facc",
+      "symbol": "BEAM",
+      "minutes": -177,
+      "kind": "exchange_deposit",
+      "usd": 30239,
+      "source": "https://etherscan.io/tx/0x3776a8f52c5e29b4a88fbfcd1d8164f11afb993615cbbd172e7963a4b2bfcc38",
+      "counterparty": "Coinbase 10"
+    },
+    {
+      "id": "ethereum:0x5498cacb790366d75382a56ea556342929252e3bd929c16b30bce9d4b6b18e77:734",
+      "wallet": "0x2f1a…da19",
+      "symbol": "PEPE",
+      "minutes": -180,
+      "kind": "exchange_deposit",
+      "usd": 825859,
+      "source": "https://etherscan.io/tx/0x5498cacb790366d75382a56ea556342929252e3bd929c16b30bce9d4b6b18e77",
+      "counterparty": "Coinbase 10"
+    },
+    {
+      "id": "ethereum:0x694596d7dd904202b2bc7ec7c75fc18fddd937572541e3c170648cb749955a0d:368",
+      "wallet": "0x32eb…2a45",
+      "symbol": "GROW",
+      "minutes": -66,
+      "kind": "dex_buy",
+      "usd": 163150,
+      "source": "https://etherscan.io/tx/0x694596d7dd904202b2bc7ec7c75fc18fddd937572541e3c170648cb749955a0d",
+      "counterparty": "contract (DEX/router)"
+    },
+    {
+      "id": "ethereum:0x7c742e46b4ebf60b1628c0d4116d9b93393a5f1200dd03c78692eb6786469abe:329",
+      "wallet": "0x2942…cbea",
+      "symbol": "BEAM",
+      "minutes": -178,
+      "kind": "exchange_deposit",
+      "usd": 49803,
+      "source": "https://etherscan.io/tx/0x7c742e46b4ebf60b1628c0d4116d9b93393a5f1200dd03c78692eb6786469abe",
+      "counterparty": "Coinbase 10"
+    },
+    {
+      "id": "ethereum:0x88a25bd2f652376a2647e8817c5b5e1f5fb46c8ca447dfa7ab81967df1cf6dd5:169",
+      "wallet": "0xb584…f2ec",
+      "symbol": "GROW",
+      "minutes": -66,
+      "kind": "dex_buy",
+      "usd": 101788,
+      "source": "https://etherscan.io/tx/0x88a25bd2f652376a2647e8817c5b5e1f5fb46c8ca447dfa7ab81967df1cf6dd5",
+      "counterparty": "contract (DEX/router)"
+    },
+    {
+      "id": "ethereum:0xa5141cd3e7d67eff2d160ff648926920cea48a6fd82dd48ecef48a22be937e82:34",
+      "wallet": "0xeb61…f855",
+      "symbol": "BEAM",
+      "minutes": -160,
+      "kind": "exchange_withdrawal",
+      "usd": 26225,
+      "source": "https://etherscan.io/tx/0xa5141cd3e7d67eff2d160ff648926920cea48a6fd82dd48ecef48a22be937e82",
+      "counterparty": "Coinbase 10"
+    },
+    {
+      "id": "ethereum:0xb0ccde85d8e0a9174d5e6a59c599cbd3b5306f2b9049f169035fd8629bdc4095:500",
+      "wallet": "0xda31…7302",
+      "symbol": "GROW",
+      "minutes": -65,
+      "kind": "dex_buy",
+      "usd": 42044,
+      "source": "https://etherscan.io/tx/0xb0ccde85d8e0a9174d5e6a59c599cbd3b5306f2b9049f169035fd8629bdc4095",
+      "counterparty": "contract (DEX/router)"
+    },
+    {
+      "id": "ethereum:0xb9ffe059812022f55d94a575160d0fdcb86e13632f012b456a7bce3f8038e893:131",
+      "wallet": "0x9d0c…445d",
+      "symbol": "GROW",
+      "minutes": -7,
+      "kind": "dex_buy",
+      "usd": 33019,
+      "source": "https://etherscan.io/tx/0xb9ffe059812022f55d94a575160d0fdcb86e13632f012b456a7bce3f8038e893",
+      "counterparty": "contract (DEX/router)"
+    },
+    {
+      "id": "ethereum:0xbea10ac93d3247817f801262a2804aff5dd285ad570ebef4cbfde185f2a7792f:64",
+      "wallet": "0x2df8…7e9f",
+      "symbol": "GROW",
+      "minutes": -4,
+      "kind": "dex_sell",
+      "usd": 154962,
+      "source": "https://etherscan.io/tx/0xbea10ac93d3247817f801262a2804aff5dd285ad570ebef4cbfde185f2a7792f",
+      "counterparty": "contract (DEX/router)"
+    },
+    {
+      "id": "ethereum:0xc84d23bdf73f4a3b24d4f3688c745be3daf55b94208b4f91bfc4088f018d3252:15",
+      "wallet": "0x4055…900c",
+      "symbol": "BEAM",
+      "minutes": -17,
+      "kind": "dex_sell",
+      "usd": 55587,
+      "source": "https://etherscan.io/tx/0xc84d23bdf73f4a3b24d4f3688c745be3daf55b94208b4f91bfc4088f018d3252",
+      "counterparty": "contract (DEX/router)"
+    },
+    {
+      "id": "ethereum:0xeb2c85b761ac06ebc4913300ad1b45a9165e46c7e3b2c6d91f7759c977f07a14:322",
+      "wallet": "0xd3b9…3975",
+      "symbol": "GROW",
+      "minutes": -171,
+      "kind": "dex_buy",
+      "usd": 82995,
+      "source": "https://etherscan.io/tx/0xeb2c85b761ac06ebc4913300ad1b45a9165e46c7e3b2c6d91f7759c977f07a14",
+      "counterparty": "contract (DEX/router)"
+    }
+  ],
+  "news": [
+    {
+      "id": "CoinDesk:https://www.coindesk.com/business/2026/10/29/from-rivals-to-partners-polygon-and-solana-team-to-bring-stablecoin-payments-to-banks:SOL",
+      "symbol": "SOL",
+      "minutes": -1607,
+      "headline": "From rivals to partners: Polygon and Solana team to bring stablecoin payments to banks",
+      "sourceType": "secondary",
+      "source": "CoinDesk — https://www.coindesk.com/business/2026/10/29/from-rivals-to-partners-polygon-and-solana-team-to-bring-stablecoin-payments-to-banks",
+      "claimKeywords": [
+        "polygon"
+      ]
+    },
+    {
+      "id": "Decrypt:https://decrypt.co/381850/polygon-stablecoin-payments-open-money-stack-solana:SOL",
+      "symbol": "SOL",
+      "minutes": -1822,
+      "headline": "Polygon Extends Its Stablecoin Payments Infrastructure to Solana",
+      "sourceType": "secondary",
+      "source": "Decrypt — https://decrypt.co/381850/polygon-stablecoin-payments-open-money-stack-solana",
+      "claimKeywords": [
+        "integration",
+        "polygon"
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "feed": "onchain",
+      "target": "BEAM@bsc",
+      "ok": true,
+      "items": 0,
+      "detail": "1661 Transfer logs in 180m before ref (blocks 130696369–130720367); 0 ≥ $25k; 0 attributable"
+    },
+    {
+      "feed": "onchain",
+      "target": "BEAM@ethereum",
+      "ok": true,
+      "items": 4,
+      "detail": "1216 Transfer logs in 180m before ref (blocks 26306741–26307638); 25 ≥ $25k; 4 attributable"
+    },
+    {
+      "feed": "onchain",
+      "target": "GROW@bsc",
+      "ok": true,
+      "items": 0,
+      "detail": "0 Transfer logs in 180m before ref (blocks 130696370–130720368); 0 ≥ $25k; 0 attributable"
+    },
+    {
+      "feed": "onchain",
+      "target": "GROW@ethereum",
+      "ok": true,
+      "items": 6,
+      "detail": "203 Transfer logs in 180m before ref (blocks 26306741–26307638); 21 ≥ $25k; 6 attributable"
+    },
+    {
+      "feed": "onchain",
+      "target": "MAGMA",
+      "ok": false,
+      "items": 0,
+      "detail": "non-EVM contract (no public EVM log source)"
+    },
+    {
+      "feed": "onchain",
+      "target": "PEPE@ethereum",
+      "ok": true,
+      "items": 7,
+      "detail": "1960 Transfer logs in 180m before ref (blocks 26306741–26307638); 30 ≥ $25k; 7 attributable"
+    },
+    {
+      "feed": "onchain",
+      "target": "Q@bsc",
+      "ok": true,
+      "items": 1,
+      "detail": "10482 Transfer logs in 180m before ref (blocks 130696368–130720368); 5 ≥ $25k; 1 attributable"
+    },
+    {
+      "feed": "onchain",
+      "target": "Q@ethereum",
+      "ok": true,
+      "items": 0,
+      "detail": "12 Transfer logs in 180m before ref (blocks 26306741–26307638); 0 ≥ $25k; 0 attributable"
+    },
+    {
+      "feed": "onchain",
+      "target": "SOL",
+      "ok": false,
+      "items": 0,
+      "detail": "no contract address from RYO (native asset)"
+    },
+    {
+      "feed": "rss",
+      "target": "CoinDesk",
+      "ok": true,
+      "items": 1,
+      "detail": "25 items in feed; 1 token mentions in the 72h before ref"
+    },
+    {
+      "feed": "rss",
+      "target": "Cointelegraph",
+      "ok": true,
+      "items": 0,
+      "detail": "30 items in feed; 0 token mentions in the 72h before ref"
+    },
+    {
+      "feed": "rss",
+      "target": "Decrypt",
+      "ok": true,
+      "items": 1,
+      "detail": "38 items in feed; 1 token mentions in the 72h before ref"
+    },
+    {
+      "feed": "telegram",
+      "target": "t.me/cointelegraph",
+      "ok": true,
+      "items": 0,
+      "detail": "31 recent posts; 0 mention the universe in the 24h before ref"
+    },
+    {
+      "feed": "telegram",
+      "target": "t.me/WatcherGuru",
+      "ok": true,
+      "items": 0,
+      "detail": "27 recent posts; 0 mention the universe in the 24h before ref"
+    },
+    {
+      "feed": "telegram",
+      "target": "t.me/whale_alert_io",
+      "ok": true,
+      "items": 0,
+      "detail": "40 recent posts; 0 mention the universe in the 24h before ref"
+    },
+    {
+      "feed": "whale_alert",
+      "target": "t.me/whale_alert_io",
+      "ok": true,
+      "items": 0,
+      "detail": "60 recent posts scanned; 0 exchange flows for BEAM, Q, MAGMA, GROW, SOL, PEPE"
+    }
+  ],
+  "bundle_sha256": "d3237219459345ebdd3d277096a361b1dcd929b4be2e809a1db53af4d5a86833"
+}
