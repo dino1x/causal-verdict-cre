@@ -58,8 +58,24 @@ const WINDOW_MIN = 180;
 const MIN_WHALE_USD = 25_000;
 const UA = { "User-Agent": "Mozilla/5.0 (causal-verdict research agent)" };
 
+/** fetch with one retry on network errors / timeouts / 5xx (public endpoints are flaky). */
+async function fetchRetry(url: string, init: RequestInit = {}, timeoutMs = 20000): Promise<Response> {
+  let last: unknown;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      const r = await fetch(url, { ...init, signal: AbortSignal.timeout(timeoutMs) });
+      if (r.status < 500 && r.status !== 429) return r;
+      last = new Error(`HTTP ${r.status}`);
+    } catch (e) {
+      last = e;
+    }
+    await new Promise((res) => setTimeout(res, 1500 * (attempt + 1)));
+  }
+  throw last instanceof Error ? last : new Error(String(last));
+}
+
 async function rpc(url: string, body: unknown): Promise<any> {
-  const r = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body), signal: AbortSignal.timeout(20000) });
+  const r = await fetchRetry(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
   if (!r.ok) throw new Error(`RPC HTTP ${r.status}`);
   return r.json();
 }
@@ -167,13 +183,18 @@ async function onchainWhales(t: FeedToken, refSec: number, sources: FeedSource[]
 }
 
 const decode = (s: string) =>
-  s.replace(/<br\s*\/?>/g, " ").replace(/<[^>]+>/g, "").replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"').replace(/&#0?39;/g, "'").replace(/&nbsp;/g, " ").replace(/\s+/g, " ").trim();
+  s
+    .replace(/<br\s*\/?>/g, " ")
+    .replace(/<[^>]+>/g, "")
+    .replace(/&#(\d+);/g, (_, n) => String.fromCodePoint(Number(n)))
+    .replace(/&#x([0-9a-f]+);/gi, (_, h) => String.fromCodePoint(parseInt(h, 16)))
+    .replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"').replace(/&#0?39;/g, "'").replace(/&nbsp;/g, " ").replace(/\s+/g, " ").trim();
 
 async function telegram(channel: string, pages = 2): Promise<{ id: string; time: number; text: string }[]> {
   const out: { id: string; time: number; text: string }[] = [];
   let before = "";
   for (let p = 0; p < pages; p++) {
-    const r = await fetch(`https://t.me/s/${channel}${before ? `?before=${before}` : ""}`, { headers: UA, signal: AbortSignal.timeout(15000) });
+    const r = await fetchRetry(`https://t.me/s/${channel}${before ? `?before=${before}` : ""}`, { headers: UA }, 15000);
     if (!r.ok) throw new Error(`HTTP ${r.status}`);
     const html = await r.text();
     const blocks = html.split('<div class="tgme_widget_message_wrap').slice(1);
@@ -230,7 +251,7 @@ async function news(tokens: FeedToken[], refSec: number, sources: FeedSource[]):
   const out: NewsItem[] = [];
   for (const feed of RSS) {
     try {
-      const r = await fetch(feed.url, { headers: UA, redirect: "follow", signal: AbortSignal.timeout(15000) });
+      const r = await fetchRetry(feed.url, { headers: UA, redirect: "follow" }, 15000);
       if (!r.ok) throw new Error(`HTTP ${r.status}`);
       const xml = await r.text();
       const items = xml.split(/<item[\s>]/).slice(1);
@@ -256,18 +277,37 @@ async function news(tokens: FeedToken[], refSec: number, sources: FeedSource[]):
   return out;
 }
 
-export const DEFAULT_TG_VOICES = (process.env.FEED_TG_CHANNELS ?? "WatcherGuru,cointelegraph,whale_alert_io").split(",").map((s) => s.trim()).filter(Boolean);
+// Public channels verified reachable and active (2026-10-30). Voices feed the KOL radar; exchange announcement
+// channels are the issuer/venue itself, so their posts enter the news checker as PRIMARY sources instead.
+export const PRIMARY_TG = ["binance_announcements", "bybit_announcements", "okxannouncements"];
+export const DEFAULT_TG_VOICES = (
+  process.env.FEED_TG_CHANNELS ??
+  "lookonchainchannel,WatcherGuru,whale_alert_io,cointelegraph,wublockchainenglish,BWEnews,CoinDeskGlobal,unfolded,BitcoinMagazineTelegram,cryptoquant_official,glassnode," + PRIMARY_TG.join(",")
+)
+  .split(",")
+  .map((s) => s.trim())
+  .filter(Boolean);
 
-async function telegramVoices(channels: string[], tokens: FeedToken[], refSec: number, sources: FeedSource[]): Promise<{ voices: KolVoice[]; posts: KolPost[] }> {
+async function telegramVoices(channels: string[], tokens: FeedToken[], refSec: number, sources: FeedSource[]): Promise<{ voices: KolVoice[]; posts: KolPost[]; primaryNews: NewsItem[] }> {
   const voices: KolVoice[] = [];
   const posts: KolPost[] = [];
+  const primaryNews: NewsItem[] = [];
   for (const ch of channels.slice(0, 20)) {
     try {
       const msgs = await telegram(ch, 2);
       const handle = `t.me/${ch}`;
-      voices.push({ handle, channel: "telegram", followers: null, weight: 0.5 });
+      const primary = PRIMARY_TG.includes(ch);
+      if (!primary) voices.push({ handle, channel: "telegram", followers: null, weight: 0.5 });
       let n = 0;
       for (const m of msgs) {
+        if (primary) {
+          if (m.time > refSec || refSec - m.time > 72 * 3600) continue;
+          for (const t of tokens.filter((t) => mentions(m.text, t))) {
+            primaryNews.push({ id: `tg:${ch}:${m.id}:${t.symbol}`, symbol: t.symbol, minutes: Math.round((m.time - refSec) / 60), headline: m.text.slice(0, 200), sourceType: "primary", source: `${ch} (exchange announcement) — https://t.me/${ch}/${m.id}`, claimKeywords: CLAIMS.filter((c) => m.text.toLowerCase().includes(c)) });
+            n++;
+          }
+          continue;
+        }
         if (m.time > refSec || refSec - m.time > 24 * 3600) continue;
         const hit = tokens.filter((t) => mentions(m.text, t));
         if (!hit.length) continue;
@@ -275,24 +315,28 @@ async function telegramVoices(channels: string[], tokens: FeedToken[], refSec: n
         posts.push({ id: `tg:${ch}:${m.id}`, handle, channel: "telegram", minutes: Math.round((m.time - refSec) / 60), text: `${m.text} ${hit.map((t) => `$${t.symbol}`).join(" ")}`, source: `https://t.me/${ch}/${m.id}` });
         n++;
       }
-      sources.push({ feed: "telegram", target: handle, ok: true, items: n, detail: `${msgs.length} recent posts; ${n} mention the universe in the 24h before ref` });
+      sources.push({ feed: "telegram", target: handle, ok: true, items: n, detail: primary ? `${msgs.length} recent announcements; ${n} primary-source mentions in the 72h before ref` : `${msgs.length} recent posts; ${n} mention the universe in the 24h before ref` });
     } catch (e) {
       sources.push({ feed: "telegram", target: `t.me/${ch}`, ok: false, items: 0, detail: String((e as Error).message) });
     }
   }
-  return { voices, posts };
+  return { voices, posts, primaryNews };
 }
 
 export async function collectFeeds(tokens: FeedToken[], referenceTime: string, channels: string[] = DEFAULT_TG_VOICES): Promise<FeedBundle> {
   const refSec = Math.floor(Date.parse(referenceTime) / 1000);
   const sources: FeedSource[] = [];
   const [onchain, wa, nw, tg] = await Promise.all([
-    Promise.all(tokens.map((t) => onchainWhales(t, refSec, sources))).then((x) => x.flat()),
+    (async () => {
+      const all: WhaleEvent[] = [];
+      for (const t of tokens) all.push(...(await onchainWhales(t, refSec, sources))); // sequential: gentle on public RPCs
+      return all;
+    })(),
     whaleAlert(tokens.map((t) => t.symbol), refSec, sources),
     news(tokens, refSec, sources),
     telegramVoices(channels, tokens, refSec, sources),
   ]);
   const byKey = (a: { id: string }, b: { id: string }) => a.id.localeCompare(b.id);
   sources.sort((a, b) => (a.feed + a.target).localeCompare(b.feed + b.target));
-  return { referenceTime, voices: tg.voices, posts: tg.posts.sort(byKey), whales: [...onchain, ...wa].sort(byKey), news: nw.sort(byKey), sources };
+  return { referenceTime, voices: tg.voices, posts: tg.posts.sort(byKey), whales: [...onchain, ...wa].sort(byKey), news: [...nw, ...tg.primaryNews].sort(byKey), sources };
 }

@@ -1,0 +1,17 @@
+# One-click deploy of the full app (UI + /api proxy + feeds + x402 gateway) on Render.
+# Secrets are set in the Render dashboard (sync: false) and stay server-side.
+services:
+  - type: web
+    name: causal-verdict-cre
+    runtime: node
+    plan: free
+    buildCommand: npm ci --include=dev && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/agent/x402-info
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: RYO_MCP_URL
+        value: https://app-ryochan.com/api/mcp
+      - key: RYO_MCP_KEY
+        sync: false

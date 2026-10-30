@@ -11,8 +11,9 @@ import { DebateView } from "./ui/Debate";
 import { MandateView } from "./ui/Mandate";
 import { CreView } from "./ui/Cre";
 import { AuditView } from "./ui/Audit";
+import { LedgerView } from "./ui/Ledger";
 
-const TABS = ["Verdict", "Causality", "Debate", "Mandate", "CRE + x402", "Audit"] as const;
+const TABS = ["Verdict", "Ledger", "Causality", "Debate", "Mandate", "CRE + x402", "Audit"] as const;
 type Tab = (typeof TABS)[number];
 const TOOL_ORDER: RyoTool[] = ["market_overview", "monitor_market_sentiment_shift", "scan_market", "compare_tokens", "analyze_token", "deep_analysis"];
 
@@ -132,6 +133,7 @@ export default function App() {
       ) : (
         <>
           {tab === "Verdict" && <VerdictView run={run} log={log} onInspect={insp.open} onFocus={(s) => { setFocus(s); setTab("Debate"); }} />}
+          {tab === "Ledger" && <LedgerView />}
           {tab === "Causality" && <CausalityView run={run} focus={focus} setFocus={setFocus} posts={posts} setPosts={setPosts} channels={channels} setChannels={setChannels} />}
           {tab === "Debate" && <DebateView run={run} focus={focus} setFocus={setFocus} onInspect={insp.open} />}
           {tab === "Mandate" && <MandateView prose={mandate} setProse={setMandate} run={run} />}

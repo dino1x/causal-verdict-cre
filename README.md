@@ -80,9 +80,13 @@ Each run makes 17 calls across **all six tools**. It chains them; it does not ju
 | Whale flows | `eth_getLogs` ERC-20 `Transfer` events from public Ethereum and BSC RPCs, for the contract address **RYO's `scan_market` returned**, over the 3h before the reference time | Transfers ≥ $25k (valued at RYO's price). Classified as exchange deposit or withdrawal against a small best-effort list of public CEX wallet labels, or as a DEX buy or sell when one side is a contract. EOA→EOA transfers are not attributed. Every event links to Etherscan or BscScan. |
 | Whale flows (non-EVM) | Whale Alert's public Telegram channel | Parsed "X $TOKEN (Y USD) transferred from A to B" posts. Covers assets like SOL that have no EVM contract. |
 | News | Cointelegraph, Decrypt and CoinDesk RSS | Matched by cashtag, ticker or RYO asset name. Outlets count as *secondary* sources: a claim is verified only by a primary source or corroborated by RYO's own token profile. |
-| KOL voices | Public Telegram channel previews (`t.me/s/<channel>`); channels editable in the Causality tab, ≤ 20 | X and Discord need a paid API or a bot, so posts from those are pasted in and labelled *user-supplied* |
+| KOL voices | 11 public Telegram channels verified as active (Lookonchain, Watcher.Guru, Whale Alert, Cointelegraph, Wu Blockchain, BWEnews, CoinDesk, Unfolded, Bitcoin Magazine, CryptoQuant, Glassnode), editable in the Causality tab, ≤ 20 | X and Discord need a paid API or a bot, so posts from those are pasted in and labelled *user-supplied* |
+| Primary sources | Exchange announcement channels (Binance, Bybit, OKX) | Routed to the news checker as **primary** evidence, since the venue is the source itself, not into the KOL radar |
 
 **No look-ahead:** anything timestamped after the run's reference time is dropped. Feeds that fail or have no coverage (e.g. MAGMA is a Sui token) are listed as **unavailable** in the feed-status table, never filled in. Feed inputs are hashed into the trace (`evidence.inputs`), so real-feed runs replay to an identical root too.
+
+### 2c · Practice-trade ledger (`src/engine/ledger.ts`, `scripts/run-agent.ts`, Ledger tab)
+The bounty asks agents to *record the practice trades they would make*. An autonomous loop runs the full agent on **live** RYO data and real feeds every 30–60 minutes. It records each practice trade, then re-prices open positions with later RYO observations and closes them at the stop, the targets (50% at T1, after which the stop moves to entry) or the 72-hour time stop. The ledger is append-only and hash-chained. It accepts **only live evidence**: a run whose `market_overview` wasn't live, or whose selected token's reads weren't live, is logged as *not recorded*. Prices older than a position never mark it. Positions are marked only at observation points (intra-period highs and lows aren't observed), and that is stated in the UI.
 
 ### 3 · Real thinking (`src/engine/decision.ts`)
 Bull and Bear agents argue from the *same* evidence. Every argument cites the exact field it rests on (e.g. `deep_analysis(SOL).data.technical_analysis.rsi_14 = 29.4`). The **Judge has no discretion over the mandate**: a failed binding clause rejects the trade however good the bull case sounds. For each rejection it lists the formal counterexample and "what would change the ruling".
@@ -106,6 +110,9 @@ Every step is hashed as `hash(prev | i | label | sha256(payload))`. The engine h
   - Securities Act §17(b) (anti-touting; it reaches *securities*, so the clause flags undisclosed coordinated promotion whatever the token's status)
   - **MiCA Art. 91(2)** (manipulation, including voicing opinions while positioned)
   - **MiCA Art. 92** (the duty to run systems that detect market abuse; the touting and exit-liquidity detectors are that kind of control)
+- **Regulatory documents, generated per decision** (Debate tab → Judge; samples in [`examples/`](examples/)):
+  - a **pre-trade compliance memorandum**: determination, the atomic position, a clause-by-clause mandate test with anchors, the UPIA §2(c) circumstances considered, the arguments weighed, hash-identified evidence and limitations;
+  - a **draft suspicious transaction and order report (STOR)**, structured for review under **MiCA Art. 92(1)–(2)**. It is offered *only* when the exit-liquidity or touting detector fires, and contains a dated chronology with source links, the addresses involved, reasons for suspicion, alternative explanations and a reviewer sign-off. It is never auto-filed; filing is a human decision.
 - **FRE 902(14) evidence package** (Audit tab). Every RYO exhibit is identified by SHA-256 over key-sorted JSON. The package includes the chained trace, an explicit fixture disclosure, and a **draft** 28 U.S.C. §1746 certification for a qualified person to complete. We do not claim self-authentication without that human certification.
 
 ---
@@ -173,6 +180,7 @@ cre workflow simulate ./causal-verdict --target staging-settings --env ../.env -
 | x402 402 → signed retry → 200 → replay refused | ✅ in-app (CRE + x402 tab) |
 | Workflow compiles to WASM with the SDK's `cre-compile` (Javy), passing its type-check and its restricted-API check | ✅ `npm run cre:compile` → `dist/workflow.wasm` (2.65 MB) |
 | Real-feed evidence: linked sources, no look-ahead, deterministic replay | ✅ `npm test` |
+| Ledger: open → target 1 → breakeven stop, stale runs ignored, tamper detection | ✅ `npm test` |
 | **Official `cre workflow simulate` (CLI v1.39.0), both triggers** | ✅ `cre-workflow/simulation-cre-cli-{http,cron}.log`. Compile → Vault-DON secret → Confidential HTTP to RYO → mandate → signed report → `writeReport` (`txStatus=SUCCESS`, dry run). In both runs RYO's `deep_analysis` (~30–33s) exceeded the **simulator's** fixed 30s Confidential HTTP client timeout, which ignores the requested 80s. The workflow fell back to `analyze_token` and correctly **rejected** SOL on the missing confluence (C4). The production limit is 90s. |
 | Sepolia deployment of the vault | ⏳ not deployed; set `VAULT_ADDRESS` and regenerate config |
 
@@ -190,12 +198,16 @@ contracts/         CausalVerdictVault.sol · out/CausalVerdictVault.json
 scripts/           capture-ryo.mjs · ryoClient.mjs · selftest.ts · compile-contract.mjs · gen-cre-config.ts · check-secrets.mjs
 ```
 
+### Deploy
+`render.yaml` deploys the whole app (UI, RYO proxy, feeds, x402) to Render. Set `RYO_MCP_KEY` in the dashboard; it stays server-side. Any static host (`npm run build` → `dist/`) also works in replay mode, using the bundled real RYO and feed captures.
+
 | Command | |
 |---|---|
 | `npm run dev` | Dev server with the `/api` proxy (key stays in Node) |
 | `npm run build && npm start` | Production build + server on :8787 |
 | `npm run capture` | Re-capture fresh RYO snapshots (all 6 tools, needs key), then real feeds for the same reference time |
-| `npm test` | Offline invariants on real snapshots |
+| `npm test` | Offline invariants: compiler, replay, tamper, null handling, real-feed provenance, ledger |
+| `npx tsx scripts/run-agent.ts --every=60` | Autonomous loop: live agent → practice-trade ledger |
 | `npm run check:secrets` | Fails if any credential is in a shippable file |
 
 ## Disclosures

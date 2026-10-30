@@ -55,3 +55,24 @@ for (const d of realRun.dossiers)
   console.log(`  [real] ${d.symbol.padEnd(6)} ${d.judgment.decision.padEnd(7)} bull=${d.judgment.bullScore} bear=${d.judgment.bearScore} planes=[${d.planes}] whale=${d.whale.events.length} failed=[${d.judgment.failedGates.map((g) => `${g.id}:${g.kind}`).join(" ")}]`);
 console.log(fails ? `${fails} check(s) failed` : "real-feed checks passed");
 if (fails) process.exit(1);
+
+// 5. practice-trade ledger: open → target1 → breakeven stop, stale runs ignored, chain verifies
+const L = await import("../src/engine/ledger");
+const fakeRun = (at: string, price: number, root: string) => ({ referenceTime: at, trace: { root }, practiceTrade: null, provenanceMix: { live: 1 }, evidenceMode: "real", mandateHash: "0x", calls: [{ tool: "analyze_token", args: { symbol: "SOL" }, provenance: "live", envelope_sha256: "ab", envelope: { as_of: at, data: { market: { price_usd: price } } } }] }) as any;
+let led = L.applyRun(L.emptyLedger(), run);
+const pos0 = led.positions[0];
+check("ledger opens the run's practice trade", led.positions.length === 1 && pos0.symbol === run.practiceTrade!.position.symbol);
+const t0 = Date.parse(run.referenceTime!);
+const iso = (h: number) => new Date(t0 + h * 3_600_000).toISOString();
+led = L.applyRun(led, fakeRun(iso(-1), pos0.targets[0].price + 1, "0xold"));
+check("stale run (older reference time) is ignored", led.runs.length === 1);
+led = L.applyRun(led, fakeRun(iso(1), pos0.targets[0].price + 0.01, "0xr2"));
+check("target 1 fills 50% and the stop moves to entry", led.positions[0].fills[0]?.reason === "target1" && led.positions[0].stopNow === pos0.entry);
+led = L.applyRun(led, fakeRun(iso(2), pos0.entry - 0.5, "0xr3"));
+check("runner stops out at breakeven; position closes with the target-1 profit", led.positions[0].status === "closed" && led.positions[0].realizedPnlUsd > 0, `${led.positions[0].realizedPnlUsd} USD, ${led.positions[0].realizedR}R`);
+check("ledger hash chain verifies", L.verifyLedger(led).ok);
+const bad = structuredClone(led);
+bad.events[1].detail = "edited";
+check("editing a ledger event breaks the chain", !L.verifyLedger(bad).ok);
+console.log(fails ? `${fails} check(s) failed` : "ledger checks passed");
+if (fails) process.exit(1);

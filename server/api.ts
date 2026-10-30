@@ -208,6 +208,15 @@ export async function handleApi(req: IncomingMessage, res: ServerResponse): Prom
       send(res, 200, await collectFeeds(tokens, ref, ch));
       return true;
     }
+    if (url.pathname === "/api/ledger" && req.method === "GET") {
+      const path = join(process.cwd(), "data/ledger.json");
+      try {
+        send(res, 200, { source: "live ledger (data/ledger.json)", ledger: JSON.parse(readFileSync(path, "utf8")) });
+      } catch {
+        send(res, 404, { error: "no live ledger yet — run scripts/run-agent.ts" });
+      }
+      return true;
+    }
     if (url.pathname === "/api/agent/x402-info" && req.method === "GET") {
       send(res, 200, { ...X402, priceUsdc6: X402.priceUsdc6.toString() });
       return true;

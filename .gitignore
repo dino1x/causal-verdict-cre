@@ -16,3 +16,4 @@ cre-workflow/**/dist/
 .cre_build_tmp.js
 CLAUDE.md
 docs/
+/data/

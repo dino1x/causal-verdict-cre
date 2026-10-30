@@ -1,6 +1,7 @@
 import type { RunResult } from "../engine/pipeline";
 import type { RyoResult } from "../engine/ryo";
-import { Badge, Fixture } from "./common";
+import { Badge, Fixture, download } from "./common";
+import { complianceMemo, draftStor, storEligible } from "../engine/regulatory";
 import { TokenPicker } from "./Causality";
 
 export function DebateView({ run, focus, setFocus, onInspect }: { run: RunResult; focus: string; setFocus: (s: string) => void; onInspect: (r: RyoResult) => void }) {
@@ -54,6 +55,13 @@ export function DebateView({ run, focus, setFocus, onInspect }: { run: RunResult
           </ul>
           <h3>Supporting evidence planes</h3>
           <div className="row">{d.planes.length ? d.planes.map((p) => <Badge key={p} k="pass">{p}</Badge>) : <span className="muted small">none</span>}</div>
+          <h3>Regulatory documents</h3>
+          <div className="row">
+            <button className="btn" onClick={() => openDoc(complianceMemo(run, d), `compliance-memo-${d.symbol}.html`)}>Pre-trade compliance memo</button>
+            <button className="btn" disabled={!storEligible(d)} title={storEligible(d) ? "Draft a MiCA Art. 92 suspicious transaction and order report" : "No manipulation detector fired for this token"} onClick={() => openDoc(draftStor(run, d), `draft-STOR-${d.symbol}.html`)}>
+              Draft STOR (MiCA Art. 92)
+            </button>
+          </div>
           <p className="small muted">The Judge has no discretion over the mandate: a failed binding clause rejects regardless of how strong the bull case sounds. Argument weights only rank gate-compliant candidates.</p>
         </div>
       </div>
@@ -83,4 +91,11 @@ export function DebateView({ run, focus, setFocus, onInspect }: { run: RunResult
       )}
     </div>
   );
+}
+
+/** Open a generated document in a new tab (printable to PDF); fall back to a download if pop-ups are blocked. */
+function openDoc(html: string, name: string) {
+  const url = URL.createObjectURL(new Blob([html], { type: "text/html" }));
+  if (!window.open(url, "_blank")) download(name, html, "text/html");
+  setTimeout(() => URL.revokeObjectURL(url), 60_000);
 }

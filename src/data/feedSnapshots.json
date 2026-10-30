@@ -38,15 +38,38 @@
     }
   ],
   "channels": [
+    "lookonchainchannel",
     "WatcherGuru",
+    "whale_alert_io",
     "cointelegraph",
-    "whale_alert_io"
+    "wublockchainenglish",
+    "BWEnews",
+    "CoinDeskGlobal",
+    "unfolded",
+    "BitcoinMagazineTelegram",
+    "cryptoquant_official",
+    "glassnode",
+    "binance_announcements",
+    "bybit_announcements",
+    "okxannouncements"
   ],
-  "captured_at": "2026-10-30T19:49:25.337Z",
+  "captured_at": "2026-10-30T22:02:51.341Z",
   "referenceTime": "2026-10-30T19:22:58Z",
   "voices": [
     {
+      "handle": "t.me/lookonchainchannel",
+      "channel": "telegram",
+      "followers": null,
+      "weight": 0.5
+    },
+    {
       "handle": "t.me/WatcherGuru",
+      "channel": "telegram",
+      "followers": null,
+      "weight": 0.5
+    },
+    {
+      "handle": "t.me/whale_alert_io",
       "channel": "telegram",
       "followers": null,
       "weight": 0.5
@@ -58,13 +81,106 @@
       "weight": 0.5
     },
     {
-      "handle": "t.me/whale_alert_io",
+      "handle": "t.me/wublockchainenglish",
+      "channel": "telegram",
+      "followers": null,
+      "weight": 0.5
+    },
+    {
+      "handle": "t.me/BWEnews",
+      "channel": "telegram",
+      "followers": null,
+      "weight": 0.5
+    },
+    {
+      "handle": "t.me/CoinDeskGlobal",
+      "channel": "telegram",
+      "followers": null,
+      "weight": 0.5
+    },
+    {
+      "handle": "t.me/unfolded",
+      "channel": "telegram",
+      "followers": null,
+      "weight": 0.5
+    },
+    {
+      "handle": "t.me/BitcoinMagazineTelegram",
+      "channel": "telegram",
+      "followers": null,
+      "weight": 0.5
+    },
+    {
+      "handle": "t.me/cryptoquant_official",
+      "channel": "telegram",
+      "followers": null,
+      "weight": 0.5
+    },
+    {
+      "handle": "t.me/glassnode",
       "channel": "telegram",
       "followers": null,
       "weight": 0.5
     }
   ],
-  "posts": [],
+  "posts": [
+    {
+      "id": "tg:BWEnews:16587",
+      "handle": "t.me/BWEnews",
+      "channel": "telegram",
+      "minutes": -1218,
+      "text": "BWENEWS: On-chain data shows about **$6.26B** in assets moved from Binance wallets to attacker-controlled addresses across 9 chains. The outflows hit Ethereum, Bitcoin, Tron, XRP, Solana, Arbitrum, Avalanche, Optimism and Base. 方程式新闻: 链上数据显示，约 62.6 亿美元的资产从 Binance 钱包转移至攻击者控制的地址，涉及 9 条链。资金流出波及 Ethereum、Bitcoin、Tron、XRP、Solana、Arbitrum、Avalanche、Optimism 和 Base。 ———————————— 2026-10-30 07:04:27 $SOL",
+      "source": "https://t.me/BWEnews/16587"
+    },
+    {
+      "id": "tg:glassnode:2067",
+      "handle": "t.me/glassnode",
+      "channel": "telegram",
+      "minutes": -1222,
+      "text": "Outflows across chains happened one after the other. XRP went first, then SOL shortly after, then BTC, ETH, USDT and TRX together, finally USDC. Binance's BNB balance was left untouched. It wasn't just the major assets. Dozens of smaller tokens saw a large share of their Binance balance leave in the same hour. According to our data, #FUN tokens were completely drained from the exchange. $SOL",
+      "source": "https://t.me/glassnode/2067"
+    },
+    {
+      "id": "tg:lookonchainchannel:10833",
+      "handle": "t.me/lookonchainchannel",
+      "channel": "telegram",
+      "minutes": -1234,
+      "text": "Attention! The Binance hacker is now dumping $PEPE, $UNI, $LINK, and other tokens on-chain for $ETH. Please note: The hacker still holds large amounts of the following altcoins, which could face heavy selling pressure: 217.497M $ENA ($39.51M) 7.579T $PEPE ($34.41M) 2.575M $LINK ($28.07M) 128.034K $AAVE ($15.9M) 74.56M $ARB ($11.54M) 1.938M $UNI ($12.62M) 21.852M $ONDO ($8.52M) 17.318M $WLD ($6.73M) 714.911M $FUN ($6.29M) 87.853M $ZAMA ($6.02M) 3.602M $ZRO ($5.69M) 3.382B $RSR ($5.02M) https://x.com/lookonchain/status/2115932070858158190 $PEPE",
+      "source": "https://t.me/lookonchainchannel/10833"
+    },
+    {
+      "id": "tg:lookonchainchannel:10834",
+      "handle": "t.me/lookonchainchannel",
+      "channel": "telegram",
+      "minutes": -1195,
+      "text": "Over $5.8B in assets has been stolen from Binance. More than $2.435B in stablecoins has been frozen. The hacker is currently dumping assets like $PEPE, $LINK, $UNI, and $ENA on-chain. Watch out for selling pressure. $PEPE",
+      "source": "https://t.me/lookonchainchannel/10834"
+    },
+    {
+      "id": "tg:lookonchainchannel:10835",
+      "handle": "t.me/lookonchainchannel",
+      "channel": "telegram",
+      "minutes": -1102,
+      "text": "The Binance hacker has finished dumping $UNI, $ENA, $PEPE, $LINK, $AAVE, $ONDO, and $WLD, swapping them for a total of 70,480 $ETH ($158.25M). Sold 7.02M $UNI($39.63M) at $5.65. Sold 217.5M $ENA($33.93M) at $0.16. Sold 7.77T $PEPE($31.66M) at $0.0000041. Sold 2.57M $LINK($26.05M) at $10.14. Sold 127,953 $AAVE($14.27M) at $111.55. Sold 21.85M $ONDO($6.62M) at $0.30. Sold 17.32M $WLD($6.09M) at $0.35. https://arkm.com/explorer/entity/ee28af27-2694-409b-b40e-cef142d00f33 $PEPE",
+      "source": "https://t.me/lookonchainchannel/10835"
+    },
+    {
+      "id": "tg:lookonchainchannel:10847",
+      "handle": "t.me/lookonchainchannel",
+      "channel": "telegram",
+      "minutes": -699,
+      "text": "Legendary trader dimethyltryptamine.eth, who once spent just 0.125 $ETH ($251) to buy 5.9T $PEPE ($100M at peak), bought another 45.08B $PEPE ($206.5K) after the Binance hacker finished dumping $PEPE. https://arkm.com/explorer/address/0x4a2C786651229175407d3A2D405d1998bcf40614 $PEPE",
+      "source": "https://t.me/lookonchainchannel/10847"
+    },
+    {
+      "id": "tg:lookonchainchannel:10851",
+      "handle": "t.me/lookonchainchannel",
+      "channel": "telegram",
+      "minutes": -375,
+      "text": "A newly created wallet (2VXozU) withdrew 68,773 $SOL($6.65M) from #Kraken, #Bybit and #OKX. https://arkm.com/explorer/address/2VXozUqccKmDYAsZSbjJtEnK5d4NufrkYutRxPUUkLfK $SOL",
+      "source": "https://t.me/lookonchainchannel/10851"
+    }
+  ],
   "whales": [
     {
       "id": "bsc:0x011e9914360bdbc177fbe8f7cddeeec39a54ebbe32214daa9eaf843715c5fe61:266",
@@ -245,6 +361,16 @@
       "usd": 82995,
       "source": "https://etherscan.io/tx/0xeb2c85b761ac06ebc4913300ad1b45a9165e46c7e3b2c6d91f7759c977f07a14",
       "counterparty": "contract (DEX/router)"
+    },
+    {
+      "id": "wa:104341",
+      "wallet": "whale-alert#104341",
+      "symbol": "PEPE",
+      "minutes": -1292,
+      "kind": "exchange_withdrawal",
+      "usd": 37481346,
+      "source": "https://t.me/whale_alert_io/104341",
+      "counterparty": "Binance Hack 2026"
     }
   ],
   "news": [
@@ -270,6 +396,15 @@
         "integration",
         "polygon"
       ]
+    },
+    {
+      "id": "tg:binance_announcements:9093:SOL",
+      "symbol": "SOL",
+      "minutes": -3619,
+      "headline": "Binance Earn Yield Arena: Earn Up to 35% APR With This Week’s New Limited-Time Offers! (2026-10-28) Binance Earn presents to you new offers that are newly added to Yield Arena this week. Stay tuned fo",
+      "sourceType": "primary",
+      "source": "binance_announcements (exchange announcement) — https://t.me/binance_announcements/9093",
+      "claimKeywords": []
     }
   ],
   "sources": [
@@ -278,7 +413,7 @@
       "target": "BEAM@bsc",
       "ok": true,
       "items": 0,
-      "detail": "1661 Transfer logs in 180m before ref (blocks 130696369–130720367); 0 ≥ $25k; 0 attributable"
+      "detail": "1665 Transfer logs in 180m before ref (blocks 130696368–130720368); 0 ≥ $25k; 0 attributable"
     },
     {
       "feed": "onchain",
@@ -292,7 +427,7 @@
       "target": "GROW@bsc",
       "ok": true,
       "items": 0,
-      "detail": "0 Transfer logs in 180m before ref (blocks 130696370–130720368); 0 ≥ $25k; 0 attributable"
+      "detail": "0 Transfer logs in 180m before ref (blocks 130696371–130720369); 0 ≥ $25k; 0 attributable"
     },
     {
       "feed": "onchain",
@@ -320,7 +455,7 @@
       "target": "Q@bsc",
       "ok": true,
       "items": 1,
-      "detail": "10482 Transfer logs in 180m before ref (blocks 130696368–130720368); 5 ≥ $25k; 1 attributable"
+      "detail": "10484 Transfer logs in 180m before ref (blocks 130696367–130720367); 5 ≥ $25k; 1 attributable"
     },
     {
       "feed": "onchain",
@@ -359,6 +494,41 @@
     },
     {
       "feed": "telegram",
+      "target": "t.me/binance_announcements",
+      "ok": true,
+      "items": 1,
+      "detail": "40 recent announcements; 1 primary-source mentions in the 72h before ref"
+    },
+    {
+      "feed": "telegram",
+      "target": "t.me/BitcoinMagazineTelegram",
+      "ok": true,
+      "items": 0,
+      "detail": "34 recent posts; 0 mention the universe in the 24h before ref"
+    },
+    {
+      "feed": "telegram",
+      "target": "t.me/BWEnews",
+      "ok": true,
+      "items": 1,
+      "detail": "39 recent posts; 1 mention the universe in the 24h before ref"
+    },
+    {
+      "feed": "telegram",
+      "target": "t.me/bybit_announcements",
+      "ok": true,
+      "items": 0,
+      "detail": "40 recent announcements; 0 primary-source mentions in the 72h before ref"
+    },
+    {
+      "feed": "telegram",
+      "target": "t.me/CoinDeskGlobal",
+      "ok": true,
+      "items": 0,
+      "detail": "40 recent posts; 0 mention the universe in the 24h before ref"
+    },
+    {
+      "feed": "telegram",
       "target": "t.me/cointelegraph",
       "ok": true,
       "items": 0,
@@ -366,10 +536,45 @@
     },
     {
       "feed": "telegram",
+      "target": "t.me/cryptoquant_official",
+      "ok": true,
+      "items": 0,
+      "detail": "25 recent posts; 0 mention the universe in the 24h before ref"
+    },
+    {
+      "feed": "telegram",
+      "target": "t.me/glassnode",
+      "ok": true,
+      "items": 1,
+      "detail": "28 recent posts; 1 mention the universe in the 24h before ref"
+    },
+    {
+      "feed": "telegram",
+      "target": "t.me/lookonchainchannel",
+      "ok": true,
+      "items": 5,
+      "detail": "30 recent posts; 5 mention the universe in the 24h before ref"
+    },
+    {
+      "feed": "telegram",
+      "target": "t.me/okxannouncements",
+      "ok": true,
+      "items": 0,
+      "detail": "40 recent announcements; 0 primary-source mentions in the 72h before ref"
+    },
+    {
+      "feed": "telegram",
+      "target": "t.me/unfolded",
+      "ok": true,
+      "items": 0,
+      "detail": "40 recent posts; 0 mention the universe in the 24h before ref"
+    },
+    {
+      "feed": "telegram",
       "target": "t.me/WatcherGuru",
       "ok": true,
       "items": 0,
-      "detail": "27 recent posts; 0 mention the universe in the 24h before ref"
+      "detail": "26 recent posts; 0 mention the universe in the 24h before ref"
     },
     {
       "feed": "telegram",
@@ -379,12 +584,19 @@
       "detail": "40 recent posts; 0 mention the universe in the 24h before ref"
     },
     {
+      "feed": "telegram",
+      "target": "t.me/wublockchainenglish",
+      "ok": true,
+      "items": 0,
+      "detail": "40 recent posts; 0 mention the universe in the 24h before ref"
+    },
+    {
       "feed": "whale_alert",
       "target": "t.me/whale_alert_io",
       "ok": true,
-      "items": 0,
-      "detail": "60 recent posts scanned; 0 exchange flows for BEAM, Q, MAGMA, GROW, SOL, PEPE"
+      "items": 1,
+      "detail": "60 recent posts scanned; 1 exchange flows for BEAM, Q, MAGMA, GROW, SOL, PEPE"
     }
   ],
-  "bundle_sha256": "d3237219459345ebdd3d277096a361b1dcd929b4be2e809a1db53af4d5a86833"
+  "bundle_sha256": "5fc674507f329b4a2d428087cf4c7795563c1530d860637654517531d850a4a1"
 }
