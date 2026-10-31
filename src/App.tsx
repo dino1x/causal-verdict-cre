@@ -124,7 +124,7 @@ export default function App() {
         </div>
       </header>
 
-      <div className="toolbar">
+      {tab !== "Judge" && <div className="toolbar">
         <div className="statusline">
           {statusBadge}
           {run && (
@@ -165,7 +165,7 @@ export default function App() {
             <input className="num" type="number" value={equity} min={1000} step={1000} onChange={(e) => setEquity(Math.max(1000, Number(e.target.value)))} />
           </label>
         </div>
-      </div>
+      </div>}
 
       {tab !== "Judge" && (
         <div className="pagehead">
@@ -255,21 +255,21 @@ function VerdictView({ run, log, onInspect, onFocus }: { run: RunResult; log: st
         </div>
       </div>
 
-      <div className="grid g2">
+      <div className="grid">
         <div className={`card ${t ? "trade" : "noTrade"}`}>
           <h2>
             Practice trade — one atomic decision {t ? <Badge k="select">SELECT {t.dossier.symbol}</Badge> : <Badge k="reject">NO TRADE</Badge>}
           </h2>
           {t ? (
             <>
-              <div className="grid g4" style={{ gap: 10 }}>
+              <div className="grid g4 bigstats" style={{ gap: 10 }}>
                 <div><div className="stat-l">Entry</div><div className="stat">{fmtUsd(t.position.entry)}</div></div>
                 <div><div className="stat-l">Stop</div><div className="stat err">{fmtUsd(t.position.stop)}</div></div>
                 <div><div className="stat-l">Targets</div><div className="stat ok" style={{ fontSize: 17 }}>{t.position.targets.map((x) => fmtUsd(x.price)).join(" / ")}</div></div>
                 <div><div className="stat-l">Size</div><div className="stat">{t.position.portfolioPct}%</div></div>
               </div>
               <PriceLadder p={t.position} symbol={t.dossier.symbol} />
-              <div className="kv small" style={{ marginTop: 12 }}>
+              <div className="kv kv2 small" style={{ marginTop: 18 }}>
                 <div>Units / notional</div><div>{t.position.units} {t.dossier.symbol} · {fmtUsd(t.position.notionalUsd)}</div>
                 <div>Risk at stop</div><div>{fmtUsd(t.position.riskUsd)} ({((t.position.riskUsd / t.position.equityUsd) * 100).toFixed(2)}% of equity)</div>
                 <div>Stop basis</div><div>{t.position.stopBasis}</div>

@@ -6,7 +6,7 @@ import ledgerSnap from "../data/ledgerSnapshot.json";
 import battery from "../data/batteryReport.json";
 import witnesses from "../data/witnesses.json";
 import { Badge } from "./common";
-import { Icon } from "./icons";
+import { BuiltOn, HowItWorks, ProofTiles, VerdictConsole } from "./Overview";
 
 const TX = {
   vaultDeploy: "https://sepolia.etherscan.io/tx/0x4cca438a56f868df390340092d08f3e76716e1319ec4643a8b21d0143b82925a",
@@ -70,17 +70,24 @@ export function JudgeView({ run, go }: { run: RunResult | null; go: (tab: string
   return (
     <div className="grid" style={{ gap: 18 }}>
       <section className="hero">
-        <div className="eyebrow">/autonomous agents · chainlink cre · legaltech</div>
+        <div className="hero-pill"><span className="dot" /> Built for BLI Legal Tech Hackathon 2</div>
         <h2>An agent built on RYO, <em>not around it</em></h2>
         <p>
-          It reads all six RYO-CHAN MCP tools, checks them against exchanges, Chainlink Data Feeds and public evidence, argues both sides, obeys a compiled fiduciary mandate, and anchors every verdict on-chain through a Chainlink CRE workflow.
+          It reads all six RYO-CHAN MCP tools, checks them against exchanges, Chainlink Data Feeds and public evidence, argues both sides, obeys a compiled fiduciary mandate, and anchors every verdict on-chain.
         </p>
         <div className="cta">
           <button className="btn primary" onClick={() => go("Verdict")}>See the verdict</button>
           <button className="btn" onClick={() => go("Audit")}>Replay it yourself</button>
         </div>
+        {run && <VerdictConsole run={run} onOpen={() => go("Verdict")} />}
       </section>
 
+      <BuiltOn />
+
+      <div className="section-head"><div><div className="eyebrow">/how it works</div><h3>From evidence to a verdict you can check</h3></div></div>
+      <HowItWorks />
+
+      <div className="section-head"><div><div className="eyebrow">/numbers</div><h3>Measured, not claimed</h3></div></div>
       <div className="kpis">
         <div className="kpi">
           <div className="stat-l">/ryo tools this run</div>
@@ -89,28 +96,31 @@ export function JudgeView({ run, go }: { run: RunResult | null; go: (tab: string
         </div>
         <div className="kpi">
           <div className="stat-l">/attack battery</div>
-          <div className={`stat ${b.missedWithWitness ? "err" : ""}`}>{b.missedWithWitness}<span className="faint"> missed of {b.total}</span></div>
-          <div className="small muted">tamper attempts on ledger and trace</div>
+          <div className={`stat ${b.missedWithWitness ? "err" : ""}`}>{b.missedWithWitness}<span className="faint"> of {b.total}</span></div>
+          <div className="small muted">tamper attempts missed, ledger and trace</div>
         </div>
         <div className="kpi">
           <div className="stat-l">/mandate</div>
-          <div className="stat">{rt.ok ? "Fixpoint" : "Broken"}</div>
-          <div className="small muted">prose ⇄ AST round-trip, 16 anchored clauses</div>
+          <div className="stat">16<span className="faint"> clauses</span></div>
+          <div className="small muted">{rt.ok ? "prose ⇄ AST round-trip holds" : "round-trip broken"}, each anchored in law</div>
         </div>
         <div className="kpi">
           <div className="stat-l">/ledger head</div>
           <div className="stat">{headWitnessed ? "Witnessed" : "Advancing"}</div>
-          <div className="small muted">{headWitnessed ? "git · Bitcoin (OpenTimestamps)" : "the agent recorded runs since the last stamp"}</div>
+          <div className="small muted">{headWitnessed ? "git · Bitcoin block 973,943" : "runs recorded since the last stamp"}</div>
         </div>
       </div>
 
-      <div style={{ marginTop: 6 }}>
-        <a className="pill-link" href={TX.vaultDeploy} target="_blank" rel="noreferrer">Vault on Sepolia ↗</a>
-        <a className="pill-link" href={TX.creReport} target="_blank" rel="noreferrer">CRE report ↗</a>
-        <a className="pill-link" href={TX.chainlinkReport} target="_blank" rel="noreferrer">Chainlink-checked verdict ↗</a>
-        <a className="pill-link" href={TX.mandateActivation} target="_blank" rel="noreferrer">Mandate activation ↗</a>
-        <a className="pill-link" href={TX.x402} target="_blank" rel="noreferrer">x402 payment on Base ↗</a>
-      </div>
+      <div className="section-head"><div><div className="eyebrow">/on-chain</div><h3>Every claim has a transaction</h3></div></div>
+      <ProofTiles
+        tiles={[
+          { label: "Vault", sub: "Sepolia · deployed", href: TX.vaultDeploy },
+          { label: "CRE report", sub: "written by the workflow", href: TX.creReport },
+          { label: "Chainlink check", sub: "price verified in CRE", href: TX.chainlinkReport },
+          { label: "Mandate", sub: "activated by the owner", href: TX.mandateActivation },
+          { label: "x402", sub: "USDC settled on Base", href: TX.x402 },
+        ]}
+      />
 
       <div className="section-head"><div><div className="eyebrow">/ryo-chan · autonomous agents</div><h3>The official rubric, line by line</h3></div></div>
       <div className="card"><Table rows={ryo} /></div>
