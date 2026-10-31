@@ -18,7 +18,7 @@ export function LedgerView() {
   return (
     <div className="grid" style={{ gap: 14 }}>
       <div className="notice">
-        <b>Practice-trade ledger.</b> An autonomous loop (<span className="mono">scripts/run-agent.ts</span>) runs the full agent every hour on live RYO data and real feeds, and records every practice trade it would make. Later runs re-price open positions with fresh RYO prices and close them at the stop, the targets or the 72-hour time stop. Positions are marked only at observation points (each run): a level counts as hit only if an observed price is beyond it, and intra-hour highs and lows aren't seen. Stale runs and prices older than the position are ignored. No trade is ever executed.
+        <b>Practice-trade ledger.</b> An autonomous loop (<span className="mono">scripts/run-agent.ts</span>) runs the full agent every 15 minutes on live RYO data (paced to RYO’s rate limits) and real feeds, and records every practice trade it would make. Later runs re-price open positions with fresh RYO prices and close them at the stop, the targets or the 72-hour time stop. Positions are marked only at observation points (each run): a level counts as hit only if an observed price is beyond it, and highs and lows between runs aren't seen. Stale runs and prices older than the position are ignored. No trade is ever executed.
       </div>
       <div className="grid g4">
         <div className="card"><div className="stat-l">Agent runs recorded</div><div className="stat">{st.runs}</div><div className="small muted">{source}</div></div>

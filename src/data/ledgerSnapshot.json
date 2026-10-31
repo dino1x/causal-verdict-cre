@@ -11,6 +11,16 @@
       "i": 0,
       "prev": "0x0000000000000000000000000000000000000000000000000000000000000000",
       "hash": "0x88bb42ef14ec4964689af0302d748e4a1e04fda50f6171bde0537f8f2112046a"
+    },
+    {
+      "at": "2026-10-31T05:52:55Z",
+      "kind": "no_trade",
+      "symbol": null,
+      "detail": "no candidate satisfied the mandate — GROW: C5:min_turnover, C15:min_planes · AIN: C15:min_planes · BEAM: C4:min_confluence, C7:require_measurement, C8:require_measurement, C15:min_planes · OP: C4:min_confluence, C15:min_planes · SOL: C15:min_planes · PEPE: C7:require_measurement, C8:require_measurement, C15:min_planes",
+      "traceRoot": "0xab6ec996e180b083226b2a06f640fa69d69f2061a273fcaceba03465f9aaf0eb",
+      "i": 1,
+      "prev": "0x88bb42ef14ec4964689af0302d748e4a1e04fda50f6171bde0537f8f2112046a",
+      "hash": "0x7655b6c5db94a7fe58d2e816bf41e662b11fb18f1f0d179fbe2c0696a656de18"
     }
   ],
   "runs": [
@@ -23,6 +33,105 @@
       },
       "evidenceMode": "real",
       "decision": "NO TRADE"
+    },
+    {
+      "at": "2026-10-31T05:52:55Z",
+      "traceRoot": "0xab6ec996e180b083226b2a06f640fa69d69f2061a273fcaceba03465f9aaf0eb",
+      "provenance": {
+        "live": 17
+      },
+      "evidenceMode": "real",
+      "decision": "NO TRADE",
+      "candidates": [
+        {
+          "symbol": "GROW",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C5:min_turnover",
+              "observed": "GROW: turnover 0.0030 < 0.05; a stop could not be filled near its modeled price."
+            },
+            {
+              "gate": "C15:min_planes",
+              "observed": "GROW: only 0 of 2 required independent planes support entry."
+            }
+          ]
+        },
+        {
+          "symbol": "AIN",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C15:min_planes",
+              "observed": "AIN: only 0 of 2 required independent planes support entry."
+            }
+          ]
+        },
+        {
+          "symbol": "BEAM",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C4:min_confluence",
+              "observed": "BEAM: no measured confluence, so the minimum 0.6 cannot be shown to hold."
+            },
+            {
+              "gate": "C7:require_measurement",
+              "observed": "BEAM: RYO returned rsi_14=null; a missing measurement is not treated as neutral."
+            },
+            {
+              "gate": "C8:require_measurement",
+              "observed": "BEAM: RYO returned atr_14_pct=null; a missing measurement is not treated as neutral."
+            },
+            {
+              "gate": "C15:min_planes",
+              "observed": "BEAM: only 1 of 2 required independent planes support entry."
+            }
+          ]
+        },
+        {
+          "symbol": "OP",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C4:min_confluence",
+              "observed": "OP: no measured confluence, so the minimum 0.6 cannot be shown to hold."
+            },
+            {
+              "gate": "C15:min_planes",
+              "observed": "OP: only 0 of 2 required independent planes support entry."
+            }
+          ]
+        },
+        {
+          "symbol": "SOL",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C15:min_planes",
+              "observed": "SOL: only 1 of 2 required independent planes support entry."
+            }
+          ]
+        },
+        {
+          "symbol": "PEPE",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C7:require_measurement",
+              "observed": "PEPE: RYO returned rsi_14=null; a missing measurement is not treated as neutral."
+            },
+            {
+              "gate": "C8:require_measurement",
+              "observed": "PEPE: RYO returned atr_14_pct=null; a missing measurement is not treated as neutral."
+            },
+            {
+              "gate": "C15:min_planes",
+              "observed": "PEPE: only 1 of 2 required independent planes support entry."
+            }
+          ]
+        }
+      ]
     }
   ]
 }
