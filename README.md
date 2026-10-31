@@ -4,6 +4,8 @@
 
 BLI Legal Tech Hackathon 2 · RYO-CHAN *Autonomous Agents* · Chainlink *Best workflow with CRE* · BLI LegalTech main track
 
+**▶ [Watch the 3-minute demo](https://youtu.be/jbMXgzRpYY4)** · **[Open the live app](https://causalverdict.site)** · **[Static replay](https://dino1x.github.io/causal-verdict-cre/)**
+
 > Practice trades only. This is research tooling, not financial advice. RYO-CHAN MCP is read-only, and nothing in this repo places, approves or executes a trade.
 
 ---
