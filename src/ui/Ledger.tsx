@@ -82,7 +82,7 @@ function WitnessList({ head }: { head: string }) {
 
 export function LedgerView() {
   const [ledger, setLedger] = useState<Ledger>(bundled as unknown as Ledger);
-  const [source, setSource] = useState("bundled snapshot (src/data/ledgerSnapshot.json)");
+  const [source, setSource] = useState("committed by the agent Action (src/data/ledgerSnapshot.json)");
   useEffect(() => {
     fetch("/api/ledger")
       .then((r) => (r.ok ? r.json() : null))
@@ -94,7 +94,7 @@ export function LedgerView() {
   return (
     <div className="grid" style={{ gap: 14 }}>
       <div className="notice">
-        <b>Recorded live.</b> The agent runs every 15 minutes on live RYO data and records each practice trade, closing it at the stop, a target or after 72 hours. Nothing is executed.
+        <b>Recorded live.</b> A scheduled GitHub Action runs the agent on live RYO data and records each practice trade, closing it at the stop, a target or after 72 hours. Nothing is executed.
       </div>
       <div className="grid g4">
         <div className="card"><div className="stat-l">Agent runs recorded</div><div className="stat">{st.runs}</div><div className="small muted">{source}</div></div>
