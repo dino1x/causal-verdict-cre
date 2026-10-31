@@ -4,6 +4,7 @@ import { createServer } from "node:http";
 import { readFile, stat } from "node:fs/promises";
 import { extname, join, normalize } from "node:path";
 import { handleApi } from "./api";
+import { startLiveLedger, witnessUrl } from "./liveLedger";
 
 const DIST = join(process.cwd(), "dist");
 const WITNESS = join(process.cwd(), "witness"); // published ledger heads, Bitcoin proofs, Sigstore bundles
@@ -18,6 +19,9 @@ createServer(async (req, res) => {
   try {
     if (!(await stat(file)).isFile()) file = join(DIST, "index.html");
   } catch {
+    // A head witnessed after this deploy: its proof files are in the repo at the commit the ledger is served from.
+    const remote = path.startsWith("/witness/") ? witnessUrl(path.slice("/witness/".length)) : null;
+    if (remote) return void res.writeHead(302, { Location: remote }).end();
     file = join(DIST, "index.html");
   }
   try {
@@ -32,4 +36,7 @@ createServer(async (req, res) => {
 // 10 minutes comes back in through Render's edge, which counts as traffic, so a judge never waits for a cold start.
 // Render sets RENDER_EXTERNAL_URL itself; locally it is absent and nothing runs.
 const SELF = process.env.RENDER_EXTERNAL_URL;
+
+// On the hosted app (or with LIVE_LEDGER=1), follow the agent's ledger commits on GitHub; see liveLedger.ts.
+if (SELF || process.env.LIVE_LEDGER === "1") startLiveLedger();
 if (SELF) setInterval(() => fetch(`${SELF}/api/health`, { signal: AbortSignal.timeout(20_000) }).catch(() => {}), 10 * 60_000).unref();

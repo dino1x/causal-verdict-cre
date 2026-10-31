@@ -13,6 +13,7 @@ import type { RyoResult, RyoTool } from "../src/engine/ryo";
 import { sha256Hex } from "./hash";
 import { collectFeeds, DEFAULT_TG_VOICES } from "./feeds";
 import { claudeDebate } from "./llmDebate";
+import { liveLedger } from "./liveLedger";
 import { canonical } from "../src/engine/ryo";
 import { runPipeline, type EvidenceProvider, type Fixtures, type FeedSource } from "../src/engine/pipeline";
 import { DEFAULT_MANDATE, compile } from "../src/engine/legalAstCompiler";
@@ -335,12 +336,14 @@ export async function handleApi(req: IncomingMessage, res: ServerResponse): Prom
       return true;
     }
     if (url.pathname === "/api/ledger" && req.method === "GET") {
+      // A developer running the agent locally has data/ledger.json; the hosted app serves the verified GitHub copy.
       const path = join(process.cwd(), "data/ledger.json");
+      let local: unknown = null;
       try {
-        send(res, 200, { source: "live ledger (data/ledger.json)", ledger: JSON.parse(readFileSync(path, "utf8")) });
-      } catch {
-        send(res, 404, { error: "no live ledger yet — run scripts/run-agent.ts" });
-      }
+        local = JSON.parse(readFileSync(path, "utf8"));
+      } catch {}
+      if (local) send(res, 200, { source: "local agent ledger (data/ledger.json)", ledger: local });
+      else send(res, 200, liveLedger());
       return true;
     }
     if (url.pathname === "/api/health" && req.method === "GET") {

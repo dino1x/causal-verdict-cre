@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { ledgerHead, ledgerStats, verifyLedger, type Ledger } from "../engine/ledger";
 import battery from "../data/batteryReport.json";
-import witnesses from "../data/witnesses.json";
+import bundledWitnesses from "../data/witnesses.json";
 import { fmtUsd } from "../engine/ryo";
 import bundled from "../data/ledgerSnapshot.json";
 import { Badge, short } from "./common";
+
+type Witness = { at: string; head: string; runs: number; events: number; file: string };
 
 type Tamper = { label: string; mutate: (l: Ledger) => void };
 const TAMPERS: Tamper[] = [
@@ -14,7 +16,7 @@ const TAMPERS: Tamper[] = [
   { label: "Delete the latest run (truncation)", mutate: (l) => { l.runs.pop(); } },
 ];
 
-function VerifyPanel({ ledger }: { ledger: Ledger }) {
+function VerifyPanel({ ledger, witnesses }: { ledger: Ledger; witnesses: Witness[] }) {
   const head = ledgerHead(ledger);
   const [check, setCheck] = useState<string | null>(null);
   const [tamper, setTamper] = useState<{ label: string; chain: string; head: string } | null>(null);
@@ -42,7 +44,7 @@ function VerifyPanel({ ledger }: { ledger: Ledger }) {
       </div>
       {check && <p className="small" style={{ marginTop: 8 }}><Badge k={check.startsWith("verified") ? "pass" : "fail"}>{check.split(" — ")[0]}</Badge> {check.split(" — ")[1]}</p>}
       {tamper && <p className="small" style={{ marginTop: 8 }}><b>{tamper.label}</b> on a private copy → {tamper.chain}{tamper.head === "caught" ? "." : `, ${tamper.head}.`}</p>}
-      <WitnessList head={head} />
+      <WitnessList head={head} witnesses={witnesses} />
       <p className="small" style={{ marginTop: 10 }}>
         <b>Attack battery</b> <Badge k={b.missedWithWitness ? "fail" : "pass"}>{b.missedWithWitness} missed of {b.total}</Badge> Every edit, deletion and swap breaks the chain; truncation and full re-hashing are caught by the published head.
       </p>
@@ -50,8 +52,7 @@ function VerifyPanel({ ledger }: { ledger: Ledger }) {
   );
 }
 
-function WitnessList({ head }: { head: string }) {
-  const w = witnesses as { at: string; head: string; runs: number; events: number; file: string }[];
+function WitnessList({ head, witnesses: w }: { head: string; witnesses: Witness[] }) {
   const last = w[w.length - 1];
   const idx = w.findIndex((x) => x.head === head);
   return (
@@ -82,11 +83,18 @@ function WitnessList({ head }: { head: string }) {
 
 export function LedgerView() {
   const [ledger, setLedger] = useState<Ledger>(bundled as unknown as Ledger);
+  const [witnesses, setWitnesses] = useState<Witness[]>(bundledWitnesses as Witness[]);
   const [source, setSource] = useState("committed by the agent Action (src/data/ledgerSnapshot.json)");
   useEffect(() => {
+    // The hosted server follows the agent's commits on GitHub; the ledger and its witness list come from one commit.
     fetch("/api/ledger")
       .then((r) => (r.ok ? r.json() : null))
-      .then((j) => j && (setLedger(j.ledger), setSource(j.source)))
+      .then((j) => {
+        if (!j?.ledger) return;
+        setLedger(j.ledger);
+        setSource(j.source);
+        if (Array.isArray(j.witnesses)) setWitnesses(j.witnesses);
+      })
       .catch(() => {});
   }, []);
   const st = ledgerStats(ledger);
@@ -102,7 +110,7 @@ export function LedgerView() {
         <div className="card"><div className="stat-l">Realized P&amp;L · avg R</div><div className={`stat ${st.realizedPnlUsd >= 0 ? "ok" : "err"}`}>{fmtUsd(st.realizedPnlUsd)}</div><div className="small muted">avg {st.avgR ?? "—"}R · win rate {st.winRate === null ? "—" : `${(st.winRate * 100).toFixed(0)}%`}</div></div>
         <div className="card"><div className="stat-l">Ledger hash chain</div><div className="row" style={{ marginTop: 6 }}><Badge k={v.ok ? "pass" : "fail"}>{v.ok ? `${ledger.events.length} events · ${ledger.runs.length} runs verify` : `${v.part} ${v.brokenAt} broken`}</Badge></div></div>
       </div>
-      <VerifyPanel ledger={ledger} />
+      <VerifyPanel ledger={ledger} witnesses={witnesses} />
       <div className="card">
         <h2>Positions</h2>
         <div className="scroll">
