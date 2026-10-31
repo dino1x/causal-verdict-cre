@@ -20,3 +20,6 @@ docs/
 
 # OpenTimestamps upgrade backups
 *.ots.bak
+
+# demo video renders
+*.mp4
