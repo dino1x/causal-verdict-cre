@@ -91,6 +91,9 @@ The bounty asks agents to *record the practice trades they would make*. An auton
 ### 3 · Real thinking (`src/engine/decision.ts`)
 Bull and Bear agents argue from the *same* evidence. Every argument cites the exact field it rests on (e.g. `deep_analysis(SOL).data.technical_analysis.rsi_14 = 29.4`). The **Judge has no discretion over the mandate**: a failed binding clause rejects the trade however good the bull case sounds. For each rejection it lists the formal counterexample and "what would change the ruling".
 
+### 3b · Claude analyst debate (`server/llmDebate.ts`, Debate tab)
+Claude Opus 5.5 argues Bull and Bear from the **same structured evidence** the deterministic agents use, then writes the causal story and "what would change my mind". It returns structured output through a Zod schema. Every claim must cite one path from an allow-list built from the run's evidence fields; claims that cite anything else are **dropped and counted**. The analysis is **advisory**: the mandate-bound Judge still decides, so the hash-chained run and its replay are unaffected. Each response is SHA-256 hashed so it can be filed with the decision. The call runs server-side (`ANTHROPIC_API_KEY` never reaches the browser), and a refused request is checked rather than shown as analysis. Static hosting has no analyst; the panel says so.
+
 ### 4 · Atomic execution plan
 Entry, size, stop and exits are one object. RYO's ATR-14 `trade_plan` is the starting point, then mandate clauses apply: risk % per trade, max position, `max(entry − k·ATR, entry·(1 − cap))` stop, and regime scaling. Two dip tranches (60% at entry, 40% half an ATR lower), 50/50 exits at 1R/2R, a 72-hour time stop.
 
@@ -182,7 +185,8 @@ cre workflow simulate ./causal-verdict --target staging-settings --env ../.env -
 | Real-feed evidence: linked sources, no look-ahead, deterministic replay | ✅ `npm test` |
 | Ledger: open → target 1 → breakeven stop, stale runs ignored, tamper detection | ✅ `npm test` |
 | **Official `cre workflow simulate` (CLI v1.39.0), both triggers** | ✅ `cre-workflow/simulation-cre-cli-{http,cron}.log`. Compile → Vault-DON secret → Confidential HTTP to RYO → mandate → signed report → `writeReport` (`txStatus=SUCCESS`, dry run). In both runs RYO's `deep_analysis` (~30–33s) exceeded the **simulator's** fixed 30s Confidential HTTP client timeout, which ignores the requested 80s. The workflow fell back to `analyze_token` and correctly **rejected** SOL on the missing confluence (C4). The production limit is 90s. |
-| Sepolia deployment of the vault | ⏳ not deployed; set `VAULT_ADDRESS` and regenerate config |
+| Claude analyst debate on live run data | ✅ SOL: 15 claims, 0 dropped against 37 allowed citation paths (Debate tab) |
+| Sepolia deployment of the vault | ⏳ not deployed yet. `npx tsx scripts/deploy-vault.ts` (dry run), then `--broadcast`; it writes the address into the CRE config and `contracts/deployment.sepolia.json` |
 
 ---
 
@@ -192,7 +196,7 @@ cre workflow simulate ./causal-verdict --target staging-settings --env ../.env -
 src/engine/        ryo.ts · evidence.ts · decision.ts · legalAstCompiler.ts · pipeline.ts · creCodegen.ts · snapshotFetcher.ts
 src/ui/            Verdict (App.tsx) · Causality · Debate · Mandate · Cre · Audit
 src/data/          ryoLiveSnapshots.json (real RYO) · feedSnapshots.json (real feeds) · scenarioFixtures.ts (fictional, labelled)
-server/            api.ts (RYO proxy, circuit breaker, chaos, x402 gateway, /api/feeds) · feeds.ts (on-chain, Whale Alert, RSS, Telegram) · serve.ts
+server/            api.ts (RYO proxy, circuit breaker, chaos, x402 gateway, /api/feeds, /api/ai/debate) · llmDebate.ts · feeds.ts (on-chain, Whale Alert, RSS, Telegram) · serve.ts
 cre-workflow/      project.yaml · secrets.yaml · causal-verdict/{main.ts, logic.ts, config.staging.json, workflow.yaml} · simulate.ts
 contracts/         CausalVerdictVault.sol · out/CausalVerdictVault.json
 scripts/           capture-ryo.mjs · ryoClient.mjs · selftest.ts · compile-contract.mjs · gen-cre-config.ts · check-secrets.mjs
@@ -208,6 +212,7 @@ scripts/           capture-ryo.mjs · ryoClient.mjs · selftest.ts · compile-co
 | `npm run capture` | Re-capture fresh RYO snapshots (all 6 tools, needs key), then real feeds for the same reference time |
 | `npm test` | Offline invariants: compiler, replay, tamper, null handling, real-feed provenance, ledger |
 | `npx tsx scripts/run-agent.ts --every=60` | Autonomous loop: live agent → practice-trade ledger |
+| `npx tsx scripts/deploy-vault.ts [--broadcast]` | Deploy the vault to Sepolia (`SEPOLIA_PRIVATE_KEY` from `.env`) |
 | `npm run check:secrets` | Fails if any credential is in a shippable file |
 
 ## Disclosures
