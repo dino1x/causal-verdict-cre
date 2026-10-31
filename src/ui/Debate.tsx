@@ -126,7 +126,12 @@ function ClaudeAnalyst({ run, d }: { run: RunResult; d: TokenDossier }) {
       const r = await fetch("/api/ai/debate", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
       setRes(await r.json());
     } catch (err) {
-      setRes({ ok: false, error: `server unreachable (${(err as Error).message}) — static hosting has no Claude analyst` });
+      setRes({
+        ok: false,
+        error: location.hostname.endsWith("github.io")
+          ? "This static replay has no server, so no Claude analyst. Open https://causalverdict.site to run it."
+          : `Could not reach the server (${(err as Error).message}). Check the connection and run it again.`,
+      });
     }
     setState("idle");
   };

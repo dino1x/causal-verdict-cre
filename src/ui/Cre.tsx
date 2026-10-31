@@ -6,6 +6,16 @@ import { DEFAULT_GEN, generateCreConfig, generateGateSource, mandateHash } from 
 import type { RunResult } from "../engine/pipeline";
 import { Badge, download, short } from "./common";
 import mainTs from "../../cre-workflow/causal-verdict/main.ts?raw";
+
+/** One more attempt after a network error (not after an HTTP answer): a dropped packet should not end a demo. */
+async function fetchOnceMore(url: string, init?: RequestInit): Promise<Response> {
+  try {
+    return await fetch(url, init);
+  } catch {
+    await new Promise((r) => setTimeout(r, 1500));
+    return fetch(url, init);
+  }
+}
 import contractSol from "../../contracts/CausalVerdictVault.sol?raw";
 
 const simLogs = import.meta.glob("../../cre-workflow/simulation-*.log", { query: "?raw", import: "default", eager: true }) as Record<string, string>;
@@ -57,8 +67,9 @@ function X402Demo({ mandate }: { mandate: string }) {
   const [symbol, setSymbol] = useState("SOL");
   const [info, setInfo] = useState<{ settles: boolean; demoPayer: string | null } | null>(null);
   const [settledTx, setSettledTx] = useState<string | null>(null);
+  const loadInfo = () => fetchOnceMore("/api/agent/x402-info").then((r) => (r.ok ? r.json() : null)).catch(() => null);
   useEffect(() => {
-    fetch("/api/agent/x402-info").then((r) => (r.ok ? r.json() : null)).then(setInfo).catch(() => setInfo(null));
+    loadInfo().then(setInfo);
   }, []);
   const go = async () => {
     setBusy(true);
@@ -69,20 +80,24 @@ function X402Demo({ mandate }: { mandate: string }) {
       setSteps([...s]);
     };
     try {
+      // If the wallet info missed the page load (a network blip), fetch it now rather than fall back to an unfunded wallet.
+      const inf = info ?? (await loadInfo());
+      if (inf && !info) setInfo(inf);
       const body = JSON.stringify({ symbol, mandate });
-      const r1 = await fetch("/api/agent/verdict", { method: "POST", headers: { "Content-Type": "application/json" }, body });
+      // The unpaid probe is safe to repeat; the paid request below never is.
+      const r1 = await fetchOnceMore("/api/agent/verdict", { method: "POST", headers: { "Content-Type": "application/json" }, body });
       const req = await r1.json();
       push(`1 · POST /api/agent/verdict → HTTP ${r1.status} Payment Required`, req, r1.status === 402 ? "warn" : "err");
       if (r1.status !== 402) return;
       const a = req.accepts[0];
       let payment: unknown;
-      if (info?.demoPayer) {
+      if (inf?.demoPayer) {
         // The server's demo agent wallet holds test USDC, so this payment settles on Base Sepolia.
         const d = await fetch("/api/agent/demo-sign", { method: "POST" });
         const dj = await d.json();
         if (!d.ok) throw new Error(dj.error ?? `demo wallet HTTP ${d.status}`);
         payment = dj;
-        push(`2 · Demo agent ${short(info.demoPayer, 8)} signs EIP-3009 TransferWithAuthorization (${Number(a.maxAmountRequired) / 1e6} USDC)`, payment);
+        push(`2 · Demo agent ${short(inf.demoPayer, 8)} signs EIP-3009 TransferWithAuthorization (${Number(a.maxAmountRequired) / 1e6} USDC)`, payment);
       } else {
       // No funded wallet on this server: an ephemeral wallet proves the signing flow; nothing settles.
       const account = privateKeyToAccount(generatePrivateKey());
@@ -101,7 +116,11 @@ function X402Demo({ mandate }: { mandate: string }) {
       const r2 = await fetch("/api/agent/verdict", { method: "POST", headers: { "Content-Type": "application/json", "X-PAYMENT": btoa(JSON.stringify(payment)) }, body });
       const out = await r2.json();
       const receipt = r2.headers.get("X-PAYMENT-RESPONSE");
-      push(`3 · Retry with X-PAYMENT → HTTP ${r2.status}`, { verdict: out.decision, symbol: out.symbol, reason: out.reason, position: out.position, traceRoot: out.traceRoot, mandateHash: out.mandateHash }, r2.ok ? "ok" : "err");
+      push(
+        `3 · Retry with X-PAYMENT → HTTP ${r2.status}`,
+        out.error ? out : { verdict: out.decision, symbol: out.symbol, reason: out.reason, position: out.position, traceRoot: out.traceRoot, mandateHash: out.mandateHash },
+        r2.ok && !out.error ? "ok" : "err",
+      );
       if (receipt) {
         const rc = JSON.parse(atob(receipt));
         if (rc.transaction) setSettledTx(rc.transaction);
@@ -111,7 +130,13 @@ function X402Demo({ mandate }: { mandate: string }) {
       const r3 = await fetch("/api/agent/verdict", { method: "POST", headers: { "Content-Type": "application/json", "X-PAYMENT": btoa(JSON.stringify(payment)) }, body });
       push(`6 · Replaying the same payment → HTTP ${r3.status}`, await r3.json(), r3.status === 402 ? "ok" : "err");
     } catch (e) {
-      push("Gateway unreachable", String(e) + " — run `npm run dev` or `npm start` (static hosting has no server).", "err");
+      push(
+        location.hostname.endsWith("github.io") ? "No server on static hosting" : "Could not reach the server",
+        location.hostname.endsWith("github.io")
+          ? "This static replay has no x402 gateway. Open the live app at https://causalverdict.site, or run `npm start`."
+          : `${(e as Error).message}. Check the connection and press the button again.`,
+        "err",
+      );
     } finally {
       setBusy(false);
     }
@@ -122,7 +147,7 @@ function X402Demo({ mandate }: { mandate: string }) {
       <div className="row">
         <label className="inline">symbol <input className="num" value={symbol} onChange={(e) => setSymbol(e.target.value.toUpperCase())} /></label>
         <button className="btn primary" onClick={go} disabled={busy}>{busy ? "Negotiating…" : "Run as paying AI agent"}</button>
-        <span className="small muted">{info?.demoPayer && info.settles ? "Base Sepolia USDC · settles on-chain · replays refused" : "Base Sepolia USDC · signature verified · replays refused · no funded wallet on this server"}</span>
+        <span className="small muted">{!info ? "Base Sepolia USDC · replays refused" : info.demoPayer && info.settles ? "Base Sepolia USDC · settles on-chain · replays refused" : "Base Sepolia USDC · signature verified · replays refused · no funded wallet on this server"}</span>
       </div>
       {settledTx && (
         <p className="small" style={{ marginTop: 10 }}>

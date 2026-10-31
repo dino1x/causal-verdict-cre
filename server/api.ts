@@ -26,7 +26,7 @@ const FEED_SNAP: Fixtures & { referenceTime: string; captured_at: string; source
 function realEvidence(live: boolean): EvidenceProvider {
   return async (tokens, ref) => {
     if (live) {
-      const b = await collectFeeds(tokens, ref ?? new Date().toISOString(), DEFAULT_TG_VOICES);
+      const b = await collectFeeds(tokens, ref ?? new Date().toISOString(), DEFAULT_TG_VOICES, 25_000);
       return { mode: "real", fixtures: b, sources: b.sources };
     }
     if (FEED_SNAP.referenceTime === ref) return { mode: "real", fixtures: FEED_SNAP, sources: FEED_SNAP.sources.map((x) => ({ ...x, detail: `${x.detail} [captured ${FEED_SNAP.captured_at}]` })) };
@@ -223,8 +223,8 @@ function send(res: ServerResponse, status: number, body: unknown, headers: Recor
 
 /** For slow work (Claude, feed collection): send headers now and a space every 10 s so proxies never cut an idle
  *  connection, then the JSON. Leading whitespace is valid JSON; errors arrive in the body, since the status is already 200. */
-async function sendSlow(res: ServerResponse, work: () => Promise<unknown>, onError: (e: any) => unknown) {
-  res.writeHead(200, { "Content-Type": "application/json", "Cache-Control": "no-store", "X-Accel-Buffering": "no" });
+async function sendSlow(res: ServerResponse, work: () => Promise<unknown>, onError: (e: any) => unknown, headers: Record<string, string> = {}) {
+  res.writeHead(200, { "Content-Type": "application/json", "Cache-Control": "no-store", "X-Accel-Buffering": "no", ...headers });
   res.write(" ");
   const beat = setInterval(() => res.write(" "), 10_000);
   let body: unknown;
@@ -285,21 +285,19 @@ export async function handleApi(req: IncomingMessage, res: ServerResponse): Prom
       const symbol = String(body.symbol ?? "SOL").toUpperCase();
       const { ast } = compile(body.mandate ?? DEFAULT_MANDATE);
       if (!ast) return send(res, 422, { error: "mandate does not compile" }), true;
-      const live = !!(body.live && process.env.RYO_MCP_KEY);
-      const run = await runPipeline({
-        fetcher: live ? (t, a) => proxyCall(t, a, null) : snapshotFetcher(SNAP),
-        mandateProse: body.mandate ?? DEFAULT_MANDATE,
-        equityUsd: Number(body.equityUsd ?? 100000),
-        evidence: realEvidence(live),
-      });
-      const d = run.dossiers.find((x) => x.symbol === symbol);
       const receipt = settle?.ok
         ? { success: true, settled: true, transaction: settle.transaction, network: X402.network, payer: pay.payer, amountUsdc6: pay.value.toString(), nonce: pay.nonce, explorer: `https://sepolia.basescan.org/tx/${settle.transaction}` }
         : { success: true, settled: false, network: X402.network, payer: pay.payer, amountUsdc6: pay.value.toString(), nonce: pay.nonce, note: "EIP-712 authorization verified; settlement is off (set X402_SETTLE=1 to settle through the facilitator)." };
-      send(
-        res,
-        200,
-        {
+      const live = !!(body.live && process.env.RYO_MCP_KEY);
+      await sendSlow(res, async () => {
+        const run = await runPipeline({
+          fetcher: live ? (t, a) => proxyCall(t, a, null) : snapshotFetcher(SNAP),
+          mandateProse: body.mandate ?? DEFAULT_MANDATE,
+          equityUsd: Number(body.equityUsd ?? 100000),
+          evidence: realEvidence(live),
+        });
+        const d = run.dossiers.find((x) => x.symbol === symbol);
+        return {
           symbol,
           decision: d?.judgment.decision ?? "REJECT",
           reason: d ? d.judgment.reasoning : [`${symbol} is not in this run's candidate universe (${run.universe.join(", ")})`],
@@ -311,11 +309,10 @@ export async function handleApi(req: IncomingMessage, res: ServerResponse): Prom
           evidenceMode: run.evidenceMode,
           feeds: run.feedSources.map((f) => ({ feed: f.feed, target: f.target, ok: f.ok, items: f.items })),
           creHttpTriggerPayload: d
-            ? { symbol, evidence: { exitLiquidityTrap: d.whale.trap, toutingFlag: d.gates.some((g) => g.kind === "anti_touting" && g.outcome === "fail"), supportingPlanes: d.planes.length, traceRoot: run.trace.root }, x402: { payer: pay.payer, amountUsdc6: pay.value.toString(), nonce: pay.nonce, verified: true } }
-            : null,
-        },
-        { "X-PAYMENT-RESPONSE": Buffer.from(JSON.stringify(receipt)).toString("base64") },
-      );
+              ? { symbol, evidence: { exitLiquidityTrap: d.whale.trap, toutingFlag: d.gates.some((g) => g.kind === "anti_touting" && g.outcome === "fail"), supportingPlanes: d.planes.length, traceRoot: run.trace.root }, x402: { payer: pay.payer, amountUsdc6: pay.value.toString(), nonce: pay.nonce, verified: true } }
+              : null,
+          };
+      }, (e) => ({ error: `verdict failed after payment: ${String(e?.message ?? e).slice(0, 200)}`, receipt }), { "X-PAYMENT-RESPONSE": Buffer.from(JSON.stringify(receipt)).toString("base64") });
       return true;
     }
     if (url.pathname === "/api/feeds" && req.method === "POST") {
@@ -323,7 +320,7 @@ export async function handleApi(req: IncomingMessage, res: ServerResponse): Prom
       if (!Array.isArray(tokens) || !tokens.length || tokens.length > 12) return send(res, 400, { error: "tokens[] (1-12) required" }), true;
       const ref = typeof referenceTime === "string" && Number.isFinite(Date.parse(referenceTime)) ? referenceTime : new Date().toISOString();
       const ch = Array.isArray(channels) ? channels.filter((c: unknown) => typeof c === "string" && /^[A-Za-z0-9_]{4,32}$/.test(c)).slice(0, 20) : undefined;
-      await sendSlow(res, () => collectFeeds(tokens, ref, ch), (e) => ({ error: String(e?.message ?? e).slice(0, 300) }));
+      await sendSlow(res, () => collectFeeds(tokens, ref, ch, 25_000), (e) => ({ error: String(e?.message ?? e).slice(0, 300) }));
       return true;
     }
     if (url.pathname === "/api/ai/debate" && req.method === "GET") {

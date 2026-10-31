@@ -362,21 +362,41 @@ async function telegramVoices(channels: string[], tokens: FeedToken[], refSec: n
   return { voices, posts, primaryNews };
 }
 
-export async function collectFeeds(tokens: FeedToken[], referenceTime: string, channels: string[] = DEFAULT_TG_VOICES): Promise<FeedBundle> {
+/** Interactive callers pass a deadline: a source that has not answered by then is recorded as timed out and left out
+ *  of this run (never filled in), so one slow public endpoint cannot hold a judge's run for a minute. */
+export async function collectFeeds(tokens: FeedToken[], referenceTime: string, channels: string[] = DEFAULT_TG_VOICES, deadlineMs = 0): Promise<FeedBundle> {
   const refSec = Math.floor(Date.parse(referenceTime) / 1000);
   const sources: FeedSource[] = [];
+  let closed = false;
+  const live: FeedSource[] = new Proxy(sources, {
+    get: (arr, k) => (k === "push" ? (...xs: FeedSource[]) => (closed ? arr.length : arr.push(...xs)) : Reflect.get(arr, k)),
+  });
+  const timed = <T,>(feed: FeedSource["feed"], target: string, empty: T, work: Promise<T>): Promise<T> =>
+    !deadlineMs
+      ? work
+      : Promise.race([
+          work,
+          new Promise<T>((res) =>
+            setTimeout(() => {
+              if (!closed) sources.push({ feed, target, ok: false, items: 0, detail: `no answer within ${deadlineMs / 1000}s; left out of this run` });
+              res(empty);
+            }, deadlineMs),
+          ),
+        ]);
+  const syms = tokens.map((t) => t.symbol).join(",");
   const [onchain, wa, nw, tg, tv, markets] = await Promise.all([
-    (async () => {
+    timed("onchain", syms, [] as WhaleEvent[], (async () => {
       const all: WhaleEvent[] = [];
-      for (const t of tokens) all.push(...(await onchainWhales(t, refSec, sources))); // sequential: gentle on public RPCs
+      for (const t of tokens) all.push(...(await onchainWhales(t, refSec, live))); // sequential: gentle on public RPCs
       return all;
-    })(),
-    whaleAlert(tokens.map((t) => t.symbol), refSec, sources),
-    news(tokens, refSec, sources),
-    telegramVoices(channels, tokens, refSec, sources),
-    tavily(tokens, refSec, sources),
-    collectMarkets(tokens.map((t) => t.symbol), referenceTime, sources),
+    })()),
+    timed("whale_alert", "t.me/whale_alert_io", [] as WhaleEvent[], whaleAlert(tokens.map((t) => t.symbol), refSec, live)),
+    timed("rss", syms, [] as NewsItem[], news(tokens, refSec, live)),
+    timed("telegram", channels.join(","), { voices: [], posts: [], primaryNews: [] } as Awaited<ReturnType<typeof telegramVoices>>, telegramVoices(channels, tokens, refSec, live)),
+    timed("tavily", syms, [] as NewsItem[], tavily(tokens, refSec, live)),
+    timed("exchange", syms, [] as Awaited<ReturnType<typeof collectMarkets>>, collectMarkets(tokens.map((t) => t.symbol), referenceTime, live)),
   ]);
+  closed = true;
   const byKey = (a: { id: string }, b: { id: string }) => a.id.localeCompare(b.id);
   sources.sort((a, b) => (a.feed + a.target).localeCompare(b.feed + b.target));
   return { referenceTime, voices: tg.voices, posts: tg.posts.sort(byKey), whales: [...onchain, ...wa].sort(byKey), news: [...nw, ...tg.primaryNews, ...tv].sort(byKey), markets, sources };
