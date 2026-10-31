@@ -89,7 +89,7 @@ export default function App() {
     status === null && !statusChecked ? (
       <Badge k="snapshot">checking the RYO proxy…</Badge>
     ) : status === null ? (
-      <Badge k="snapshot">static mode · bundled RYO snapshots</Badge>
+      <span className="row" style={{ gap: 6 }}><Badge k="snapshot">static replay · bundled RYO snapshots</Badge><a href="https://causal-verdict-cre.onrender.com" target="_blank" rel="noreferrer">Open the live app ↗</a></span>
     ) : status.configured && status.whoami?.error ? (
       <Badge k="partial" title={status.whoami.error}>proxy ✓ · RYO unreachable now → snapshot fallback</Badge>
     ) : status.configured ? (

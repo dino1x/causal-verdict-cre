@@ -10,6 +10,9 @@ BLI Legal Tech Hackathon 2 · RYO-CHAN *Autonomous Agents* · Chainlink *Best wo
 
 ## Judge path (3 minutes)
 
+**Live app:** https://causal-verdict-cre.onrender.com (full server: live RYO, Claude analyst, x402 payments that settle on Base Sepolia) · **Static replay:** https://dino1x.github.io/causal-verdict-cre/ · **Repo:** https://github.com/dino1x/causal-verdict-cre
+
+
 **Built on RYO, not around it.** Every decision comes from RYO-CHAN MCP's six tools (`market_overview`, `monitor_market_sentiment_shift`, `scan_market`, `compare_tokens`, `analyze_token`, `deep_analysis`), called through a server proxy that keeps the key off the browser. Without a key, the app replays 17 real captured RYO responses, hashed and labelled. The app opens on a **Judge** tab that mirrors this section, with a "Show me" button on every row.
 
 **On-chain proofs and a Bitcoin timestamp**
@@ -19,7 +22,7 @@ BLI Legal Tech Hackathon 2 · RYO-CHAN *Autonomous Agents* · Chainlink *Best wo
 | Vault deployed on Sepolia, bound to the mandate hash | [deploy tx](https://sepolia.etherscan.io/tx/0x4cca438a56f868df390340092d08f3e76716e1319ec4643a8b21d0143b82925a) · [vault](https://sepolia.etherscan.io/address/0xb86d25cd0317de545c8573f040a589c34a093544) |
 | CRE workflow wrote a verdict on-chain (`cre workflow simulate --broadcast`) | [report tx](https://sepolia.etherscan.io/tx/0xea20a213693990660226b817c94b85ea4c1b6e7bc66c409e5fb4d36797c81cc6) · `npx tsx scripts/read-vault.ts` |
 | The CRE workflow read Chainlink SOL/USD itself, checked RYO's price against it (clause 16), then wrote the verdict | [report tx](https://sepolia.etherscan.io/tx/0xc4e4dd3024e12a24c99c7918fa70880fa9dd05b3a05135cbc96a13ff7588547f) · [mandate activation](https://sepolia.etherscan.io/tx/0x3ec3beb1a5519c213d14eed5003bb5fcc599fea4616949f0a3a7cd5ed0ba07c7) |
-| An agent paid for a verdict over x402, settled before it was served | [Base Sepolia tx](https://sepolia.basescan.org/tx/0x0406f0749a6958723822ebf24cd3d85376f11ca13ef0c01bbba63bf9daa04bf7) |
+| An agent paid for a verdict over x402, settled before it was served. Every click on the live app's CRE · x402 page settles its own payment ([example](https://sepolia.basescan.org/tx/0xb26516daa8b19e430dbf520878bfcd5e57a6f35ee7b4758d32d1096250dbab41)) | [Base Sepolia tx](https://sepolia.basescan.org/tx/0x0406f0749a6958723822ebf24cd3d85376f11ca13ef0c01bbba63bf9daa04bf7) |
 | Ledger head timestamped into Bitcoin | [`witness/heads/`](witness/heads/) · the first head is confirmed in **Bitcoin block 973,943**; later heads read pending until a block confirms them · `ots verify <file>.ots` |
 
 **Check it yourself, in the browser**
