@@ -12,6 +12,7 @@ import { MandateView } from "./ui/Mandate";
 import { CreView } from "./ui/Cre";
 import { AuditView } from "./ui/Audit";
 import { LedgerView } from "./ui/Ledger";
+import { Icon, Logo } from "./ui/icons";
 import { JudgeView } from "./ui/Judge";
 
 const TABS = ["Judge", "Verdict", "Ledger", "Causality", "Debate", "Mandate", "CRE + x402", "Audit"] as const;
@@ -20,6 +21,19 @@ const TOOL_ORDER: RyoTool[] = ["market_overview", "monitor_market_sentiment_shif
 
 export default function App() {
   const [tab, setTab] = useState<Tab>("Judge");
+  const [theme, setTheme] = useState<"dark" | "light">(() => {
+    try {
+      const saved = localStorage.getItem("cv-theme");
+      if (saved === "dark" || saved === "light") return saved;
+    } catch {}
+    return window.matchMedia?.("(prefers-color-scheme: light)").matches ? "light" : "dark";
+  });
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+    try {
+      localStorage.setItem("cv-theme", theme);
+    } catch {}
+  }, [theme]);
   const [mode, setMode] = useState<Mode>("replay");
   const [chaos, setChaos] = useState<Chaos>("none");
   const [equity, setEquity] = useState(100000);
@@ -70,89 +84,151 @@ export default function App() {
   }, []);
 
   const liveAvailable = !!status?.configured;
+  const page = PAGES[tab];
+  const statusBadge =
+    status === null && !statusChecked ? (
+      <Badge k="snapshot">checking the RYO proxy…</Badge>
+    ) : status === null ? (
+      <Badge k="snapshot">static mode · bundled RYO snapshots</Badge>
+    ) : status.configured && status.whoami?.error ? (
+      <Badge k="partial" title={status.whoami.error}>proxy ✓ · RYO unreachable now → snapshot fallback</Badge>
+    ) : status.configured ? (
+      <Badge k="live"><span className="dot pulse" /> proxy ✓ key {status.whoami?.key_id ?? "?"} · {status.whoami?.rate_limit_remaining ?? "?"}/{status.whoami?.rate_limit_per_min ?? "?"} calls/min</Badge>
+    ) : (
+      <Badge k="partial">proxy up · no RYO key → snapshot fallback</Badge>
+    );
   return (
-    <div className="app">
-      <header className="top">
-        <div className="brand">
-          <h1>Causal-Verdict CRE</h1>
-          <span className="sub">Autonomous practice-trade agent · RYO-CHAN MCP evidence · fiduciary mandate compiler · Chainlink CRE anchoring</span>
+    <div className="shell">
+      <aside className="side">
+        <div className="brandmark">
+          <Logo />
+          <div>
+            <b>Causal-Verdict</b>
+            <span>Fiduciary agent · RYO × Chainlink CRE</span>
+          </div>
         </div>
-        <div className="controls">
-          <div className="seg" role="group" aria-label="Data mode">
-            <button className={mode === "replay" ? "on" : ""} onClick={() => setMode("replay")}>Replay RYO snapshots</button>
-            <button className={mode === "live" ? "on" : ""} onClick={() => { setMode("live"); getStatus().then(setStatus); }} title={liveAvailable ? "Calls RYO through the server proxy" : "Server has no RYO_MCP_KEY — live calls will fall back to snapshots"}>
-              Live RYO MCP
+        {NAV.map((g) => (
+          <nav className="navgroup" key={g.group} aria-label={g.group}>
+            <div className="navlabel">{g.group}</div>
+            {g.items.map((it) => {
+              const Ico = Icon[it.icon];
+              return (
+                <button key={it.tab} className={`navitem ${tab === it.tab ? "on" : ""}`} onClick={() => setTab(it.tab)} aria-current={tab === it.tab ? "page" : undefined}>
+                  <Ico size={17} />
+                  <span className="nt">{it.label ?? it.tab}</span>
+                  <span className="nd">{it.desc}</span>
+                </button>
+              );
+            })}
+          </nav>
+        ))}
+        <div className="side-foot">
+          <div className="spread">
+            <span className="small muted">Theme</span>
+            <button className="iconbtn" onClick={() => setTheme(theme === "dark" ? "light" : "dark")} title={`Switch to ${theme === "dark" ? "light" : "dark"} theme`} aria-label="Toggle theme">
+              {theme === "dark" ? <Icon.sun /> : <Icon.moon />}
             </button>
           </div>
-          <div className="seg" role="group" aria-label="Evidence source" title="KOL / whale / news evidence">
-            <button className={evMode === "real" ? "on" : ""} onClick={() => setEvMode("real")}>Real feeds</button>
-            <button className={evMode === "scenario" ? "on" : ""} onClick={() => setEvMode("scenario")}>Scenario fixtures</button>
+          <div className="small faint">Practice trades only. Research output, not financial advice. RYO-CHAN MCP is read-only.</div>
+        </div>
+      </aside>
+
+      <div className="main">
+        <header className="topbar">
+          <div className="pagehead">
+            <h1>{page.title}</h1>
+            <p>{page.sub}</p>
           </div>
-          <label className="inline">
-            Chaos
-            <select value={chaos} onChange={(e) => setChaos(e.target.value as Chaos)} disabled={mode === "replay"} title="Inject a failure before the proxy calls RYO">
-              <option value="none">none</option>
-              <option value="429">429 rate-limited</option>
-              <option value="503">503 unavailable</option>
-              <option value="timeout">timeout</option>
-              <option value="offline">offline</option>
-            </select>
-          </label>
-          <label className="inline">
-            Practice equity $
-            <input className="num" type="number" value={equity} min={1000} step={1000} onChange={(e) => setEquity(Math.max(1000, Number(e.target.value)))} />
-          </label>
-          <button className="btn primary" disabled={running} onClick={() => go()}>
-            {running ? "Running agent…" : mode === "live" ? "Run agent (live RYO)" : "Run agent (replay)"}
-          </button>
-          <span className="small muted">
-            {status === null && !statusChecked ? (
-              <Badge k="snapshot">checking the RYO proxy…</Badge>
-            ) : status === null ? (
-              <Badge k="snapshot">static mode · bundled RYO snapshots</Badge>
-            ) : status.configured && status.whoami?.error ? (
-              <Badge k="partial" title={status.whoami.error}>proxy ✓ · RYO unreachable now → snapshot fallback</Badge>
-            ) : status.configured ? (
-              <>
-                <Badge k="live">proxy ✓ key {status.whoami?.key_id ?? "?"}</Badge> {status.whoami?.rate_limit_remaining ?? "?"}/{status.whoami?.rate_limit_per_min ?? "?"} calls/min left
-              </>
-            ) : (
-              <Badge k="partial">proxy up · no RYO key → snapshot fallback</Badge>
-            )}
-          </span>
+          <div className="controls">
+            <div className="seg" role="group" aria-label="Data mode">
+              <button className={mode === "replay" ? "on" : ""} onClick={() => setMode("replay")}>Replay</button>
+              <button className={mode === "live" ? "on" : ""} onClick={() => { setMode("live"); getStatus().then(setStatus); }} title={liveAvailable ? "Calls RYO through the server proxy" : "Server has no RYO_MCP_KEY — live calls will fall back to snapshots"}>
+                Live RYO
+              </button>
+            </div>
+            <div className="seg" role="group" aria-label="Evidence source" title="KOL / whale / news / market evidence">
+              <button className={evMode === "real" ? "on" : ""} onClick={() => setEvMode("real")}>Real feeds</button>
+              <button className={evMode === "scenario" ? "on" : ""} onClick={() => setEvMode("scenario")}>Scenario</button>
+            </div>
+            <label className="inline">
+              Chaos
+              <select value={chaos} onChange={(e) => setChaos(e.target.value as Chaos)} disabled={mode === "replay"} title="Inject a failure before the proxy calls RYO (live mode)">
+                <option value="none">none</option>
+                <option value="429">429 rate-limited</option>
+                <option value="503">503 unavailable</option>
+                <option value="timeout">timeout</option>
+                <option value="offline">offline</option>
+              </select>
+            </label>
+            <label className="inline">
+              Equity $
+              <input className="num" type="number" value={equity} min={1000} step={1000} onChange={(e) => setEquity(Math.max(1000, Number(e.target.value)))} />
+            </label>
+            <button className="btn primary" disabled={running} onClick={() => go()}>
+              <Icon.play size={14} /> {running ? "Running agent…" : mode === "live" ? "Run agent · live" : "Run agent · replay"}
+            </button>
+          </div>
+        </header>
+        <div className="statusline">
+          {statusBadge}
+          {run && (
+            <>
+              <span className="sep" />
+              {Object.entries(run.provenanceMix).map(([k, v]) => <Badge key={k} k={k}>{v} {k}</Badge>)}
+              {run.evidenceMode === "real" ? <Badge k="live">real feeds</Badge> : <Fixture />}
+              <span className="sep" />
+              <span>trace root <span className="hash">{short(run.trace.root, 10)}</span></span>
+              <span className="sep" />
+              <span>mandate <span className="hash">{short(run.mandateHash, 8)}</span></span>
+            </>
+          )}
           {!compiled.ast && <Badge k="fail">mandate has {compiled.errors.length} error(s)</Badge>}
         </div>
-        <nav className="tabs">
-          {TABS.map((t) => (
-            <button key={t} className={tab === t ? "on" : ""} onClick={() => setTab(t)}>
-              {t}
-            </button>
-          ))}
-        </nav>
-      </header>
 
-      {error && <div className="notice err" style={{ marginBottom: 12 }}>{error}</div>}
-      {!run ? (
-        <div className="card">Running the agent on captured RYO evidence…</div>
-      ) : (
-        <>
-          {tab === "Judge" && <JudgeView run={run} go={(t) => setTab(t as Tab)} />}
-          {tab === "Verdict" && <VerdictView run={run} log={log} onInspect={insp.open} onFocus={(s) => { setFocus(s); setTab("Debate"); }} />}
-          {tab === "Ledger" && <LedgerView />}
-          {tab === "Causality" && <CausalityView run={run} focus={focus} setFocus={setFocus} posts={posts} setPosts={setPosts} channels={channels} setChannels={setChannels} />}
-          {tab === "Debate" && <DebateView run={run} focus={focus} setFocus={setFocus} onInspect={insp.open} />}
-          {tab === "Mandate" && <MandateView prose={mandate} setProse={setMandate} run={run} />}
-          {tab === "CRE + x402" && <CreView mandate={mandate} run={run} />}
-          {tab === "Audit" && <AuditView run={run} mandate={mandate} equity={equity} onInspect={insp.open} />}
-        </>
-      )}
-      {insp.node}
-      <footer>
-        Practice trades only — research output, not financial advice, and nothing here places, approves or executes a trade. RYO-CHAN MCP is read-only. In "Real feeds" mode, whale, news and KOL evidence comes from public on-chain logs, RSS and Telegram, with a link to each item. Items marked <Fixture /> come from the illustrative scenario and are not live data. Snapshot bundle {short(SNAPSHOTS.bundle_sha256, 12)} captured {SNAPSHOTS.captured_at}.
-      </footer>
+        <main className="content">
+          {error && <div className="notice err" style={{ marginBottom: 14 }}>{error}</div>}
+          {!run ? (
+            <div className="card">Running the agent on captured RYO evidence…</div>
+          ) : (
+            <div className="fade-in" key={tab}>
+              {tab === "Judge" && <JudgeView run={run} go={(t) => setTab(t as Tab)} />}
+              {tab === "Verdict" && <VerdictView run={run} log={log} onInspect={insp.open} onFocus={(s) => { setFocus(s); setTab("Debate"); }} />}
+              {tab === "Ledger" && <LedgerView />}
+              {tab === "Causality" && <CausalityView run={run} focus={focus} setFocus={setFocus} posts={posts} setPosts={setPosts} channels={channels} setChannels={setChannels} />}
+              {tab === "Debate" && <DebateView run={run} focus={focus} setFocus={setFocus} onInspect={insp.open} />}
+              {tab === "Mandate" && <MandateView prose={mandate} setProse={setMandate} run={run} />}
+              {tab === "CRE + x402" && <CreView mandate={mandate} run={run} />}
+              {tab === "Audit" && <AuditView run={run} mandate={mandate} equity={equity} onInspect={insp.open} />}
+            </div>
+          )}
+          {insp.node}
+          <footer>
+            Practice trades only — research output, not financial advice, and nothing here places, approves or executes a trade. RYO-CHAN MCP is read-only. In "Real feeds" mode, whale, news, KOL and market evidence comes from public on-chain logs, exchanges, Chainlink Data Feeds, RSS, Tavily and Telegram, with a link to each item. Items marked <Fixture /> come from the illustrative scenario and are not live data. Snapshot bundle {short(SNAPSHOTS.bundle_sha256, 12)} captured {SNAPSHOTS.captured_at}.
+          </footer>
+        </main>
+      </div>
     </div>
   );
 }
+
+type NavItem = { tab: Tab; label?: string; icon: keyof typeof Icon; desc: string };
+const NAV: { group: string; items: NavItem[] }[] = [
+  { group: "Overview", items: [{ tab: "Judge", label: "Judge path", icon: "judge", desc: "Every rubric line → proof" }] },
+  { group: "Agent", items: [{ tab: "Verdict", icon: "verdict", desc: "Decision and RYO funnel" }, { tab: "Ledger", icon: "ledger", desc: "Practice trades, verified" }] },
+  { group: "Evidence", items: [{ tab: "Causality", icon: "causality", desc: "Whales, voices, news, markets" }, { tab: "Debate", icon: "debate", desc: "Bull · Bear · Judge" }] },
+  { group: "Governance", items: [{ tab: "Mandate", icon: "mandate", desc: "Prose ⇄ AST compiler" }, { tab: "Audit", icon: "audit", desc: "Replay and evidence" }] },
+  { group: "On-chain", items: [{ tab: "CRE + x402", icon: "chain", desc: "Workflow and payments" }] },
+];
+const PAGES: Record<Tab, { title: string; sub: string }> = {
+  Judge: { title: "Judge path", sub: "Every requirement of the three prizes, mapped to the screen, file or transaction that proves it" },
+  Verdict: { title: "Verdict", sub: "One atomic practice-trade decision from all six RYO-CHAN MCP tools and independent evidence" },
+  Ledger: { title: "Practice-trade ledger", sub: "Recorded on live RYO data, hash-chained, and witnessed outside our control" },
+  Causality: { title: "Cause and effect", sub: "Whale lead-lag, KOL convergence, catalyst checks and the independent market check" },
+  Debate: { title: "Bull · Bear · Judge", sub: "Opposing agents argue from the same evidence; a mandate-bound judge rules" },
+  Mandate: { title: "Fiduciary mandate", sub: "Plain-English risk mandate compiled to an AST and back, anchored to its legal sources" },
+  "CRE + x402": { title: "Chainlink CRE and x402", sub: "The on-chain workflow, AI-assisted generation, and paid verdicts for agents" },
+  Audit: { title: "Audit", sub: "Replay, tamper tests and the FRE 902(13)/(14) evidence package" },
+};
 
 function VerdictView({ run, log, onInspect, onFocus }: { run: RunResult; log: string[]; onInspect: (r: RyoResult) => void; onFocus: (s: string) => void }) {
   const m = run.market;
@@ -203,6 +279,7 @@ function VerdictView({ run, log, onInspect, onFocus }: { run: RunResult; log: st
                 <div><div className="stat-l">Targets</div><div className="stat ok" style={{ fontSize: 17 }}>{t.position.targets.map((x) => fmtUsd(x.price)).join(" / ")}</div></div>
                 <div><div className="stat-l">Size</div><div className="stat">{t.position.portfolioPct}%</div></div>
               </div>
+              <PriceLadder p={t.position} symbol={t.dossier.symbol} />
               <div className="kv small" style={{ marginTop: 12 }}>
                 <div>Units / notional</div><div>{t.position.units} {t.dossier.symbol} · {fmtUsd(t.position.notionalUsd)}</div>
                 <div>Risk at stop</div><div>{fmtUsd(t.position.riskUsd)} ({((t.position.riskUsd / t.position.equityUsd) * 100).toFixed(2)}% of equity)</div>
@@ -228,7 +305,7 @@ function VerdictView({ run, log, onInspect, onFocus }: { run: RunResult; log: st
           <div className="scroll">
             <table>
               <thead>
-                <tr><th>Token</th><th>Decision</th><th className="num">24h</th><th className="num">RSI</th><th className="num">ATR%</th><th className="num">Conf.</th><th>Failed clauses (first)</th></tr>
+                <tr><th>Token</th><th>Decision</th><th className="num">24h</th><th className="num">RSI</th><th className="num">ATR%</th><th className="num">Conf.</th><th>Binding clauses failed</th></tr>
               </thead>
               <tbody>
                 {run.dossiers.map((d) => (
@@ -239,7 +316,14 @@ function VerdictView({ run, log, onInspect, onFocus }: { run: RunResult; log: st
                     <td className="num">{d.evidence.rsi14 ?? <span className="warn">null</span>}</td>
                     <td className="num">{d.evidence.atrPct ?? <span className="warn">null</span>}</td>
                     <td className="num">{d.evidence.confluence ?? <span className="faint">—</span>}</td>
-                    <td className="small">{d.judgment.failedGates.length ? d.judgment.failedGates.slice(0, 2).map((g) => `${g.id} ${g.kind}`).join(", ") + (d.judgment.failedGates.length > 2 ? ` +${d.judgment.failedGates.length - 2}` : "") : <span className="ok">none</span>}</td>
+                    <td className="small">
+                      {d.judgment.failedGates.length ? (
+                        <span className="row" style={{ gap: 4 }}>
+                          {d.judgment.failedGates.slice(0, 3).map((g) => <span key={g.id} className="badge b-fail" title={g.counterexample ?? g.observed}>{g.id} {g.kind.replace(/_/g, " ")}</span>)}
+                          {d.judgment.failedGates.length > 3 && <span className="faint">+{d.judgment.failedGates.length - 3}</span>}
+                        </span>
+                      ) : <span className="badge b-pass">all gates pass</span>}
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -287,6 +371,38 @@ function VerdictView({ run, log, onInspect, onFocus }: { run: RunResult; log: st
         <h2>Agent log</h2>
         <div className="log">{log.length ? log.map((l, i) => <div key={i}>{l}</div>) : "—"}</div>
       </div>
+    </div>
+  );
+}
+
+/** The atomic trade as one picture: risk (stop → entry) and reward (entry → targets), with the dip tranche. */
+function PriceLadder({ p, symbol }: { p: NonNullable<RunResult["practiceTrade"]>["position"]; symbol: string }) {
+  const W = 520, H = 112, L = 22, R = 22, axis = 58;
+  const t2 = p.targets[p.targets.length - 1]?.price ?? p.entry;
+  const lo = Math.min(p.stop, ...p.tranches.map((t) => t.price)), hi = Math.max(t2, p.entry);
+  const pad = (hi - lo) * 0.06;
+  const x = (v: number) => L + ((v - (lo - pad)) / (hi + pad - (lo - pad))) * (W - L - R);
+  const marks = [
+    { v: p.stop, label: "Stop", color: "var(--bear)", up: false },
+    ...p.tranches.slice(1).map((t) => ({ v: t.price, label: `Dip ${t.pct}%`, color: "var(--warn)", up: true })),
+    { v: p.entry, label: "Entry", color: "var(--text)", up: false },
+    ...p.targets.map((t, i) => ({ v: t.price, label: `T${i + 1} · ${t.r}R`, color: "var(--bull)", up: i % 2 === 0 })),
+  ];
+  return (
+    <div className="ladder" role="img" aria-label={`${symbol} trade: stop ${fmtUsd(p.stop)}, entry ${fmtUsd(p.entry)}, targets ${p.targets.map((t) => fmtUsd(t.price)).join(", ")}`}>
+      <svg viewBox={`0 0 ${W} ${H}`}>
+        <rect x={x(p.stop)} y={axis - 7} width={x(p.entry) - x(p.stop)} height={14} rx={4} fill="var(--bear)" opacity={0.18} />
+        <rect x={x(p.entry)} y={axis - 7} width={x(t2) - x(p.entry)} height={14} rx={4} fill="var(--bull)" opacity={0.18} />
+        <line x1={L} x2={W - R} y1={axis} y2={axis} stroke="var(--line-2)" />
+        {marks.map((m, i) => (
+          <g key={i}>
+            <line x1={x(m.v)} x2={x(m.v)} y1={axis - 11} y2={axis + 11} stroke={m.color} strokeWidth={2} />
+            <circle cx={x(m.v)} cy={axis} r={4} fill={m.color} />
+            <text x={x(m.v)} y={m.up ? axis - 33 : axis + 31} textAnchor="middle" fontSize="12.5" fontWeight={650} fill={m.color}>{m.label}</text>
+            <text x={x(m.v)} y={m.up ? axis - 19 : axis + 46} textAnchor="middle" fontSize="11.5" fill="var(--muted)" style={{ fontFamily: "var(--mono)" }}>{fmtUsd(m.v)}</text>
+          </g>
+        ))}
+      </svg>
     </div>
   );
 }

@@ -27,7 +27,7 @@ export function EnvelopeInspector({ r, onClose }: { r: RyoResult; onClose: () =>
   const recomputed = r.envelope ? hashHex(canonical(r.envelope)).slice(2) : null;
   const match = recomputed && r.envelope_sha256 === recomputed;
   return (
-    <div style={{ position: "fixed", inset: 0, background: "#000a", zIndex: 50, display: "grid", placeItems: "center", padding: 16 }} onClick={onClose}>
+    <div className="modal fade-in" onClick={onClose}>
       <div className="card" style={{ width: "min(980px, 100%)", maxHeight: "90vh", overflow: "auto" }} onClick={(e) => e.stopPropagation()}>
         <div className="spread">
           <h2 style={{ margin: 0 }}>

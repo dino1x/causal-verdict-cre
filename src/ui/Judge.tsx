@@ -6,6 +6,7 @@ import ledgerSnap from "../data/ledgerSnapshot.json";
 import battery from "../data/batteryReport.json";
 import witnesses from "../data/witnesses.json";
 import { Badge } from "./common";
+import { Icon } from "./icons";
 
 const TX = {
   vaultDeploy: "https://sepolia.etherscan.io/tx/0x4cca438a56f868df390340092d08f3e76716e1319ec4643a8b21d0143b82925a",
@@ -67,19 +68,45 @@ export function JudgeView({ run, go }: { run: RunResult | null; go: (tab: string
   );
 
   return (
-    <div className="grid" style={{ gap: 14 }}>
-      <div className="card">
-        <h2>Judge path</h2>
+    <div className="grid" style={{ gap: 16 }}>
+      <section className="hero">
+        <div className="eyebrow">BLI Legal Tech Hackathon 2 · RYO-CHAN · Chainlink CRE · LegalTech</div>
+        <h2>Built on RYO, not around it.</h2>
         <p>
-          <b>Built on RYO, not around it.</b> Every decision is made from RYO-CHAN MCP's six tools, called through a server proxy that keeps the key off the browser, and the app runs with or without a key: without one it replays 17 real captured RYO responses, hashed and labelled.
+          An autonomous practice-trade agent that reads all six RYO-CHAN MCP tools, checks them against exchanges, Chainlink Data Feeds and public evidence, argues both sides, obeys a compiled fiduciary mandate, and anchors every verdict on-chain through a Chainlink CRE workflow. Without a key it replays {calls.length} real captured RYO responses, hashed and labelled.
         </p>
-        <div className="grid g4" style={{ marginTop: 10 }}>
-          <div><div className="stat-l">On-chain proofs</div><div className="small"><a href={TX.vaultDeploy} target="_blank" rel="noreferrer">vault deploy ↗</a> · <a href={TX.creReport} target="_blank" rel="noreferrer">CRE report ↗</a> · <a href={TX.x402} target="_blank" rel="noreferrer">x402 payment ↗</a> · <a href={TX.chainlinkReport} target="_blank" rel="noreferrer">Chainlink-checked verdict ↗</a></div></div>
-          <div><div className="stat-l">Replay</div><div className="small">identical trace root from the recorded envelopes · <a onClick={() => go("Audit")} style={{ cursor: "pointer" }}>try it</a></div></div>
-          <div><div className="stat-l">Attack battery</div><Badge k={b.missedWithWitness ? "fail" : "pass"}>{b.missedWithWitness} missed of {b.total}</Badge></div>
-          <div><div className="stat-l">Ledger head</div><Badge k={headWitnessed ? "pass" : "partial"}>{headWitnessed ? "witnessed (git · Bitcoin)" : "advanced since last witness"}</Badge></div>
+        <div className="kpis">
+          <div className="kpi">
+            <div className="stat-l">RYO tools in this run</div>
+            <div className="stat">{tools.size}<span className="faint" style={{ fontSize: 16 }}> / 6</span></div>
+            <div className="small muted">{calls.length} calls · {mix}</div>
+          </div>
+          <div className="kpi">
+            <div className="stat-l">Attack battery</div>
+            <div className={`stat ${b.missedWithWitness ? "err" : "ok"}`}>{b.missedWithWitness}<span className="faint" style={{ fontSize: 16 }}> missed / {b.total}</span></div>
+            <div className="small muted">tamper attempts on ledger and trace</div>
+          </div>
+          <div className="kpi">
+            <div className="stat-l">Mandate</div>
+            <div className="stat">{rt.ok ? "fixpoint" : "broken"}</div>
+            <div className="small muted">prose ⇄ AST round-trip, legal anchors per clause</div>
+          </div>
+          <div className="kpi">
+            <div className="stat-l">Ledger head</div>
+            <div className="stat" style={{ fontSize: 20, marginTop: 8 }}><Badge k={headWitnessed ? "pass" : "partial"}>{headWitnessed ? "witnessed · git · Bitcoin" : "advanced since last witness"}</Badge></div>
+            <div className="small muted">hourly Sigstore signing in the public Action</div>
+          </div>
         </div>
-      </div>
+        <div style={{ marginTop: 18 }}>
+          <div className="stat-l" style={{ marginBottom: 8 }}>On-chain proofs</div>
+          <a className="pill-link" href={TX.vaultDeploy} target="_blank" rel="noreferrer"><Icon.chain size={13} /> Vault on Sepolia</a>
+          <a className="pill-link" href={TX.creReport} target="_blank" rel="noreferrer"><Icon.bolt size={13} /> CRE report</a>
+          <a className="pill-link" href={TX.chainlinkReport} target="_blank" rel="noreferrer"><Icon.check size={13} /> Chainlink-checked verdict</a>
+          <a className="pill-link" href={TX.mandateActivation} target="_blank" rel="noreferrer"><Icon.mandate size={13} /> Mandate activation</a>
+          <a className="pill-link" href={TX.x402} target="_blank" rel="noreferrer"><Icon.external size={13} /> x402 payment on Base</a>
+          <button className="pill-link" onClick={() => go("Audit")} style={{ cursor: "pointer" }}><Icon.audit size={13} /> Replay it yourself</button>
+        </div>
+      </section>
       <div className="card"><h2>RYO-CHAN · Autonomous Agents (official rubric)</h2><Table rows={ryo} /></div>
       <div className="card"><h2>Chainlink · Best workflow with CRE</h2><Table rows={cre} /></div>
       <div className="card"><h2>BLI · LegalTech &amp; RegTech</h2><Table rows={bli} /></div>
