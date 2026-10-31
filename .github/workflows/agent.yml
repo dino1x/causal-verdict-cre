@@ -60,4 +60,6 @@ jobs:
           git add src/data/ledgerSnapshot.json src/data/witnesses.json witness/ || true
           git diff --cached --quiet && { echo "nothing new to record"; exit 0; }
           git commit -m "agent: ledger head $(jq -r '.[-1].head' src/data/witnesses.json)"
-          git push
+          # main may have moved while the agent ran (it takes minutes): replay this commit on top and push again.
+          for i in 1 2 3 4 5; do git pull --rebase origin main && git push && exit 0; sleep $((i * 10)); done
+          exit 1
