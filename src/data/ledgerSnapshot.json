@@ -43,6 +43,11 @@
           "at": "2026-10-31T14:23:30Z",
           "price": 95.64510675266249,
           "source": "analyze_token(SOL) live as_of 2026-10-31T14:25:54Z sha 7f7602609124"
+        },
+        {
+          "at": "2026-10-31T15:40:35Z",
+          "price": 95.88688362279076,
+          "source": "analyze_token(SOL) live as_of 2026-10-31T15:46:07Z sha ca94e7a524f0"
         }
       ],
       "realizedPnlUsd": 0,
@@ -159,6 +164,26 @@
       "i": 10,
       "prev": "0x9d3b0fc43d83fdc7a974eca258f0d7ffbf023e2174c727339ebf22745a08260f",
       "hash": "0xa53f80f307e93d8d032dda1acc57d9589893f234f32a02eefda5e4e88a33598e"
+    },
+    {
+      "at": "2026-10-31T15:40:35Z",
+      "kind": "mark",
+      "symbol": "SOL",
+      "detail": "marked at 95.88688362279076 (unrealized 74.33 USD)",
+      "traceRoot": "0xed739241b41687e38e498d04d46f4d4e4330d9633af4db2b90398b101b97c336",
+      "i": 11,
+      "prev": "0xa53f80f307e93d8d032dda1acc57d9589893f234f32a02eefda5e4e88a33598e",
+      "hash": "0x1b1e53e3979dc57dc2b1bc2e38b578cf1a593b2610d71b5448634ea23883dc53"
+    },
+    {
+      "at": "2026-10-31T15:40:35Z",
+      "kind": "no_trade",
+      "symbol": null,
+      "detail": "no candidate satisfied the mandate — AIN: C15:min_planes · COW: C7:require_measurement, C8:require_measurement, C16:price_agreement · RSR: C4:min_confluence, C7:require_measurement, C8:require_measurement, C15:min_planes, C16:price_agreement · RED: C4:min_confluence, C7:require_measurement, C8:require_measurement, C15:min_planes · SOL: C5:min_turnover, C15:min_planes · PEPE: C7:require_measurement, C8:require_measurement, C15:min_planes",
+      "traceRoot": "0xed739241b41687e38e498d04d46f4d4e4330d9633af4db2b90398b101b97c336",
+      "i": 12,
+      "prev": "0x1b1e53e3979dc57dc2b1bc2e38b578cf1a593b2610d71b5448634ea23883dc53",
+      "hash": "0x1ffe0485ee4870d0bf20fa7fc8acd53e2e32b3341d6449d9d67fb6fdf306b4a2"
     }
   ],
   "runs": [
@@ -1014,6 +1039,129 @@
       "stateHash": "0x11c60825ceb2b184f059969b7bea23ccb74b6aa927734225769a4a8d31007576",
       "prev": "0x1c1591dccedf108d34aa22ddea5fb913859ab546e7a60eb4839e5eb80e90c5f4",
       "hash": "0x1272474ded6adff3a85c91323ff5685fcc619fffd42a9aecb65fa967a7583925"
+    },
+    {
+      "at": "2026-10-31T15:40:35Z",
+      "traceRoot": "0xed739241b41687e38e498d04d46f4d4e4330d9633af4db2b90398b101b97c336",
+      "provenance": {
+        "live": 16,
+        "unavailable": 1
+      },
+      "evidenceMode": "real",
+      "decision": "NO TRADE",
+      "candidates": [
+        {
+          "symbol": "AIN",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C15:min_planes",
+              "observed": "AIN: only 0 of 2 required independent planes support entry."
+            }
+          ]
+        },
+        {
+          "symbol": "COW",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C7:require_measurement",
+              "observed": "COW: RYO returned rsi_14=null; a missing measurement is not treated as neutral."
+            },
+            {
+              "gate": "C8:require_measurement",
+              "observed": "COW: RYO returned atr_14_pct=null; a missing measurement is not treated as neutral."
+            },
+            {
+              "gate": "C16:price_agreement",
+              "observed": "COW: RYO's price is 6.67% away from binance COW/USDT 1h close; the mandate will not act on an unconfirmed price."
+            }
+          ]
+        },
+        {
+          "symbol": "RSR",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C4:min_confluence",
+              "observed": "RSR: no measured confluence, so the minimum 0.6 cannot be shown to hold."
+            },
+            {
+              "gate": "C7:require_measurement",
+              "observed": "RSR: RYO returned rsi_14=null; a missing measurement is not treated as neutral."
+            },
+            {
+              "gate": "C8:require_measurement",
+              "observed": "RSR: RYO returned atr_14_pct=null; a missing measurement is not treated as neutral."
+            },
+            {
+              "gate": "C15:min_planes",
+              "observed": "RSR: only 1 of 2 required independent planes support entry."
+            },
+            {
+              "gate": "C16:price_agreement",
+              "observed": "RSR: RYO's price is 9.09% away from binance RSR/USDT 1h close; the mandate will not act on an unconfirmed price."
+            }
+          ]
+        },
+        {
+          "symbol": "RED",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C4:min_confluence",
+              "observed": "RED: no measured confluence, so the minimum 0.6 cannot be shown to hold."
+            },
+            {
+              "gate": "C7:require_measurement",
+              "observed": "RED: RYO returned rsi_14=null; a missing measurement is not treated as neutral."
+            },
+            {
+              "gate": "C8:require_measurement",
+              "observed": "RED: RYO returned atr_14_pct=null; a missing measurement is not treated as neutral."
+            },
+            {
+              "gate": "C15:min_planes",
+              "observed": "RED: only 0 of 2 required independent planes support entry."
+            }
+          ]
+        },
+        {
+          "symbol": "SOL",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C5:min_turnover",
+              "observed": "SOL: turnover 0.0426 < 0.05; a stop could not be filled near its modeled price."
+            },
+            {
+              "gate": "C15:min_planes",
+              "observed": "SOL: only 0 of 2 required independent planes support entry."
+            }
+          ]
+        },
+        {
+          "symbol": "PEPE",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C7:require_measurement",
+              "observed": "PEPE: RYO returned rsi_14=null; a missing measurement is not treated as neutral."
+            },
+            {
+              "gate": "C8:require_measurement",
+              "observed": "PEPE: RYO returned atr_14_pct=null; a missing measurement is not treated as neutral."
+            },
+            {
+              "gate": "C15:min_planes",
+              "observed": "PEPE: only 1 of 2 required independent planes support entry."
+            }
+          ]
+        }
+      ],
+      "stateHash": "0xe7c6415af93d8ca5fd9b945200a35bc2b35ede8fca1047007fa86fbd16ab5651",
+      "prev": "0x1272474ded6adff3a85c91323ff5685fcc619fffd42a9aecb65fa967a7583925",
+      "hash": "0xa9365211077b59cdc9c6ec9ecaa87ae98cb032475b2c8fdaa8dd249b9aed967f"
     }
   ]
 }
