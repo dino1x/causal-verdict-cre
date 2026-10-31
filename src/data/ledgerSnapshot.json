@@ -33,6 +33,11 @@
           "at": "2026-10-31T08:36:13Z",
           "price": 95.1794,
           "source": "entry (RYO deep_analysis.trade_plan.entry)"
+        },
+        {
+          "at": "2026-10-31T08:57:29Z",
+          "price": 95.27835975047772,
+          "source": "analyze_token(SOL) live as_of 2026-10-31T08:58:59Z sha 36666b0a9b7a"
         }
       ],
       "realizedPnlUsd": 0,
@@ -109,6 +114,26 @@
       "i": 6,
       "prev": "0x779b94bb1a1f974716b170a4bb416fe38d90dfb220728cd901b4aa9fb6cc4746",
       "hash": "0xf48c12470890d2afda4b848c26e5318fe52f13233dd26fa0929c07b8e2a01b39"
+    },
+    {
+      "at": "2026-10-31T08:57:29Z",
+      "kind": "mark",
+      "symbol": "SOL",
+      "detail": "marked at 95.27835975047772 (unrealized 10.40 USD)",
+      "traceRoot": "0x2e3286cd9231a39f307c2eac1de4d83240c822794defa1d63efa0dd790b43954",
+      "i": 7,
+      "prev": "0xf48c12470890d2afda4b848c26e5318fe52f13233dd26fa0929c07b8e2a01b39",
+      "hash": "0x290651dee4848e58f4b4f9c504ad22b77706fb95d5c2d85785241716f1c8b9ca"
+    },
+    {
+      "at": "2026-10-31T08:57:29Z",
+      "kind": "no_trade",
+      "symbol": null,
+      "detail": "no candidate satisfied the mandate — GROW: C5:min_turnover, C15:min_planes · AIN: C15:min_planes · BEAM: C4:min_confluence, C7:require_measurement, C8:require_measurement, C15:min_planes · RSR: C4:min_confluence, C7:require_measurement, C8:require_measurement, C15:min_planes, C16:price_agreement · SOL: C15:min_planes · PEPE: C7:require_measurement, C8:require_measurement, C15:min_planes",
+      "traceRoot": "0x2e3286cd9231a39f307c2eac1de4d83240c822794defa1d63efa0dd790b43954",
+      "i": 8,
+      "prev": "0x290651dee4848e58f4b4f9c504ad22b77706fb95d5c2d85785241716f1c8b9ca",
+      "hash": "0x75bfe970b675a72ddb29c13c1f07351ce526b2e86e9d17ba38f835a51a476eb4"
     }
   ],
   "runs": [
@@ -744,6 +769,120 @@
       "stateHash": "0x0ad0085f804f7094b08fe1275faea5b38e1a9e60cedfb9cf851007960738fab8",
       "prev": "0xc98d784a3b1df877c269f2f069793fa0e242f9e9659295378c2037769f3dbe2e",
       "hash": "0xbd86d7b4728eb367fea66f910469f8e23e61a90a9e3ee503f04f35d91c613a4a"
+    },
+    {
+      "at": "2026-10-31T08:57:29Z",
+      "traceRoot": "0x2e3286cd9231a39f307c2eac1de4d83240c822794defa1d63efa0dd790b43954",
+      "provenance": {
+        "live": 17
+      },
+      "evidenceMode": "real",
+      "decision": "NO TRADE",
+      "candidates": [
+        {
+          "symbol": "GROW",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C5:min_turnover",
+              "observed": "GROW: turnover 0.0019 < 0.05; a stop could not be filled near its modeled price."
+            },
+            {
+              "gate": "C15:min_planes",
+              "observed": "GROW: only 0 of 2 required independent planes support entry."
+            }
+          ]
+        },
+        {
+          "symbol": "AIN",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C15:min_planes",
+              "observed": "AIN: only 0 of 2 required independent planes support entry."
+            }
+          ]
+        },
+        {
+          "symbol": "BEAM",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C4:min_confluence",
+              "observed": "BEAM: no measured confluence, so the minimum 0.6 cannot be shown to hold."
+            },
+            {
+              "gate": "C7:require_measurement",
+              "observed": "BEAM: RYO returned rsi_14=null; a missing measurement is not treated as neutral."
+            },
+            {
+              "gate": "C8:require_measurement",
+              "observed": "BEAM: RYO returned atr_14_pct=null; a missing measurement is not treated as neutral."
+            },
+            {
+              "gate": "C15:min_planes",
+              "observed": "BEAM: only 0 of 2 required independent planes support entry."
+            }
+          ]
+        },
+        {
+          "symbol": "RSR",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C4:min_confluence",
+              "observed": "RSR: no measured confluence, so the minimum 0.6 cannot be shown to hold."
+            },
+            {
+              "gate": "C7:require_measurement",
+              "observed": "RSR: RYO returned rsi_14=null; a missing measurement is not treated as neutral."
+            },
+            {
+              "gate": "C8:require_measurement",
+              "observed": "RSR: RYO returned atr_14_pct=null; a missing measurement is not treated as neutral."
+            },
+            {
+              "gate": "C15:min_planes",
+              "observed": "RSR: only 0 of 2 required independent planes support entry."
+            },
+            {
+              "gate": "C16:price_agreement",
+              "observed": "RSR: RYO's price is 4.66% away from binance RSR/USDT 1h close; the mandate will not act on an unconfirmed price."
+            }
+          ]
+        },
+        {
+          "symbol": "SOL",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C15:min_planes",
+              "observed": "SOL: only 1 of 2 required independent planes support entry."
+            }
+          ]
+        },
+        {
+          "symbol": "PEPE",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C7:require_measurement",
+              "observed": "PEPE: RYO returned rsi_14=null; a missing measurement is not treated as neutral."
+            },
+            {
+              "gate": "C8:require_measurement",
+              "observed": "PEPE: RYO returned atr_14_pct=null; a missing measurement is not treated as neutral."
+            },
+            {
+              "gate": "C15:min_planes",
+              "observed": "PEPE: only 1 of 2 required independent planes support entry."
+            }
+          ]
+        }
+      ],
+      "stateHash": "0xd48883d5c8cec6409d5bcece554392e8cd19deedb28dd76865f4a66a300a3d11",
+      "prev": "0xbd86d7b4728eb367fea66f910469f8e23e61a90a9e3ee503f04f35d91c613a4a",
+      "hash": "0x1c1591dccedf108d34aa22ddea5fb913859ab546e7a60eb4839e5eb80e90c5f4"
     }
   ]
 }
