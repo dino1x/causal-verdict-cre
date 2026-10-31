@@ -1,6 +1,6 @@
 // Keeps the hosted app's ledger current without redeploying. The hourly agent commits the ledger with [skip render],
 // so this server's own copy only updates on code deploys. Every few minutes we ask GitHub for the newest commit on
-// main and read the ledger and its witness list *at that commit* (a pinned commit never changes, so the two can
+// main (from git's own ref listing) and read the ledger and its witness list *at that commit* (a pinned commit never changes, so the two can
 // never disagree). A candidate replaces what we serve only if its hash chain verifies, its head is in its own witness
 // list, and it does not shrink the ledger. Anything else (GitHub down, rate limited, a bad commit) keeps the last good one.
 import { readFileSync } from "node:fs";
@@ -21,8 +21,8 @@ const state = {
 };
 const rejected = new Set<string>();
 
-async function get(url: string, accept?: string): Promise<Response> {
-  const r = await fetch(url, { headers: { "User-Agent": "causal-verdict", ...(accept ? { Accept: accept } : {}) }, signal: AbortSignal.timeout(10_000) });
+async function get(url: string): Promise<Response> {
+  const r = await fetch(url, { headers: { "User-Agent": "causal-verdict" }, signal: AbortSignal.timeout(10_000) });
   if (!r.ok) throw new Error(`${new URL(url).hostname} HTTP ${r.status}`);
   return r;
 }
@@ -40,7 +40,10 @@ export function rejectReason(ledger: Ledger, witnesses: Witness[], current: Ledg
 
 export async function refreshLiveLedger(): Promise<void> {
   try {
-    const sha = (await (await get(`https://api.github.com/repos/${REPO}/commits/main`, "application/vnd.github.sha")).text()).trim();
+    // The git endpoint (what `git ls-remote` reads), not api.github.com: hosting IPs are shared, and the anonymous
+    // API quota is often spent by other tenants before we ask.
+    const refs = await (await get(`https://github.com/${REPO}.git/info/refs?service=git-upload-pack`)).text();
+    const sha = refs.match(/([0-9a-f]{40}) refs\/heads\/main\b/)?.[1] ?? "";
     state.checkedAt = new Date().toISOString();
     if (!/^[0-9a-f]{40}$/.test(sha) || sha === state.commit || rejected.has(sha)) return;
     const raw = (p: string) => get(`https://raw.githubusercontent.com/${REPO}/${sha}/${p}`).then((r) => r.json());
