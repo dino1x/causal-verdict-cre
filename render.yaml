@@ -15,3 +15,8 @@ services:
         value: https://app-ryochan.com/api/mcp
       - key: RYO_MCP_KEY
         sync: false
+      # Optional: Claude analyst debate and Tavily news. Leave empty to run without them.
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: TAVILY_API_KEY
+        sync: false

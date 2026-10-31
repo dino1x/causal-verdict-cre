@@ -6,13 +6,15 @@ import { extname, join, normalize } from "node:path";
 import { handleApi } from "./api";
 
 const DIST = join(process.cwd(), "dist");
-const TYPES: Record<string, string> = { ".html": "text/html", ".js": "text/javascript", ".css": "text/css", ".json": "application/json", ".svg": "image/svg+xml", ".png": "image/png", ".ico": "image/x-icon" };
+const WITNESS = join(process.cwd(), "witness"); // published ledger heads, Bitcoin proofs, Sigstore bundles
+const TYPES: Record<string, string> = { ".html": "text/html", ".js": "text/javascript", ".css": "text/css", ".json": "application/json", ".svg": "image/svg+xml", ".png": "image/png", ".ico": "image/x-icon", ".txt": "text/plain; charset=utf-8", ".ots": "application/octet-stream", ".map": "application/json" };
 const port = Number(process.env.PORT ?? 8787);
 
 createServer(async (req, res) => {
   if (await handleApi(req, res)) return;
   const path = normalize(decodeURIComponent(new URL(req.url ?? "/", "http://x").pathname)).replace(/^(\.\.[/\\])+/, "");
-  let file = join(DIST, path);
+  // Witness files are served from the repo as committed, so the Ledger tab's proof links work in production.
+  let file = path.startsWith("/witness/") ? join(WITNESS, path.slice("/witness/".length)) : join(DIST, path);
   try {
     if (!(await stat(file)).isFile()) file = join(DIST, "index.html");
   } catch {
