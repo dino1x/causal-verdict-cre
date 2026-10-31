@@ -3,7 +3,7 @@
 #   1. git history (this commit, on GitHub)
 #   2. Bitcoin, through OpenTimestamps (.ots proof; pending until a block confirms it, upgraded on later runs)
 #   3. Sigstore's public transparency log, signed by this workflow's GitHub OIDC identity (no key of ours)
-# Needs repository secrets RYO_MCP_URL and RYO_MCP_KEY. The key never leaves the runner's environment.
+# Needs repository secrets RYO_MCP_URL and RYO_MCP_KEY (TAVILY_API_KEY optional). Keys never leave the runner's environment.
 name: agent
 on:
   schedule:
@@ -36,6 +36,9 @@ jobs:
         env:
           RYO_MCP_URL: ${{ secrets.RYO_MCP_URL }}
           RYO_MCP_KEY: ${{ secrets.RYO_MCP_KEY }}
+          # Optional: Tavily news. One search per hourly run stays inside the free 1,000 credits a month.
+          TAVILY_API_KEY: ${{ secrets.TAVILY_API_KEY }}
+          TAVILY_MAX_TOKENS: "1"
         run: npx tsx scripts/run-agent.ts --once
       - name: Upgrade earlier Bitcoin timestamps that have since confirmed
         run: for f in witness/heads/*.ots; do [ -e "$f" ] && ots upgrade "$f" || true; done
