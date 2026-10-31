@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-31T06:39:25.468Z",
+  "generated_at": "2026-10-31T06:42:30.192Z",
   "note": "chain = hash chains alone; witness = chains plus a ledger head published where the operator cannot rewrite it. Truncation and full re-hashing yield a valid chain by construction, so only the witnessed head catches them.",
   "results": [
     {

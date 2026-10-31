@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { ledgerHead, ledgerStats, verifyLedger, type Ledger } from "../engine/ledger";
 import battery from "../data/batteryReport.json";
+import witnesses from "../data/witnesses.json";
 import { fmtUsd } from "../engine/ryo";
 import bundled from "../data/ledgerSnapshot.json";
 import { Badge, short } from "./common";
@@ -41,9 +42,40 @@ function VerifyPanel({ ledger }: { ledger: Ledger }) {
       </div>
       {check && <p className="small" style={{ marginTop: 8 }}><Badge k={check.startsWith("verified") ? "pass" : "fail"}>{check.split(" — ")[0]}</Badge> {check.split(" — ")[1]}</p>}
       {tamper && <p className="small" style={{ marginTop: 8 }}><b>{tamper.label}</b> on a private copy → {tamper.chain}{tamper.head === "caught" ? "." : `, ${tamper.head}.`}</p>}
+      <WitnessList head={head} />
       <p className="small" style={{ marginTop: 10 }}>
         <b>Attack battery</b> (<span className="mono">scripts/battery.ts</span>, run by <span className="mono">npm test</span>): <Badge k={b.missedWithWitness ? "fail" : "pass"}>{b.missedWithWitness} missed of {b.total}</Badge> attacks on copies of the live ledger, a ledger with real positions, and a reasoning trace. The hash chains alone catch every edit, deletion and swap; truncating the tail or re-hashing the whole history leaves a valid chain ({b.missedByChain} such attacks), and only the published head catches those. That is why the head is witnessed outside our control.
       </p>
+    </div>
+  );
+}
+
+function WitnessList({ head }: { head: string }) {
+  const w = witnesses as { at: string; head: string; runs: number; events: number; file: string }[];
+  const last = w[w.length - 1];
+  const idx = w.findIndex((x) => x.head === head);
+  return (
+    <div style={{ marginTop: 10 }}>
+      <div className="small">
+        <b>Published heads</b>{" "}
+        {idx >= 0 ? <Badge k="pass">this ledger matches the head witnessed at {w[idx].at}</Badge> : last ? <Badge k="partial">the ledger has advanced since the last witnessed head ({last.at})</Badge> : <Badge k="partial">no head witnessed yet</Badge>}
+      </div>
+      <p className="small muted">Each head is committed to git, timestamped into Bitcoin through OpenTimestamps (verify a proof with <span className="mono">ots verify &lt;file&gt;.ots</span>; it reads pending until a block confirms it) and, from the hourly GitHub Action, signed in Sigstore's public log by the workflow's own identity.</p>
+      <div className="scroll" style={{ maxHeight: 160 }}>
+        <table>
+          <thead><tr><th>Witnessed at</th><th>Head</th><th>Covers</th><th>Proofs</th></tr></thead>
+          <tbody>
+            {[...w].reverse().map((x) => (
+              <tr key={x.file}>
+                <td className="small">{x.at}</td>
+                <td className="hash">{short(x.head, 10)}</td>
+                <td className="small">{x.runs} runs · {x.events} events</td>
+                <td className="small"><a href={`./${x.file}`}>head file</a> · <a href={`./${x.file}.ots`}>Bitcoin (.ots)</a></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

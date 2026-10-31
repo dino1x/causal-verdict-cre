@@ -1,0 +1,1 @@
+causal-verdict ledger head 0x0cd3b520da1d9c3048a5e4950dbda2789dff9a05b004cf673ebb68ca501585f4 runs=3 events=3 positions=0 at=2026-10-31T06:40:49Z

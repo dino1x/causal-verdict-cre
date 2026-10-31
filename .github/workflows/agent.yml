@@ -1,0 +1,60 @@
+# Hourly autonomous run in public: live RYO + real feeds → practice-trade ledger → witnessed head.
+# The head is published three ways the operator cannot quietly rewrite:
+#   1. git history (this commit, on GitHub)
+#   2. Bitcoin, through OpenTimestamps (.ots proof; pending until a block confirms it, upgraded on later runs)
+#   3. Sigstore's public transparency log, signed by this workflow's GitHub OIDC identity (no key of ours)
+# Needs repository secrets RYO_MCP_URL and RYO_MCP_KEY. The key never leaves the runner's environment.
+name: agent
+on:
+  schedule:
+    - cron: "17 * * * *"
+  workflow_dispatch: {}
+permissions:
+  contents: write
+  id-token: write
+concurrency:
+  group: agent-ledger
+  cancel-in-progress: false
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: npm ci
+      - run: pip install opentimestamps-client
+      - name: Restore the ledger from the last committed snapshot
+        run: mkdir -p data && cp src/data/ledgerSnapshot.json data/ledger.json
+      - name: Run the agent once on live RYO data (paced to RYO's rate limits)
+        env:
+          RYO_MCP_URL: ${{ secrets.RYO_MCP_URL }}
+          RYO_MCP_KEY: ${{ secrets.RYO_MCP_KEY }}
+        run: npx tsx scripts/run-agent.ts --once
+      - name: Upgrade earlier Bitcoin timestamps that have since confirmed
+        run: for f in witness/heads/*.ots; do [ -e "$f" ] && ots upgrade "$f" || true; done
+      - name: Publish the ledger head
+        id: head
+        run: |
+          f=$(npx tsx scripts/witness.ts | tail -1)
+          if [ -f "$f" ]; then echo "file=$f" >> "$GITHUB_OUTPUT"; ots stamp "$f"; fi
+      - name: Sign the head in Sigstore (keyless, this workflow's identity)
+        if: steps.head.outputs.file != ''
+        uses: sigstore/gh-action-sigstore-python@v3.0.0
+        with:
+          inputs: ${{ steps.head.outputs.file }}
+          upload-signing-artifacts: false
+      - name: Commit ledger, run record and witnesses
+        run: |
+          git config user.name "causal-verdict-agent"
+          git config user.email "causal-verdict-agent@users.noreply.github.com"
+          git add src/data/ledgerSnapshot.json src/data/witnesses.json witness/ || true
+          git diff --cached --quiet && { echo "nothing new to record"; exit 0; }
+          git commit -m "agent: ledger head $(jq -r '.[-1].head' src/data/witnesses.json)"
+          git push
