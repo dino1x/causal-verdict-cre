@@ -101,7 +101,7 @@
   },
   "evm": {
     "chainSelectorName": "ethereum-testnet-sepolia",
-    "vaultAddress": "0x0000000000000000000000000000000000000000",
-    "gasLimit": "600000"
+    "vaultAddress": "0xb86d25cd0317de545c8573f040a589c34a093544",
+    "gasLimit": "1500000"
   }
 }

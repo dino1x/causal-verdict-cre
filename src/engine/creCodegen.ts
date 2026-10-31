@@ -42,7 +42,7 @@ export function generateCreConfig(ast: MandateAST, o: CreGenOptions = DEFAULT_GE
       hash: mandateHash(ast),
       clauses: ast.clauses.map((c) => ({ id: c.id, ...c.clause })),
     },
-    evm: { chainSelectorName: "ethereum-testnet-sepolia", vaultAddress: o.vaultAddress, gasLimit: "600000" },
+    evm: { chainSelectorName: "ethereum-testnet-sepolia", vaultAddress: o.vaultAddress, gasLimit: "1500000" },
   };
 }
 

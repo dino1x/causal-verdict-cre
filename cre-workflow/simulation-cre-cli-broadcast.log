@@ -1,0 +1,29 @@
+# cre workflow simulate ./causal-verdict --target staging-settings --trigger-index 0 --broadcast   (CRE CLI v1.39.0, @chainlink/cre-sdk 1.23.0)
+# Report tx (MockKeystoneForwarder -> CausalVerdictVault): https://sepolia.etherscan.io/tx/0xea20a213693990660226b817c94b85ea4c1b6e7bc66c409e5fb4d36797c81cc6
+Initializing...
+Loading settings...
+Checking RPC connectivity...
+Compiling workflow...
+✓ Workflow compiled
+✓ Simulation limits enabled
+  HTTP: req=120kb resp=250kb timeout=10s | ConfHTTP: req=125kb resp=500kb timeout=1m30s | Consensus obs=25kb | ChainWrite evm_report=50kb evm_gas=10000000 solana_report=265b solana_cu=300000 | WASM binary=100mb compressed=20mb
+  Binary hash: 0cbf3e78f0a4fd49c8cd4d185ec9753523b35d7893afca0f5b5bbc4693936c42
+  Config hash: 578e547ce48f38fb0056d90c07cb48d2ef3098aef2eb51abefc3e827214f5728
+2026-10-31T06:19:23Z [SIMULATION] Simulator Initialized
+
+2026-10-31T06:19:23Z [SIMULATION] Running trigger trigger=cron-trigger@1.0.0
+2026-10-31T06:19:54Z [USER LOG] [SOL] confidential observation: status=ok regime=neutral verdict=cautious confluence=0.67 rsi=28.5 atr%=4.35
+2026-10-31T06:19:54Z [USER LOG] [SOL] mandate Prudent Practice Desk v1: REJECT failed=[C15:min_planes] sizeBps=0
+2026-10-31T06:20:01Z [USER LOG] [SOL] report written runId=0x22df4e345cf45b2a2abf78065b7cb73cb0b996b954954561bfbd03b4d8004d95 evidenceRoot=0x1c9a73b9c14fb0be9bd0537e43bfe9a23e616c5fc4c707b3dadfc1d95f430d2e txStatus=2
+
+✓ Workflow Simulation Result:
+"{\"symbol\":\"SOL\",\"decision\":\"REJECT\",\"failed\":[\"C15:min_planes\"],\"runId\":\"0x22df4e345cf45b2a2abf78065b7cb73cb0b996b954954561bfbd03b4d8004d95\",\"evidenceRoot\":\"0x1c9a73b9c14fb0be9bd0537e43bfe9a23e616c5fc4c707b3dadfc1d95f430d2e\"}"
+
+2026-10-31T06:20:01Z [SIMULATION] Execution finished signal received
+2026-10-31T06:20:01Z [SIMULATION] Skipping WorkflowEngineV2
+
+╭──────────────────────────────────────────────────────╮
+│ Simulation complete! Ready to deploy your workflow?  │
+│                                                      │
+│ Run cre account access to request deployment access. │
+╰──────────────────────────────────────────────────────╯

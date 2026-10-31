@@ -186,7 +186,8 @@ cre workflow simulate ./causal-verdict --target staging-settings --env ../.env -
 | Ledger: open → target 1 → breakeven stop, stale runs ignored, tamper detection | ✅ `npm test` |
 | **Official `cre workflow simulate` (CLI v1.39.0), both triggers** | ✅ `cre-workflow/simulation-cre-cli-{http,cron}.log`. Compile → Vault-DON secret → Confidential HTTP to RYO → mandate → signed report → `writeReport` (`txStatus=SUCCESS`, dry run). In both runs RYO's `deep_analysis` (~30–33s) exceeded the **simulator's** fixed 30s Confidential HTTP client timeout, which ignores the requested 80s. The workflow fell back to `analyze_token` and correctly **rejected** SOL on the missing confluence (C4). The production limit is 90s. |
 | Claude analyst debate on live run data | ✅ SOL: 15 claims, 0 dropped against 37 allowed citation paths (Debate tab) |
-| Sepolia deployment of the vault | ⏳ not deployed yet. `npx tsx scripts/deploy-vault.ts` (dry run), then `--broadcast`; it writes the address into the CRE config and `contracts/deployment.sepolia.json` |
+| **Vault deployed on Sepolia** | ✅ [`0xb86d25cd…3544`](https://sepolia.etherscan.io/address/0xb86d25cd0317de545c8573f040a589c34a093544) ([deploy tx](https://sepolia.etherscan.io/tx/0x4cca438a56f868df390340092d08f3e76716e1319ec4643a8b21d0143b82925a)), bound to mandate `0x44be16da…6e00` and to the CRE simulator's `MockKeystoneForwarder`. `contracts/deployment.sepolia.json` |
+| **CRE report written on-chain** | ✅ `cre workflow simulate --broadcast` (cron trigger) → live RYO via Confidential HTTP → mandate REJECT on `C15:min_planes` → signed report → [forwarder tx](https://sepolia.etherscan.io/tx/0xea20a213693990660226b817c94b85ea4c1b6e7bc66c409e5fb4d36797c81cc6) → `VerdictRecorded` in the vault. `cre-workflow/simulation-cre-cli-broadcast.log`; check it yourself with `npx tsx scripts/read-vault.ts`. The first attempt reverted inside the vault because the 600k gas limit was below the ~930k a verdict write costs; the limit is now 1.5M. Production DON deployment needs CRE deploy access, which this account does not have yet. |
 
 ---
 
@@ -213,6 +214,7 @@ scripts/           capture-ryo.mjs · ryoClient.mjs · selftest.ts · compile-co
 | `npm test` | Offline invariants: compiler, replay, tamper, null handling, real-feed provenance, ledger |
 | `npx tsx scripts/run-agent.ts --every=60` | Autonomous loop: live agent → practice-trade ledger |
 | `npx tsx scripts/deploy-vault.ts [--broadcast]` | Deploy the vault to Sepolia (`SEPOLIA_PRIVATE_KEY` from `.env`) |
+| `npx tsx scripts/read-vault.ts` | Read the verdicts stored in the Sepolia vault |
 | `npm run check:secrets` | Fails if any credential is in a shippable file |
 
 ## Disclosures
