@@ -137,9 +137,13 @@ Every step is hashed as `hash(prev | i | label | sha256(payload))`. The engine h
 **x402 agent micropayments** (`server/api.ts`, `/api/agent/verdict`):
 1. The agent's first request gets `402` with `exact`-scheme requirements (0.01 USDC on Base Sepolia).
 2. The agent signs an EIP-3009 `TransferWithAuthorization`.
-3. The gateway verifies the EIP-712 signature, payee, amount, validity window and nonce (replays are refused). It then returns the verdict, an `X-PAYMENT-RESPONSE`, and the exact payload it forwards to the CRE HTTP trigger.
+3. The gateway verifies the EIP-712 signature, payee, amount, validity window and nonce (replays are refused).
+4. With `X402_SETTLE=1`, the gateway then has the public x402 facilitator (`https://x402.org/facilitator`, x402 v1 `exact` on `base-sepolia`) submit the transfer on Base Sepolia. The verdict is served **only if settlement succeeds**, and the receipt carries the BaseScan transaction.
+5. It returns the verdict, an `X-PAYMENT-RESPONSE`, and the exact payload it forwards to the CRE HTTP trigger.
 
-The UI runs this against an ephemeral wallet it generates in the browser. *Settlement is not broadcast: the signature is real, the transfer is not.*
+A paid verdict is computed on **real evidence only**: live feeds on a live run, otherwise the bundled real feed capture. It is never computed on the scenario fixtures, and the response states its `evidenceMode` and feed status.
+
+The UI runs the flow with an ephemeral, unfunded browser wallet, so no funds move there. A real agent pays with `npx tsx scripts/x402-pay.ts [server] [SYMBOL]`, which uses `SEPOLIA_PRIVATE_KEY` on Base Sepolia. The settlement path was exercised against the live facilitator: with an unfunded payer it submitted `transferWithAuthorization`, the transfer reverted, and the gateway correctly refused the verdict with a 402. Fund the payer with test USDC from [faucet.circle.com](https://faucet.circle.com) to settle.
 
 ```bash
 npm run contract:compile       # solc 0.8.24 → contracts/out/CausalVerdictVault.json
@@ -181,6 +185,7 @@ cre workflow simulate ./causal-verdict --target staging-settings --env ../.env -
 | Vault accepts the workflow's report bytes in a real EVM; non-forwarder reverts | ✅ `npm run cre:simulate` |
 | Live RYO inside the local DON round | ✅ `cre-workflow/simulation-live.log` |
 | x402 402 → signed retry → 200 → replay refused | ✅ in-app (CRE + x402 tab) |
+| x402 settlement through the public facilitator | ✅ integration: payload accepted, `transferWithAuthorization` submitted, unfunded payer refused with 402 · ⏳ funded settlement needs test USDC (`scripts/x402-pay.ts`) |
 | Workflow compiles to WASM with the SDK's `cre-compile` (Javy), passing its type-check and its restricted-API check | ✅ `npm run cre:compile` → `dist/workflow.wasm` (2.65 MB) |
 | Real-feed evidence: linked sources, no look-ahead, deterministic replay | ✅ `npm test` |
 | Ledger: open → target 1 → breakeven stop, stale runs ignored, tamper detection | ✅ `npm test` |
@@ -214,6 +219,7 @@ scripts/           capture-ryo.mjs · ryoClient.mjs · selftest.ts · compile-co
 | `npm test` | Offline invariants: compiler, replay, tamper, null handling, real-feed provenance, ledger |
 | `npx tsx scripts/run-agent.ts --every=60` | Autonomous loop: live agent → practice-trade ledger |
 | `npx tsx scripts/deploy-vault.ts [--broadcast]` | Deploy the vault to Sepolia (`SEPOLIA_PRIVATE_KEY` from `.env`) |
+| `X402_SETTLE=1 X402_PAY_TO=0x… npm start` then `npx tsx scripts/x402-pay.ts http://localhost:8787` | Pay for a verdict with real Base Sepolia USDC, settled through the x402 facilitator |
 | `npx tsx scripts/read-vault.ts` | Read the verdicts stored in the Sepolia vault |
 | `npm run check:secrets` | Fails if any credential is in a shippable file |
 

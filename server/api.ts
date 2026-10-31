@@ -9,15 +9,28 @@ import { callRyo, loadEnv, TOOLS } from "../scripts/ryoClient.mjs";
 import { snapshotLookup, snapshotFetcher, type SnapshotFile } from "../src/engine/snapshotFetcher";
 import type { RyoResult, RyoTool } from "../src/engine/ryo";
 import { sha256Hex } from "./hash";
-import { collectFeeds } from "./feeds";
+import { collectFeeds, DEFAULT_TG_VOICES } from "./feeds";
 import { claudeDebate } from "./llmDebate";
 import { canonical } from "../src/engine/ryo";
-import { runPipeline } from "../src/engine/pipeline";
+import { runPipeline, type EvidenceProvider, type Fixtures, type FeedSource } from "../src/engine/pipeline";
 import { DEFAULT_MANDATE, compile } from "../src/engine/legalAstCompiler";
-import * as F from "../src/data/scenarioFixtures";
 
 loadEnv();
 const SNAP: SnapshotFile = JSON.parse(readFileSync(join(process.cwd(), "src/data/ryoLiveSnapshots.json"), "utf8"));
+const FEED_SNAP: Fixtures & { referenceTime: string; captured_at: string; sources: FeedSource[] } = JSON.parse(readFileSync(join(process.cwd(), "src/data/feedSnapshots.json"), "utf8"));
+
+// Paid verdicts use real evidence only: live feeds on a live run, otherwise the bundled real capture taken for the
+// snapshot's reference time. A run at any other reference time gets no external evidence, never scenario fixtures.
+function realEvidence(live: boolean): EvidenceProvider {
+  return async (tokens, ref) => {
+    if (live) {
+      const b = await collectFeeds(tokens, ref ?? new Date().toISOString(), DEFAULT_TG_VOICES);
+      return { mode: "real", fixtures: b, sources: b.sources };
+    }
+    if (FEED_SNAP.referenceTime === ref) return { mode: "real", fixtures: FEED_SNAP, sources: FEED_SNAP.sources.map((x) => ({ ...x, detail: `${x.detail} [captured ${FEED_SNAP.captured_at}]` })) };
+    return { mode: "real", fixtures: { voices: [], posts: [], whales: [], news: [] }, sources: [{ feed: "onchain", target: "all feeds", ok: false, items: 0, detail: `bundled feed capture is for ${FEED_SNAP.referenceTime}, this run is ${ref}; evidence unavailable, not invented` }] };
+  };
+}
 const lastRate: { limit: string | null; remaining: string | null; reset: string | null; at: string | null } = { limit: null, remaining: null, reset: null, at: null };
 
 // ---------------------------------------------------------------- x402 (exact scheme, EIP-3009 authorization)
@@ -51,7 +64,7 @@ function requirements(resource: string) {
   };
 }
 
-async function verifyPayment(header: string): Promise<{ ok: true; payer: Hex; value: bigint; nonce: Hex } | { ok: false; reason: string }> {
+async function verifyPayment(header: string): Promise<{ ok: true; payer: Hex; value: bigint; nonce: Hex; payload: any } | { ok: false; reason: string }> {
   let p: any;
   try {
     p = JSON.parse(Buffer.from(header, "base64").toString("utf8"));
@@ -84,7 +97,26 @@ async function verifyPayment(header: string): Promise<{ ok: true; payer: Hex; va
   });
   if (!valid) return { ok: false, reason: "EIP-712 signature does not recover to payer" };
   usedNonces.add(a.nonce);
-  return { ok: true, payer: a.from, value: BigInt(a.value), nonce: a.nonce };
+  return { ok: true, payer: a.from, value: BigInt(a.value), nonce: a.nonce, payload: p };
+}
+
+// Optional real settlement (X402_SETTLE=1): after the local EIP-712 check, the public x402 facilitator submits the
+// EIP-3009 transferWithAuthorization on Base Sepolia and pays the gas. The verdict is served only if settlement succeeds.
+const FACILITATOR = process.env.X402_FACILITATOR_URL ?? "https://x402.org/facilitator";
+async function settlePayment(payload: any, resource: string): Promise<{ ok: true; transaction: Hex } | { ok: false; reason: string }> {
+  try {
+    const r = await fetch(`${FACILITATOR}/settle`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ x402Version: 1, paymentPayload: payload, paymentRequirements: requirements(resource).accepts[0] }),
+      signal: AbortSignal.timeout(60_000),
+    });
+    const j: any = await r.json().catch(() => ({}));
+    if (r.ok && j.success && j.transaction) return { ok: true, transaction: j.transaction };
+    return { ok: false, reason: `settlement failed: ${j.errorReason ?? j.error ?? r.status}` };
+  } catch (e) {
+    return { ok: false, reason: `facilitator unreachable: ${(e as Error).message}` };
+  }
 }
 
 // ---------------------------------------------------------------- RYO proxy
@@ -203,18 +235,26 @@ export async function handleApi(req: IncomingMessage, res: ServerResponse): Prom
       if (!header || Array.isArray(header)) return send(res, 402, requirements(resource)), true;
       const pay = await verifyPayment(header);
       if (!pay.ok) return send(res, 402, { ...requirements(resource), error: pay.reason }), true;
+      const settle = process.env.X402_SETTLE === "1" ? await settlePayment(pay.payload, resource) : null;
+      if (settle && !settle.ok) {
+        usedNonces.delete(pay.nonce); // nothing moved on-chain, so the same authorization may be retried
+        return send(res, 402, { ...requirements(resource), error: settle.reason }), true;
+      }
       const body = await readBody(req);
       const symbol = String(body.symbol ?? "SOL").toUpperCase();
       const { ast } = compile(body.mandate ?? DEFAULT_MANDATE);
       if (!ast) return send(res, 422, { error: "mandate does not compile" }), true;
+      const live = !!(body.live && process.env.RYO_MCP_KEY);
       const run = await runPipeline({
-        fetcher: body.live && process.env.RYO_MCP_KEY ? (t, a) => proxyCall(t, a, null) : snapshotFetcher(SNAP),
+        fetcher: live ? (t, a) => proxyCall(t, a, null) : snapshotFetcher(SNAP),
         mandateProse: body.mandate ?? DEFAULT_MANDATE,
         equityUsd: Number(body.equityUsd ?? 100000),
-        fixtures: { voices: F.KOL_VOICES, posts: F.KOL_POSTS, whales: F.WHALE_EVENTS, news: F.NEWS_ITEMS },
+        evidence: realEvidence(live),
       });
       const d = run.dossiers.find((x) => x.symbol === symbol);
-      const receipt = { success: true, settled: false, network: X402.network, payer: pay.payer, amountUsdc6: pay.value.toString(), nonce: pay.nonce, note: "EIP-712 authorization verified; settlement is not broadcast by this demo gateway." };
+      const receipt = settle?.ok
+        ? { success: true, settled: true, transaction: settle.transaction, network: X402.network, payer: pay.payer, amountUsdc6: pay.value.toString(), nonce: pay.nonce, explorer: `https://sepolia.basescan.org/tx/${settle.transaction}` }
+        : { success: true, settled: false, network: X402.network, payer: pay.payer, amountUsdc6: pay.value.toString(), nonce: pay.nonce, note: "EIP-712 authorization verified; settlement is off (set X402_SETTLE=1 to settle through the facilitator)." };
       send(
         res,
         200,
@@ -226,6 +266,9 @@ export async function handleApi(req: IncomingMessage, res: ServerResponse): Prom
           traceRoot: run.trace.root,
           mandateHash: run.mandateHash,
           provenance: run.provenanceMix,
+          referenceTime: run.referenceTime,
+          evidenceMode: run.evidenceMode,
+          feeds: run.feedSources.map((f) => ({ feed: f.feed, target: f.target, ok: f.ok, items: f.items })),
           creHttpTriggerPayload: d
             ? { symbol, evidence: { exitLiquidityTrap: d.whale.trap, toutingFlag: d.gates.some((g) => g.kind === "anti_touting" && g.outcome === "fail"), supportingPlanes: d.planes.length, traceRoot: run.trace.root }, x402: { payer: pay.payer, amountUsdc6: pay.value.toString(), nonce: pay.nonce, verified: true } }
             : null,

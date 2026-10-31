@@ -101,7 +101,7 @@ function X402Demo({ mandate }: { mandate: string }) {
       <div className="row">
         <label className="inline">symbol <input className="num" value={symbol} onChange={(e) => setSymbol(e.target.value.toUpperCase())} /></label>
         <button className="btn primary" onClick={go} disabled={busy}>{busy ? "Negotiating…" : "Run as paying AI agent"}</button>
-        <span className="small muted">exact scheme · Base Sepolia USDC · EIP-712 signature verified server-side with viem · nonce replay rejected · no funds move</span>
+        <span className="small muted">exact scheme · Base Sepolia USDC · EIP-712 signature verified server-side with viem · nonce replay rejected · this tab's wallet is unfunded, so no funds move (a funded agent settles with scripts/x402-pay.ts when the server runs X402_SETTLE=1)</span>
       </div>
       {steps.map((st, i) => (
         <div key={i} style={{ marginTop: 10 }}>
