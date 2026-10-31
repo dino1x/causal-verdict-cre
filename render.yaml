@@ -20,3 +20,10 @@ services:
         sync: false
       - key: TAVILY_API_KEY
         sync: false
+      # x402: settle each demo payment on Base Sepolia. The demo agent wallet is testnet-only and funded with test USDC.
+      - key: X402_SETTLE
+        value: "1"
+      - key: X402_PAY_TO
+        value: "0x451988253D2c8476BefF48a5f1920b38BA5256B1"
+      - key: X402_DEMO_PAYER_KEY
+        sync: false

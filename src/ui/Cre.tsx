@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
 import { toHex, type Hex } from "viem";
 import { compile, decompileClause, type Clause } from "../engine/legalAstCompiler";
@@ -55,8 +55,14 @@ function X402Demo({ mandate }: { mandate: string }) {
   const [steps, setSteps] = useState<{ title: string; body: unknown; tone: string }[]>([]);
   const [busy, setBusy] = useState(false);
   const [symbol, setSymbol] = useState("SOL");
+  const [info, setInfo] = useState<{ settles: boolean; demoPayer: string | null } | null>(null);
+  const [settledTx, setSettledTx] = useState<string | null>(null);
+  useEffect(() => {
+    fetch("/api/agent/x402-info").then((r) => (r.ok ? r.json() : null)).then(setInfo).catch(() => setInfo(null));
+  }, []);
   const go = async () => {
     setBusy(true);
+    setSettledTx(null);
     const s: typeof steps = [];
     const push = (title: string, body: unknown, tone = "muted") => {
       s.push({ title, body, tone });
@@ -69,7 +75,16 @@ function X402Demo({ mandate }: { mandate: string }) {
       push(`1 · POST /api/agent/verdict → HTTP ${r1.status} Payment Required`, req, r1.status === 402 ? "warn" : "err");
       if (r1.status !== 402) return;
       const a = req.accepts[0];
-      // Ephemeral agent wallet generated in this tab — holds no funds; it only proves the signing flow.
+      let payment: unknown;
+      if (info?.demoPayer) {
+        // The server's demo agent wallet holds test USDC, so this payment settles on Base Sepolia.
+        const d = await fetch("/api/agent/demo-sign", { method: "POST" });
+        const dj = await d.json();
+        if (!d.ok) throw new Error(dj.error ?? `demo wallet HTTP ${d.status}`);
+        payment = dj;
+        push(`2 · Demo agent ${short(info.demoPayer, 8)} signs EIP-3009 TransferWithAuthorization (${Number(a.maxAmountRequired) / 1e6} USDC)`, payment);
+      } else {
+      // No funded wallet on this server: an ephemeral wallet proves the signing flow; nothing settles.
       const account = privateKeyToAccount(generatePrivateKey());
       const now = Math.floor(Date.now() / 1000);
       const nonce = toHex(crypto.getRandomValues(new Uint8Array(32))) as Hex;
@@ -80,13 +95,18 @@ function X402Demo({ mandate }: { mandate: string }) {
         primaryType: "TransferWithAuthorization",
         message: { ...authorization, value: BigInt(authorization.value), validAfter: BigInt(authorization.validAfter), validBefore: BigInt(authorization.validBefore) },
       });
-      const payment = { x402Version: 1, scheme: "exact", network: a.network, payload: { signature, authorization } };
+      payment = { x402Version: 1, scheme: "exact", network: a.network, payload: { signature, authorization } };
       push(`2 · Agent ${short(account.address, 8)} signs EIP-3009 TransferWithAuthorization (${Number(a.maxAmountRequired) / 1e6} USDC)`, payment);
+      }
       const r2 = await fetch("/api/agent/verdict", { method: "POST", headers: { "Content-Type": "application/json", "X-PAYMENT": btoa(JSON.stringify(payment)) }, body });
       const out = await r2.json();
       const receipt = r2.headers.get("X-PAYMENT-RESPONSE");
       push(`3 · Retry with X-PAYMENT → HTTP ${r2.status}`, { verdict: out.decision, symbol: out.symbol, reason: out.reason, position: out.position, traceRoot: out.traceRoot, mandateHash: out.mandateHash }, r2.ok ? "ok" : "err");
-      if (receipt) push("4 · X-PAYMENT-RESPONSE (decoded)", JSON.parse(atob(receipt)), "ok");
+      if (receipt) {
+        const rc = JSON.parse(atob(receipt));
+        if (rc.transaction) setSettledTx(rc.transaction);
+        push(`4 · X-PAYMENT-RESPONSE${rc.settled ? " — settled on-chain" : ""}`, rc, "ok");
+      }
       if (out.creHttpTriggerPayload) push("5 · Payload the gateway forwards to the CRE HTTP trigger", out.creHttpTriggerPayload, "ok");
       const r3 = await fetch("/api/agent/verdict", { method: "POST", headers: { "Content-Type": "application/json", "X-PAYMENT": btoa(JSON.stringify(payment)) }, body });
       push(`6 · Replaying the same payment → HTTP ${r3.status}`, await r3.json(), r3.status === 402 ? "ok" : "err");
@@ -102,8 +122,13 @@ function X402Demo({ mandate }: { mandate: string }) {
       <div className="row">
         <label className="inline">symbol <input className="num" value={symbol} onChange={(e) => setSymbol(e.target.value.toUpperCase())} /></label>
         <button className="btn primary" onClick={go} disabled={busy}>{busy ? "Negotiating…" : "Run as paying AI agent"}</button>
-        <span className="small muted">Base Sepolia USDC · signature verified · replays refused · demo wallet unfunded</span>
+        <span className="small muted">{info?.demoPayer && info.settles ? "Base Sepolia USDC · settles on-chain · replays refused" : "Base Sepolia USDC · signature verified · replays refused · no funded wallet on this server"}</span>
       </div>
+      {settledTx && (
+        <p className="small" style={{ marginTop: 10 }}>
+          <Badge k="pass">settled</Badge> <a href={`https://sepolia.basescan.org/tx/${settledTx}`} target="_blank" rel="noreferrer">This payment on BaseScan ↗</a>
+        </p>
+      )}
       {steps.map((st, i) => (
         <div key={i} style={{ marginTop: 10 }}>
           <div className={st.tone}>{st.title}</div>

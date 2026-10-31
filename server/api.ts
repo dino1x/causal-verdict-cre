@@ -3,7 +3,9 @@
 import type { IncomingMessage, ServerResponse } from "node:http";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { verifyTypedData, type Hex } from "viem";
+import { toHex, verifyTypedData, type Hex } from "viem";
+import { privateKeyToAccount } from "viem/accounts";
+import { randomBytes } from "node:crypto";
 // @ts-ignore — plain ESM helper
 import { callRyo, loadEnv, TOOLS } from "../scripts/ryoClient.mjs";
 import { snapshotLookup, snapshotFetcher, type SnapshotFile } from "../src/engine/snapshotFetcher";
@@ -42,6 +44,29 @@ export const X402 = {
   priceUsdc6: 10000n, // 0.01 USDC
 };
 const usedNonces = new Set<string>();
+
+// Demo agent wallet (X402_DEMO_PAYER_KEY): a testnet-only wallet holding a little test USDC, so a visitor can watch a
+// real x402 payment settle on Base Sepolia. It signs only this gateway's own payment (payee, asset, price, network)
+// and is rate-limited, so it cannot be used to sign anything else or be drained quickly.
+const demoKey = process.env.X402_DEMO_PAYER_KEY?.trim();
+const demoPayer = demoKey ? privateKeyToAccount((demoKey.startsWith("0x") ? demoKey : `0x${demoKey}`) as Hex) : null;
+const demoSigns: number[] = [];
+async function demoSign(): Promise<{ ok: true; payment: unknown } | { ok: false; status: number; reason: string }> {
+  if (!demoPayer) return { ok: false, status: 404, reason: "no demo agent wallet on this server" };
+  const now = Date.now();
+  while (demoSigns.length && now - demoSigns[0] > 60_000) demoSigns.shift();
+  if (demoSigns.length >= 4) return { ok: false, status: 429, reason: "demo wallet rate limit: 4 payments a minute" };
+  demoSigns.push(now);
+  const t = Math.floor(now / 1000);
+  const authorization = { from: demoPayer.address, to: X402.payTo, value: X402.priceUsdc6.toString(), validAfter: String(t - 5), validBefore: String(t + 120), nonce: toHex(randomBytes(32)) };
+  const signature = await demoPayer.signTypedData({
+    domain: { name: "USDC", version: "2", chainId: X402.chainId, verifyingContract: X402.asset },
+    types: { TransferWithAuthorization: [{ name: "from", type: "address" }, { name: "to", type: "address" }, { name: "value", type: "uint256" }, { name: "validAfter", type: "uint256" }, { name: "validBefore", type: "uint256" }, { name: "nonce", type: "bytes32" }] },
+    primaryType: "TransferWithAuthorization",
+    message: { ...authorization, value: BigInt(authorization.value), validAfter: BigInt(authorization.validAfter), validBefore: BigInt(authorization.validBefore) },
+  });
+  return { ok: true, payment: { x402Version: 1, scheme: "exact", network: X402.network, payload: { signature, authorization } } };
+}
 
 function requirements(resource: string) {
   return {
@@ -310,8 +335,12 @@ export async function handleApi(req: IncomingMessage, res: ServerResponse): Prom
       return true;
     }
     if (url.pathname === "/api/agent/x402-info" && req.method === "GET") {
-      send(res, 200, { ...X402, priceUsdc6: X402.priceUsdc6.toString() });
+      send(res, 200, { ...X402, priceUsdc6: X402.priceUsdc6.toString(), settles: process.env.X402_SETTLE === "1", demoPayer: demoPayer?.address ?? null });
       return true;
+    }
+    if (url.pathname === "/api/agent/demo-sign" && req.method === "POST") {
+      const r = await demoSign();
+      return r.ok ? send(res, 200, r.payment) : send(res, r.status, { error: r.reason }), true;
     }
     send(res, 404, { error: "not found" });
     return true;

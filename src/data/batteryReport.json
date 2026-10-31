@@ -2,35 +2,35 @@
   "note": "chain = hash chains alone; witness = chains plus a ledger head published where the operator cannot rewrite it. Truncation and full re-hashing yield a valid chain by construction, so only the witnessed head catches them.",
   "results": [
     {
-      "label": "live ledger (data/ledger.json, 6 runs)",
-      "head": "0x4e7cc69731701301615bee607385275752cf058f36a01f03361e9d289a712a4f",
-      "attacks": 102,
-      "missedByChain": 53,
+      "label": "live ledger (data/ledger.json, 7 runs)",
+      "head": "0xf0332286a69e5dd8b566f6741823fcd4546533bb13258cf4b41ec5e3ec8b0624",
+      "attacks": 126,
+      "missedByChain": 63,
       "missedWithWitness": 0,
       "byKind": {
         "edit": {
-          "attacks": 29,
+          "attacks": 36,
           "missedByChain": 0,
           "missedWithWitness": 0
         },
         "delete": {
-          "attacks": 10,
+          "attacks": 13,
           "missedByChain": 0,
           "missedWithWitness": 0
         },
         "swap": {
-          "attacks": 10,
+          "attacks": 12,
           "missedByChain": 0,
           "missedWithWitness": 0
         },
         "truncate": {
           "attacks": 4,
-          "missedByChain": 4,
+          "missedByChain": 2,
           "missedWithWitness": 0
         },
         "rehash": {
-          "attacks": 49,
-          "missedByChain": 49,
+          "attacks": 61,
+          "missedByChain": 61,
           "missedWithWitness": 0
         }
       },
@@ -101,7 +101,7 @@
       }
     }
   ],
-  "total": 238,
-  "missedByChain": 97,
+  "total": 262,
+  "missedByChain": 107,
   "missedWithWitness": 0
 }
