@@ -1,1 +1,28 @@
-{"version":1,"positions":[],"events":[],"runs":[]}
+{
+  "version": 1,
+  "positions": [],
+  "events": [
+    {
+      "at": "2026-10-31T05:37:16Z",
+      "kind": "no_trade",
+      "symbol": null,
+      "detail": "no candidate satisfied the mandate",
+      "traceRoot": "0x9ca37d893b8810333803ccbeb68abb8b63d95819c52124f33da56edf19ce85a7",
+      "i": 0,
+      "prev": "0x0000000000000000000000000000000000000000000000000000000000000000",
+      "hash": "0x88bb42ef14ec4964689af0302d748e4a1e04fda50f6171bde0537f8f2112046a"
+    }
+  ],
+  "runs": [
+    {
+      "at": "2026-10-31T05:37:16Z",
+      "traceRoot": "0x9ca37d893b8810333803ccbeb68abb8b63d95819c52124f33da56edf19ce85a7",
+      "provenance": {
+        "live": 16,
+        "unavailable": 1
+      },
+      "evidenceMode": "real",
+      "decision": "NO TRADE"
+    }
+  ]
+}

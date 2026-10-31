@@ -2,6 +2,7 @@
 // in the practice-trade ledger (data/ledger.json, mirrored to src/data/ledgerSnapshot.json for the UI).
 //   npx tsx scripts/run-agent.ts            # every 60 min until stopped
 //   npx tsx scripts/run-agent.ts --once
+// Calls are paced to RYO's 6/min fanout limit, so one run takes ~3-4 minutes.
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { runPipeline } from "../src/engine/pipeline";
 import { DEFAULT_MANDATE } from "../src/engine/legalAstCompiler";
@@ -15,10 +16,10 @@ const PATH = "data/ledger.json";
 mkdirSync("data/runs", { recursive: true });
 const load = (): Ledger => (existsSync(PATH) ? JSON.parse(readFileSync(PATH, "utf8")) : emptyLedger());
 
-async function tick() {
+async function tick(): Promise<boolean> {
   const started = new Date().toISOString();
   const run = await runPipeline({
-    fetcher: (t, a) => proxyCall(t, a, null),
+    fetcher: (t, a) => proxyCall(t, a, null, { patient: true }),
     mandateProse: DEFAULT_MANDATE,
     equityUsd: 100000,
     evidence: async (tokens, ref) => {
@@ -41,14 +42,17 @@ async function tick() {
   }
   writeFileSync(`data/runs/${(run.referenceTime ?? started).replace(/[:.]/g, "-")}.json`, JSON.stringify({ referenceTime: run.referenceTime, traceRoot: run.trace.root, provenance: run.provenanceMix, decision: run.practiceTrade?.position.symbol ?? null, calls: run.calls.map((c) => ({ tool: c.tool, args: c.args, provenance: c.provenance, sha256: c.envelope_sha256, fallback: c.fallback_reason })), feeds: run.feedSources }, null, 2));
   console.log(`[${started}] ref=${run.referenceTime} live=${live}/${run.calls.length} decision=${run.practiceTrade?.position.symbol ?? "none"} ${recorded ? "RECORDED" : `NOT RECORDED (${why ?? "stale reference time"})`} ledger=${JSON.stringify(ledgerStats(after))} chain=${verifyLedger(after).ok ? "ok" : "BROKEN"}`);
+  return recorded || !why; // retry soon only when live evidence was missing
 }
 
 for (;;) {
+  let ok = false;
   try {
-    await tick();
+    ok = await tick();
   } catch (e) {
     console.log(`[${new Date().toISOString()}] run failed: ${(e as Error).message}`);
   }
   if (once) break;
-  await new Promise((r) => setTimeout(r, minutes * 60_000));
+  // A run without live evidence is retried after 5 minutes rather than waiting a full interval.
+  await new Promise((r) => setTimeout(r, (ok ? minutes : Math.min(5, minutes)) * 60_000));
 }

@@ -9,7 +9,7 @@
     "build": "tsc --noEmit -p tsconfig.json && vite build",
     "start": "tsx server/serve.ts",
     "capture": "node scripts/capture-ryo.mjs && tsx scripts/capture-feeds.ts",
-    "test": "tsx scripts/selftest.ts",
+    "test": "tsx scripts/selftest.ts && tsx scripts/patient-test.ts",
     "contract:compile": "node scripts/compile-contract.mjs",
     "cre:simulate": "tsx cre-workflow/simulate.ts",
     "check:secrets": "node scripts/check-secrets.mjs",

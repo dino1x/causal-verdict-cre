@@ -91,7 +91,40 @@ async function verifyPayment(header: string): Promise<{ ok: true; payer: Hex; va
 const CHAOS = new Set(["429", "503", "timeout", "offline"]);
 const breaker = { openUntil: 0, reason: "", consecutive: 0 };
 
-export async function proxyCall(tool: RyoTool, args: Record<string, unknown>, chaos: string | null): Promise<RyoResult> {
+// Patient mode (the autonomous loop): RYO also enforces "6/min for mcp_fanout", so a 17-call run burst into 429s
+// and the breaker sent the rest to snapshots. Patient callers queue behind a sliding 6-per-minute window and wait out
+// a 429's Retry-After instead of falling back. The interactive UI stays fast and keeps the snapshot fallback.
+const FANOUT_PER_MIN = 6;
+const fanoutStarts: number[] = [];
+let fanoutQueue: Promise<void> = Promise.resolve();
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+function fanoutSlot(): Promise<void> {
+  const next = fanoutQueue.then(async () => {
+    for (;;) {
+      const now = Date.now();
+      while (fanoutStarts.length && now - fanoutStarts[0] > 61_000) fanoutStarts.shift();
+      if (fanoutStarts.length < FANOUT_PER_MIN) break;
+      await sleep(61_000 - (now - fanoutStarts[0]) + 50);
+    }
+    fanoutStarts.push(Date.now());
+  });
+  fanoutQueue = next;
+  return next;
+}
+
+export async function proxyCall(tool: RyoTool, args: Record<string, unknown>, chaos: string | null, opts: { patient?: boolean } = {}): Promise<RyoResult> {
+  if (opts.patient && !chaos && process.env.RYO_MCP_KEY) {
+    let res: RyoResult | null = null;
+    for (let attempt = 1; attempt <= 4; attempt++) {
+      await fanoutSlot();
+      breaker.openUntil = 0; // patient callers pace themselves instead of tripping over the breaker
+      res = await proxyCall(tool, args, null);
+      if (res.provenance === "live") return res;
+      const retryAfter = Number((res.rate_limit as any)?.retryAfter);
+      await sleep(Number.isFinite(retryAfter) && retryAfter > 0 ? retryAfter * 1000 : 15_000 * attempt);
+    }
+    return res!;
+  }
   const t0 = Date.now();
   if (chaos && CHAOS.has(chaos)) return snapshotLookup(SNAP, tool, args, `chaos-injected ${chaos} (RYO was not called)`);
   if (!process.env.RYO_MCP_KEY) return snapshotLookup(SNAP, tool, args, "server has no RYO_MCP_KEY");
