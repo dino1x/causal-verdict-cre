@@ -58,12 +58,22 @@ export function LedgerView() {
           <h2>Run history</h2>
           <div className="scroll" style={{ maxHeight: 420 }}>
             <table>
-              <thead><tr><th>Reference time</th><th>Decision</th><th>RYO provenance</th><th>Evidence</th><th>Trace root</th></tr></thead>
+              <thead><tr><th>Reference time</th><th>Decision</th><th>Why (deciding gates per candidate)</th><th>RYO provenance</th><th>Evidence</th><th>Trace root</th></tr></thead>
               <tbody>
                 {[...ledger.runs].reverse().map((r) => (
                   <tr key={r.traceRoot}>
                     <td className="small">{r.at}</td>
                     <td><Badge k={r.decision.startsWith("SELECT") ? "select" : "reject"}>{r.decision}</Badge></td>
+                    <td className="small">
+                      {r.candidates
+                        ? r.candidates.map((c) => (
+                            <div key={c.symbol} title={c.failed.map((f) => `${f.gate}: ${f.observed}`).join("\n")}>
+                              <b>{c.symbol}</b>{" "}
+                              {c.decision === "SELECT" ? <span className="ok">selected</span> : <span className="mono">{c.failed.map((f) => f.gate).join(", ") || "rejected"}</span>}
+                            </div>
+                          ))
+                        : <span className="muted">not stored (recorded before reasons were added)</span>}
+                    </td>
                     <td className="small">{Object.entries(r.provenance).map(([k, n]) => `${n} ${k}`).join(" · ")}</td>
                     <td className="small">{r.evidenceMode}</td>
                     <td className="hash">{short(r.traceRoot, 8)}</td>

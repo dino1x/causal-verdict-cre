@@ -58,9 +58,11 @@ if (fails) process.exit(1);
 
 // 5. practice-trade ledger: open → target1 → breakeven stop, stale runs ignored, chain verifies
 const L = await import("../src/engine/ledger");
-const fakeRun = (at: string, price: number, root: string) => ({ referenceTime: at, trace: { root }, practiceTrade: null, provenanceMix: { live: 1 }, evidenceMode: "real", mandateHash: "0x", calls: [{ tool: "analyze_token", args: { symbol: "SOL" }, provenance: "live", envelope_sha256: "ab", envelope: { as_of: at, data: { market: { price_usd: price } } } }] }) as any;
+const fakeRun = (at: string, price: number, root: string) => ({ referenceTime: at, trace: { root }, practiceTrade: null, provenanceMix: { live: 1 }, evidenceMode: "real", mandateHash: "0x", dossiers: [], calls: [{ tool: "analyze_token", args: { symbol: "SOL" }, provenance: "live", envelope_sha256: "ab", envelope: { as_of: at, data: { market: { price_usd: price } } } }] }) as any;
 let led = L.applyRun(L.emptyLedger(), run);
 const pos0 = led.positions[0];
+const why = led.runs[0].candidates ?? [];
+check("ledger run records why each candidate was selected or rejected", why.length === run.dossiers.length && why.some((c) => c.decision === "REJECT" && c.failed.length > 0), why.map((c) => `${c.symbol}:${c.decision}[${c.failed.map((f) => f.gate).join(",")}]`).join(" "));
 check("ledger opens the run's practice trade", led.positions.length === 1 && pos0.symbol === run.practiceTrade!.position.symbol);
 const t0 = Date.parse(run.referenceTime!);
 const iso = (h: number) => new Date(t0 + h * 3_600_000).toISOString();

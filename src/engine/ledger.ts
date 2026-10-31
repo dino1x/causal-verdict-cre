@@ -36,11 +36,26 @@ export interface LedgerEvent {
   hash: string;
 }
 
+export interface RunCandidate {
+  symbol: string;
+  decision: "SELECT" | "REJECT";
+  failed: { gate: string; observed: string }[];
+}
+
 export interface Ledger {
   version: 1;
   positions: LedgerPosition[];
   events: LedgerEvent[];
-  runs: { at: string; traceRoot: string; provenance: Record<string, number>; evidenceMode: string; decision: string }[];
+  runs: {
+    at: string;
+    traceRoot: string;
+    provenance: Record<string, number>;
+    evidenceMode: string;
+    decision: string;
+    // Why each candidate was selected or rejected: the binding gates it failed and what was observed.
+    // Absent on runs recorded before this field existed.
+    candidates?: RunCandidate[];
+  }[];
 }
 
 export const emptyLedger = (): Ledger => ({ version: 1, positions: [], events: [], runs: [] });
@@ -88,6 +103,11 @@ export function applyRun(prev: Ledger, run: RunResult, extraPrices: Map<string, 
   // A run whose reference time is not newer than the last recorded run (e.g. snapshot fallback) is stale.
   if (l.runs.length && Date.parse(at) <= Date.parse(l.runs[l.runs.length - 1].at)) return l;
   const prices = new Map([...extraPrices, ...runPrices(run)]);
+  const candidates: RunCandidate[] = run.dossiers.map((d) => ({
+    symbol: d.symbol,
+    decision: d.judgment.decision,
+    failed: d.judgment.failedGates.map((g) => ({ gate: `${g.id}:${g.kind}`, observed: g.counterexample ?? g.observed })),
+  }));
 
   for (const p of l.positions.filter((x) => x.status === "open")) {
     if (Date.parse(at) <= Date.parse(p.openedAt)) continue;
@@ -150,9 +170,10 @@ export function applyRun(prev: Ledger, run: RunResult, extraPrices: Map<string, 
   } else if (t) {
     addEvent(l, { at, kind: "no_trade", symbol: t.position.symbol, detail: `SELECT ${t.position.symbol} again — already open, not doubled`, traceRoot: run.trace.root });
   } else {
-    addEvent(l, { at, kind: "no_trade", symbol: null, detail: "no candidate satisfied the mandate", traceRoot: run.trace.root });
+    const why = candidates.map((c) => `${c.symbol}: ${c.failed.map((f) => f.gate).join(", ") || "no failed gate"}`).join(" · ");
+    addEvent(l, { at, kind: "no_trade", symbol: null, detail: `no candidate satisfied the mandate — ${why}`, traceRoot: run.trace.root });
   }
-  l.runs.push({ at, traceRoot: run.trace.root, provenance: run.provenanceMix, evidenceMode: run.evidenceMode, decision: t ? `SELECT ${t.position.symbol}` : "NO TRADE" });
+  l.runs.push({ at, traceRoot: run.trace.root, provenance: run.provenanceMix, evidenceMode: run.evidenceMode, decision: t ? `SELECT ${t.position.symbol}` : "NO TRADE", candidates });
   return l;
 }
 
