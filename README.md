@@ -10,7 +10,7 @@ BLI Legal Tech Hackathon 2 · RYO-CHAN *Autonomous Agents* · Chainlink *Best wo
 
 ## Judge path (3 minutes)
 
-**Live app:** https://causal-verdict-cre.onrender.com (full server: live RYO, Claude analyst, x402 payments that settle on Base Sepolia) · **Static replay:** https://dino1x.github.io/causal-verdict-cre/ · **Repo:** https://github.com/dino1x/causal-verdict-cre
+**Live app:** https://causalverdict.site (full server: live RYO, Claude analyst, x402 payments that settle on Base Sepolia) · **Static replay:** https://dino1x.github.io/causal-verdict-cre/ · **Repo:** https://github.com/dino1x/causal-verdict-cre
 
 
 **Built on RYO, not around it.** Every decision comes from RYO-CHAN MCP's six tools (`market_overview`, `monitor_market_sentiment_shift`, `scan_market`, `compare_tokens`, `analyze_token`, `deep_analysis`), called through a server proxy that keeps the key off the browser. Without a key, the app replays 17 real captured RYO responses, hashed and labelled. The app opens on a **Judge** tab that mirrors this section, with a "Show me" button on every row.

@@ -1,5 +1,5 @@
 # Keeps the hosted app awake so it answers instantly, whenever someone opens it. Set the repository variable
-# APP_URL to the app's address (e.g. https://dino1x-causal-verdict-cre.hf.space).
+# APP_URL to the app's address (e.g. https://causalverdict.site).
 name: keepalive
 on:
   schedule:
@@ -13,4 +13,4 @@ jobs:
     timeout-minutes: 3
     steps:
       - name: Ping the health route
-        run: curl -fsS --retry 4 --retry-delay 15 --max-time 60 "${{ vars.APP_URL }}/api/agent/x402-info" -o /dev/null -w "HTTP %{http_code} in %{time_total}s\n"
+        run: curl -fsSL --retry 4 --retry-delay 15 --max-time 60 "${{ vars.APP_URL }}/api/agent/x402-info" -o /dev/null -w "HTTP %{http_code} in %{time_total}s\n"
