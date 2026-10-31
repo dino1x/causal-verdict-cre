@@ -5,6 +5,7 @@ import { readFile, stat } from "node:fs/promises";
 import { extname, join, normalize } from "node:path";
 import { handleApi } from "./api";
 import { startLiveLedger, witnessUrl } from "./liveLedger";
+import { startAgentDispatch } from "./agentDispatch";
 
 const DIST = join(process.cwd(), "dist");
 const WITNESS = join(process.cwd(), "witness"); // published ledger heads, Bitcoin proofs, Sigstore bundles
@@ -39,4 +40,6 @@ const SELF = process.env.RENDER_EXTERNAL_URL;
 
 // On the hosted app (or with LIVE_LEDGER=1), follow the agent's ledger commits on GitHub; see liveLedger.ts.
 if (SELF || process.env.LIVE_LEDGER === "1") startLiveLedger();
+// Keep the agent hourly when GitHub's cron skips; see agentDispatch.ts.
+startAgentDispatch();
 if (SELF) setInterval(() => fetch(`${SELF}/api/health`, { signal: AbortSignal.timeout(20_000) }).catch(() => {}), 10 * 60_000).unref();
