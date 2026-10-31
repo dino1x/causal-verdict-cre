@@ -1,6 +1,44 @@
 {
   "version": 1,
-  "positions": [],
+  "positions": [
+    {
+      "id": "0x40ec371525720164",
+      "symbol": "SOL",
+      "openedAt": "2026-10-31T08:36:13Z",
+      "openTraceRoot": "0x40ec37152572016414b813ffcc1ad311871f207bfc991db73c89572792ec79d3",
+      "mandateHash": "0xb82b743f35d2d627555d4a08895af255488360b1d880c9e9e4236c305598a97c",
+      "entry": 95.1794,
+      "stop": 88.96895,
+      "targets": [
+        {
+          "price": 101.3898,
+          "r": 1,
+          "closePct": 50
+        },
+        {
+          "price": 107.6003,
+          "r": 2,
+          "closePct": 50
+        }
+      ],
+      "units": 105.065,
+      "riskUsd": 652.5,
+      "timeStopHours": 72,
+      "status": "open",
+      "remainingPct": 100,
+      "stopNow": 88.96895,
+      "fills": [],
+      "marks": [
+        {
+          "at": "2026-10-31T08:36:13Z",
+          "price": 95.1794,
+          "source": "entry (RYO deep_analysis.trade_plan.entry)"
+        }
+      ],
+      "realizedPnlUsd": 0,
+      "realizedR": null
+    }
+  ],
   "events": [
     {
       "at": "2026-10-31T05:37:16Z",
@@ -61,6 +99,16 @@
       "i": 5,
       "prev": "0x813314dd1ef92adf7a67db55e55ce9f2db975d2df63061da283158d007d4e9e2",
       "hash": "0x779b94bb1a1f974716b170a4bb416fe38d90dfb220728cd901b4aa9fb6cc4746"
+    },
+    {
+      "at": "2026-10-31T08:36:13Z",
+      "kind": "open",
+      "symbol": "SOL",
+      "detail": "open 105.065 @ 95.1794, stop 88.9690, targets 101.3898/107.6003, risk 652.5 USD",
+      "traceRoot": "0x40ec37152572016414b813ffcc1ad311871f207bfc991db73c89572792ec79d3",
+      "i": 6,
+      "prev": "0x779b94bb1a1f974716b170a4bb416fe38d90dfb220728cd901b4aa9fb6cc4746",
+      "hash": "0xf48c12470890d2afda4b848c26e5318fe52f13233dd26fa0929c07b8e2a01b39"
     }
   ],
   "runs": [
@@ -591,6 +639,111 @@
       "stateHash": "0x4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
       "prev": "0x865d89b14a5e60a233bf3e54169e0c7b45a6352d5de57f11a0d85533a86d69ee",
       "hash": "0xc98d784a3b1df877c269f2f069793fa0e242f9e9659295378c2037769f3dbe2e"
+    },
+    {
+      "at": "2026-10-31T08:36:13Z",
+      "traceRoot": "0x40ec37152572016414b813ffcc1ad311871f207bfc991db73c89572792ec79d3",
+      "provenance": {
+        "live": 17
+      },
+      "evidenceMode": "real",
+      "decision": "SELECT SOL",
+      "candidates": [
+        {
+          "symbol": "GROW",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C5:min_turnover",
+              "observed": "GROW: turnover 0.0018 < 0.05; a stop could not be filled near its modeled price."
+            },
+            {
+              "gate": "C15:min_planes",
+              "observed": "GROW: only 0 of 2 required independent planes support entry."
+            }
+          ]
+        },
+        {
+          "symbol": "AIN",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C15:min_planes",
+              "observed": "AIN: only 0 of 2 required independent planes support entry."
+            }
+          ]
+        },
+        {
+          "symbol": "BEAM",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C4:min_confluence",
+              "observed": "BEAM: no measured confluence, so the minimum 0.6 cannot be shown to hold."
+            },
+            {
+              "gate": "C7:require_measurement",
+              "observed": "BEAM: RYO returned rsi_14=null; a missing measurement is not treated as neutral."
+            },
+            {
+              "gate": "C8:require_measurement",
+              "observed": "BEAM: RYO returned atr_14_pct=null; a missing measurement is not treated as neutral."
+            }
+          ]
+        },
+        {
+          "symbol": "RSR",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C4:min_confluence",
+              "observed": "RSR: no measured confluence, so the minimum 0.6 cannot be shown to hold."
+            },
+            {
+              "gate": "C7:require_measurement",
+              "observed": "RSR: RYO returned rsi_14=null; a missing measurement is not treated as neutral."
+            },
+            {
+              "gate": "C8:require_measurement",
+              "observed": "RSR: RYO returned atr_14_pct=null; a missing measurement is not treated as neutral."
+            },
+            {
+              "gate": "C15:min_planes",
+              "observed": "RSR: only 1 of 2 required independent planes support entry."
+            },
+            {
+              "gate": "C16:price_agreement",
+              "observed": "RSR: RYO's price is 4.91% away from binance RSR/USDT 1h close; the mandate will not act on an unconfirmed price."
+            }
+          ]
+        },
+        {
+          "symbol": "SOL",
+          "decision": "SELECT",
+          "failed": []
+        },
+        {
+          "symbol": "PEPE",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C7:require_measurement",
+              "observed": "PEPE: RYO returned rsi_14=null; a missing measurement is not treated as neutral."
+            },
+            {
+              "gate": "C8:require_measurement",
+              "observed": "PEPE: RYO returned atr_14_pct=null; a missing measurement is not treated as neutral."
+            },
+            {
+              "gate": "C15:min_planes",
+              "observed": "PEPE: only 1 of 2 required independent planes support entry."
+            }
+          ]
+        }
+      ],
+      "stateHash": "0x0ad0085f804f7094b08fe1275faea5b38e1a9e60cedfb9cf851007960738fab8",
+      "prev": "0xc98d784a3b1df877c269f2f069793fa0e242f9e9659295378c2037769f3dbe2e",
+      "hash": "0xbd86d7b4728eb367fea66f910469f8e23e61a90a9e3ee503f04f35d91c613a4a"
     }
   ]
 }
