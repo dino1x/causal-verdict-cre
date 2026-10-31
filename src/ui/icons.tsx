@@ -26,14 +26,8 @@ export const Icon = {
 
 export const Logo = ({ size = 30 }: { size?: number }) => (
   <svg width={size} height={size} viewBox="0 0 32 32" aria-hidden="true">
-    <defs>
-      <linearGradient id="lg" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0" stopColor="var(--accent)" />
-        <stop offset="1" stopColor="var(--accent-2)" />
-      </linearGradient>
-    </defs>
-    <rect width="32" height="32" rx="9" fill="url(#lg)" />
-    <path d="M9 17.5l4.5 4.5L23 11" stroke="#fff" strokeWidth="3" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-    <circle cx="23" cy="11" r="2.2" fill="#fff" />
+    <rect width="32" height="32" rx="8" fill="var(--ink)" />
+    <path d="M8.5 17l4.5 4.5L23.5 11" stroke="var(--on-ink)" strokeWidth="2.6" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+    <circle cx="23.5" cy="11" r="2" fill="var(--accent-2)" />
   </svg>
 );

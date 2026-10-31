@@ -55,10 +55,10 @@ export function JudgeView({ run, go }: { run: RunResult | null; go: (tab: string
       <tbody>
         {rows.map((r) => (
           <tr key={r.what}>
-            <td style={{ width: "26%" }}><b>{r.what}</b>{r.weight && <div className="small muted">{r.weight}</div>}</td>
+            <td style={{ width: "26%" }}><div style={{ fontWeight: 500 }}>{r.what}</div>{r.weight && <div className="stat-l">{r.weight} of score</div>}</td>
             <td className="small">{r.built}</td>
-            <td style={{ width: 170 }}>
-              {r.tab && <button className="btn" onClick={() => go(r.tab!)}>Show me →</button>}
+            <td style={{ width: 190, textAlign: "right" }}>
+              {r.tab && <button className="btn" onClick={() => go(r.tab!)}>Open {r.tab} →</button>}
               {r.proof?.map((p) => <div key={p.href} className="small"><a href={p.href} target="_blank" rel="noreferrer">{p.label} ↗</a></div>)}
             </td>
           </tr>
@@ -68,50 +68,58 @@ export function JudgeView({ run, go }: { run: RunResult | null; go: (tab: string
   );
 
   return (
-    <div className="grid" style={{ gap: 16 }}>
+    <div className="grid" style={{ gap: 18 }}>
       <section className="hero">
-        <div className="eyebrow">BLI Legal Tech Hackathon 2 · RYO-CHAN · Chainlink CRE · LegalTech</div>
-        <h2>Built on RYO, not around it.</h2>
+        <div className="eyebrow">/autonomous agents · chainlink cre · legaltech</div>
+        <h2>An agent built on RYO, <em>not around it</em></h2>
         <p>
-          An autonomous practice-trade agent that reads all six RYO-CHAN MCP tools, checks them against exchanges, Chainlink Data Feeds and public evidence, argues both sides, obeys a compiled fiduciary mandate, and anchors every verdict on-chain through a Chainlink CRE workflow. Without a key it replays {calls.length} real captured RYO responses, hashed and labelled.
+          It reads all six RYO-CHAN MCP tools, checks them against exchanges, Chainlink Data Feeds and public evidence, argues both sides, obeys a compiled fiduciary mandate, and anchors every verdict on-chain through a Chainlink CRE workflow.
         </p>
-        <div className="kpis">
-          <div className="kpi">
-            <div className="stat-l">RYO tools in this run</div>
-            <div className="stat">{tools.size}<span className="faint" style={{ fontSize: 16 }}> / 6</span></div>
-            <div className="small muted">{calls.length} calls · {mix}</div>
-          </div>
-          <div className="kpi">
-            <div className="stat-l">Attack battery</div>
-            <div className={`stat ${b.missedWithWitness ? "err" : "ok"}`}>{b.missedWithWitness}<span className="faint" style={{ fontSize: 16 }}> missed / {b.total}</span></div>
-            <div className="small muted">tamper attempts on ledger and trace</div>
-          </div>
-          <div className="kpi">
-            <div className="stat-l">Mandate</div>
-            <div className="stat">{rt.ok ? "fixpoint" : "broken"}</div>
-            <div className="small muted">prose ⇄ AST round-trip, legal anchors per clause</div>
-          </div>
-          <div className="kpi">
-            <div className="stat-l">Ledger head</div>
-            <div className="stat" style={{ fontSize: 20, marginTop: 8 }}><Badge k={headWitnessed ? "pass" : "partial"}>{headWitnessed ? "witnessed · git · Bitcoin" : "advanced since last witness"}</Badge></div>
-            <div className="small muted">hourly Sigstore signing in the public Action</div>
-          </div>
-        </div>
-        <div style={{ marginTop: 18 }}>
-          <div className="stat-l" style={{ marginBottom: 8 }}>On-chain proofs</div>
-          <a className="pill-link" href={TX.vaultDeploy} target="_blank" rel="noreferrer"><Icon.chain size={13} /> Vault on Sepolia</a>
-          <a className="pill-link" href={TX.creReport} target="_blank" rel="noreferrer"><Icon.bolt size={13} /> CRE report</a>
-          <a className="pill-link" href={TX.chainlinkReport} target="_blank" rel="noreferrer"><Icon.check size={13} /> Chainlink-checked verdict</a>
-          <a className="pill-link" href={TX.mandateActivation} target="_blank" rel="noreferrer"><Icon.mandate size={13} /> Mandate activation</a>
-          <a className="pill-link" href={TX.x402} target="_blank" rel="noreferrer"><Icon.external size={13} /> x402 payment on Base</a>
-          <button className="pill-link" onClick={() => go("Audit")} style={{ cursor: "pointer" }}><Icon.audit size={13} /> Replay it yourself</button>
+        <div className="cta">
+          <button className="btn primary" onClick={() => go("Verdict")}>See the verdict</button>
+          <button className="btn" onClick={() => go("Audit")}>Replay it yourself</button>
         </div>
       </section>
-      <div className="card"><h2>RYO-CHAN · Autonomous Agents (official rubric)</h2><Table rows={ryo} /></div>
-      <div className="card"><h2>Chainlink · Best workflow with CRE</h2><Table rows={cre} /></div>
-      <div className="card"><h2>BLI · LegalTech &amp; RegTech</h2><Table rows={bli} /></div>
+
+      <div className="kpis">
+        <div className="kpi">
+          <div className="stat-l">/ryo tools this run</div>
+          <div className="stat">{tools.size}<span className="faint"> / 6</span></div>
+          <div className="small muted">{calls.length} calls · {mix}</div>
+        </div>
+        <div className="kpi">
+          <div className="stat-l">/attack battery</div>
+          <div className={`stat ${b.missedWithWitness ? "err" : ""}`}>{b.missedWithWitness}<span className="faint"> missed of {b.total}</span></div>
+          <div className="small muted">tamper attempts on ledger and trace</div>
+        </div>
+        <div className="kpi">
+          <div className="stat-l">/mandate</div>
+          <div className="stat">{rt.ok ? "Fixpoint" : "Broken"}</div>
+          <div className="small muted">prose ⇄ AST round-trip, 16 anchored clauses</div>
+        </div>
+        <div className="kpi">
+          <div className="stat-l">/ledger head</div>
+          <div className="stat">{headWitnessed ? "Witnessed" : "Advancing"}</div>
+          <div className="small muted">{headWitnessed ? "git · Bitcoin (OpenTimestamps)" : "the agent recorded runs since the last stamp"}</div>
+        </div>
+      </div>
+
+      <div style={{ marginTop: 6 }}>
+        <a className="pill-link" href={TX.vaultDeploy} target="_blank" rel="noreferrer">Vault on Sepolia ↗</a>
+        <a className="pill-link" href={TX.creReport} target="_blank" rel="noreferrer">CRE report ↗</a>
+        <a className="pill-link" href={TX.chainlinkReport} target="_blank" rel="noreferrer">Chainlink-checked verdict ↗</a>
+        <a className="pill-link" href={TX.mandateActivation} target="_blank" rel="noreferrer">Mandate activation ↗</a>
+        <a className="pill-link" href={TX.x402} target="_blank" rel="noreferrer">x402 payment on Base ↗</a>
+      </div>
+
+      <div className="section-head"><div><div className="eyebrow">/ryo-chan · autonomous agents</div><h3>The official rubric, line by line</h3></div></div>
+      <div className="card"><Table rows={ryo} /></div>
+      <div className="section-head"><div><div className="eyebrow">/chainlink · best workflow with cre</div><h3>The workflow, on-chain</h3></div></div>
+      <div className="card"><Table rows={cre} /></div>
+      <div className="section-head"><div><div className="eyebrow">/bli · legaltech and regtech</div><h3>Duties written as code</h3></div></div>
+      <div className="card"><Table rows={bli} /></div>
+      <div className="section-head"><div><div className="eyebrow">/limits</div><h3>What it does not claim</h3></div></div>
       <div className="card">
-        <h2>What it does not claim</h2>
         <ul className="small">
           <li>Practice trades only: nothing is bought or sold, and RYO's tools are read-only.</li>
           <li>The CRE report went through the simulator's broadcast path (MockKeystoneForwarder); a production DON deployment needs CRE deploy access.</li>

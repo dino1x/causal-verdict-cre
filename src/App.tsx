@@ -26,7 +26,7 @@ export default function App() {
       const saved = localStorage.getItem("cv-theme");
       if (saved === "dark" || saved === "light") return saved;
     } catch {}
-    return window.matchMedia?.("(prefers-color-scheme: light)").matches ? "light" : "dark";
+    return window.matchMedia?.("(prefers-color-scheme: dark)").matches ? "dark" : "light";
   });
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
@@ -99,76 +99,32 @@ export default function App() {
     );
   return (
     <div className="shell">
-      <aside className="side">
+      <header className="nav">
         <div className="brandmark">
           <Logo />
           <div>
-            <b>Causal-Verdict</b>
-            <span>Fiduciary agent · RYO × Chainlink CRE</span>
+            <b>causal verdict</b>
+            <span>/fiduciary agent · RYO × Chainlink CRE</span>
           </div>
         </div>
-        {NAV.map((g) => (
-          <nav className="navgroup" key={g.group} aria-label={g.group}>
-            <div className="navlabel">{g.group}</div>
-            {g.items.map((it) => {
-              const Ico = Icon[it.icon];
-              return (
-                <button key={it.tab} className={`navitem ${tab === it.tab ? "on" : ""}`} onClick={() => setTab(it.tab)} aria-current={tab === it.tab ? "page" : undefined}>
-                  <Ico size={17} />
-                  <span className="nt">{it.label ?? it.tab}</span>
-                  <span className="nd">{it.desc}</span>
-                </button>
-              );
-            })}
-          </nav>
-        ))}
-        <div className="side-foot">
-          <div className="spread">
-            <span className="small muted">Theme</span>
-            <button className="iconbtn" onClick={() => setTheme(theme === "dark" ? "light" : "dark")} title={`Switch to ${theme === "dark" ? "light" : "dark"} theme`} aria-label="Toggle theme">
-              {theme === "dark" ? <Icon.sun /> : <Icon.moon />}
+        <nav className="navlinks" aria-label="Sections">
+          {NAV.flatMap((g) => g.items).map((it) => (
+            <button key={it.tab} className={tab === it.tab ? "on" : ""} onClick={() => setTab(it.tab)} aria-current={tab === it.tab ? "page" : undefined} title={it.desc}>
+              {it.label ?? it.tab}
             </button>
-          </div>
-          <div className="small faint">Practice trades only. Research output, not financial advice. RYO-CHAN MCP is read-only.</div>
+          ))}
+        </nav>
+        <div className="navright">
+          <button className="iconbtn" onClick={() => setTheme(theme === "dark" ? "light" : "dark")} title={`Switch to ${theme === "dark" ? "light" : "dark"} theme`} aria-label="Toggle theme">
+            {theme === "dark" ? <Icon.sun /> : <Icon.moon />}
+          </button>
+          <button className="btn primary" disabled={running} onClick={() => go()}>
+            {running ? "Running…" : mode === "live" ? "Run agent · live" : "Run agent"}
+          </button>
         </div>
-      </aside>
+      </header>
 
-      <div className="main">
-        <header className="topbar">
-          <div className="pagehead">
-            <h1>{page.title}</h1>
-            <p>{page.sub}</p>
-          </div>
-          <div className="controls">
-            <div className="seg" role="group" aria-label="Data mode">
-              <button className={mode === "replay" ? "on" : ""} onClick={() => setMode("replay")}>Replay</button>
-              <button className={mode === "live" ? "on" : ""} onClick={() => { setMode("live"); getStatus().then(setStatus); }} title={liveAvailable ? "Calls RYO through the server proxy" : "Server has no RYO_MCP_KEY — live calls will fall back to snapshots"}>
-                Live RYO
-              </button>
-            </div>
-            <div className="seg" role="group" aria-label="Evidence source" title="KOL / whale / news / market evidence">
-              <button className={evMode === "real" ? "on" : ""} onClick={() => setEvMode("real")}>Real feeds</button>
-              <button className={evMode === "scenario" ? "on" : ""} onClick={() => setEvMode("scenario")}>Scenario</button>
-            </div>
-            <label className="inline">
-              Chaos
-              <select value={chaos} onChange={(e) => setChaos(e.target.value as Chaos)} disabled={mode === "replay"} title="Inject a failure before the proxy calls RYO (live mode)">
-                <option value="none">none</option>
-                <option value="429">429 rate-limited</option>
-                <option value="503">503 unavailable</option>
-                <option value="timeout">timeout</option>
-                <option value="offline">offline</option>
-              </select>
-            </label>
-            <label className="inline">
-              Equity $
-              <input className="num" type="number" value={equity} min={1000} step={1000} onChange={(e) => setEquity(Math.max(1000, Number(e.target.value)))} />
-            </label>
-            <button className="btn primary" disabled={running} onClick={() => go()}>
-              <Icon.play size={14} /> {running ? "Running agent…" : mode === "live" ? "Run agent · live" : "Run agent · replay"}
-            </button>
-          </div>
-        </header>
+      <div className="toolbar">
         <div className="statusline">
           {statusBadge}
           {run && (
@@ -177,47 +133,80 @@ export default function App() {
               {Object.entries(run.provenanceMix).map(([k, v]) => <Badge key={k} k={k}>{v} {k}</Badge>)}
               {run.evidenceMode === "real" ? <Badge k="live">real feeds</Badge> : <Fixture />}
               <span className="sep" />
-              <span>trace root <span className="hash">{short(run.trace.root, 10)}</span></span>
-              <span className="sep" />
-              <span>mandate <span className="hash">{short(run.mandateHash, 8)}</span></span>
+              <span>root <span className="hash">{short(run.trace.root, 8)}</span></span>
+              <span>mandate <span className="hash">{short(run.mandateHash, 6)}</span></span>
             </>
           )}
           {!compiled.ast && <Badge k="fail">mandate has {compiled.errors.length} error(s)</Badge>}
         </div>
-
-        <main className="content">
-          {error && <div className="notice err" style={{ marginBottom: 14 }}>{error}</div>}
-          {!run ? (
-            <div className="card">Running the agent on captured RYO evidence…</div>
-          ) : (
-            <div className="fade-in" key={tab}>
-              {tab === "Judge" && <JudgeView run={run} go={(t) => setTab(t as Tab)} />}
-              {tab === "Verdict" && <VerdictView run={run} log={log} onInspect={insp.open} onFocus={(s) => { setFocus(s); setTab("Debate"); }} />}
-              {tab === "Ledger" && <LedgerView />}
-              {tab === "Causality" && <CausalityView run={run} focus={focus} setFocus={setFocus} posts={posts} setPosts={setPosts} channels={channels} setChannels={setChannels} />}
-              {tab === "Debate" && <DebateView run={run} focus={focus} setFocus={setFocus} onInspect={insp.open} />}
-              {tab === "Mandate" && <MandateView prose={mandate} setProse={setMandate} run={run} />}
-              {tab === "CRE + x402" && <CreView mandate={mandate} run={run} />}
-              {tab === "Audit" && <AuditView run={run} mandate={mandate} equity={equity} onInspect={insp.open} />}
-            </div>
-          )}
-          {insp.node}
-          <footer>
-            Practice trades only — research output, not financial advice, and nothing here places, approves or executes a trade. RYO-CHAN MCP is read-only. In "Real feeds" mode, whale, news, KOL and market evidence comes from public on-chain logs, exchanges, Chainlink Data Feeds, RSS, Tavily and Telegram, with a link to each item. Items marked <Fixture /> come from the illustrative scenario and are not live data. Snapshot bundle {short(SNAPSHOTS.bundle_sha256, 12)} captured {SNAPSHOTS.captured_at}.
-          </footer>
-        </main>
+        <div className="controls">
+          <div className="seg" role="group" aria-label="Data mode">
+            <button className={mode === "replay" ? "on" : ""} onClick={() => setMode("replay")}>Replay</button>
+            <button className={mode === "live" ? "on" : ""} onClick={() => { setMode("live"); getStatus().then(setStatus); }} title={liveAvailable ? "Calls RYO through the server proxy" : "Server has no RYO_MCP_KEY — live calls will fall back to snapshots"}>
+              Live RYO
+            </button>
+          </div>
+          <div className="seg" role="group" aria-label="Evidence source" title="KOL / whale / news / market evidence">
+            <button className={evMode === "real" ? "on" : ""} onClick={() => setEvMode("real")}>Real feeds</button>
+            <button className={evMode === "scenario" ? "on" : ""} onClick={() => setEvMode("scenario")}>Scenario</button>
+          </div>
+          <label className="inline">
+            Chaos
+            <select value={chaos} onChange={(e) => setChaos(e.target.value as Chaos)} disabled={mode === "replay"} title="Inject a failure before the proxy calls RYO (live mode)">
+              <option value="none">none</option>
+              <option value="429">429 rate-limited</option>
+              <option value="503">503 unavailable</option>
+              <option value="timeout">timeout</option>
+              <option value="offline">offline</option>
+            </select>
+          </label>
+          <label className="inline">
+            Equity $
+            <input className="num" type="number" value={equity} min={1000} step={1000} onChange={(e) => setEquity(Math.max(1000, Number(e.target.value)))} />
+          </label>
+        </div>
       </div>
+
+      {tab !== "Judge" && (
+        <div className="pagehead">
+          <div className="eyebrow">/{NAV.find((g) => g.items.some((i) => i.tab === tab))?.group.toLowerCase()}</div>
+          <h1>{page.title}</h1>
+          <p>{page.sub}</p>
+        </div>
+      )}
+
+      <main className="content">
+        {error && <div className="notice err" style={{ marginBottom: 14 }}>{error}</div>}
+        {!run ? (
+          <div className="card">Running the agent on captured RYO evidence…</div>
+        ) : (
+          <div className="fade-in" key={tab}>
+            {tab === "Judge" && <JudgeView run={run} go={(t) => setTab(t as Tab)} />}
+            {tab === "Verdict" && <VerdictView run={run} log={log} onInspect={insp.open} onFocus={(s) => { setFocus(s); setTab("Debate"); }} />}
+            {tab === "Ledger" && <LedgerView />}
+            {tab === "Causality" && <CausalityView run={run} focus={focus} setFocus={setFocus} posts={posts} setPosts={setPosts} channels={channels} setChannels={setChannels} />}
+            {tab === "Debate" && <DebateView run={run} focus={focus} setFocus={setFocus} onInspect={insp.open} />}
+            {tab === "Mandate" && <MandateView prose={mandate} setProse={setMandate} run={run} />}
+            {tab === "CRE + x402" && <CreView mandate={mandate} run={run} />}
+            {tab === "Audit" && <AuditView run={run} mandate={mandate} equity={equity} onInspect={insp.open} />}
+          </div>
+        )}
+        {insp.node}
+        <footer>
+          Practice trades only — research output, not financial advice, and nothing here places, approves or executes a trade. RYO-CHAN MCP is read-only. In "Real feeds" mode, whale, news, KOL and market evidence comes from public on-chain logs, exchanges, Chainlink Data Feeds, RSS, Tavily and Telegram, with a link to each item. Items marked <Fixture /> come from the illustrative scenario and are not live data. Snapshot bundle {short(SNAPSHOTS.bundle_sha256, 12)} captured {SNAPSHOTS.captured_at}.
+        </footer>
+      </main>
     </div>
   );
 }
 
 type NavItem = { tab: Tab; label?: string; icon: keyof typeof Icon; desc: string };
 const NAV: { group: string; items: NavItem[] }[] = [
-  { group: "Overview", items: [{ tab: "Judge", label: "Judge path", icon: "judge", desc: "Every rubric line → proof" }] },
+  { group: "Overview", items: [{ tab: "Judge", label: "Overview", icon: "judge", desc: "Every rubric line → proof" }] },
   { group: "Agent", items: [{ tab: "Verdict", icon: "verdict", desc: "Decision and RYO funnel" }, { tab: "Ledger", icon: "ledger", desc: "Practice trades, verified" }] },
   { group: "Evidence", items: [{ tab: "Causality", icon: "causality", desc: "Whales, voices, news, markets" }, { tab: "Debate", icon: "debate", desc: "Bull · Bear · Judge" }] },
   { group: "Governance", items: [{ tab: "Mandate", icon: "mandate", desc: "Prose ⇄ AST compiler" }, { tab: "Audit", icon: "audit", desc: "Replay and evidence" }] },
-  { group: "On-chain", items: [{ tab: "CRE + x402", icon: "chain", desc: "Workflow and payments" }] },
+  { group: "On-chain", items: [{ tab: "CRE + x402", label: "CRE · x402", icon: "chain", desc: "Workflow and payments" }] },
 ];
 const PAGES: Record<Tab, { title: string; sub: string }> = {
   Judge: { title: "Judge path", sub: "Every requirement of the three prizes, mapped to the screen, file or transaction that proves it" },
