@@ -8,12 +8,72 @@ BLI Legal Tech Hackathon 2 · RYO-CHAN *Autonomous Agents* · Chainlink *Best wo
 
 ---
 
+## How to test
+
+**No account, key, wallet or faucet is needed.** Everything below works as-is.
+
+### 1 · In the browser (2 minutes, nothing to install)
+
+Open **https://causalverdict.site**. It is always on, with the server's RYO key, the Claude analyst and a pre-funded x402 demo wallet.
+
+| Do this | You should see |
+|---|---|
+| **Overview** · wait for the console | The run's reasoning, line by line: six RYO tools, Chainlink price check, mandate, verdict |
+| **Verdict** | The practice trade on a price ladder; every rejected token with the clause that rejected it |
+| Top bar: **Live RYO** → **Run agent** | 17 RYO calls through the server (the key never reaches the browser). RYO allows 6 analysis calls a minute per key, so about 6 come back `live` and the rest fall back to labelled real responses or show `unavailable` with the 429 reason. The hourly agent paces itself and records 17/17 live: see **Ledger** |
+| **Live RYO** + **Chaos: 429** → **Run agent** | Every call falls back to a real captured RYO response, labelled with the reason |
+| **Debate** → **Run Claude debate** | Cited bull and bear arguments (about 60 s); uncited claims dropped and counted |
+| **Mandate** → change a number in the rules table | The prose rewrites itself; the round-trip check stays green |
+| **CRE · x402** → **Run as paying AI agent** | 402 → signed payment → 200 → **a real USDC payment settled on Base Sepolia** (BaseScan link) → replay refused |
+| **Ledger** → **Re-verify the chain**, then a tamper button | The chain verifies; tampering breaks it; Bitcoin-stamped heads below |
+| **Audit** → **Replay this run** | The identical trace root, from the recorded RYO responses |
+
+The static mirror (https://dino1x.github.io/causal-verdict-cre/) replays the same data without a server.
+
+### 2 · On your machine (3 minutes, no keys)
+
+```bash
+git clone https://github.com/dino1x/causal-verdict-cre && cd causal-verdict-cre
+npm install
+npm test              # compiler round-trip, exact replay, real-feed provenance, ledger, rate-limit pacing, attack battery
+npm run cre:simulate  # a local DON round + the vault in an in-process EVM: report accepted, non-forwarder rejected
+npm run dev           # http://localhost:5173, replaying real RYO responses
+```
+
+To call RYO live, copy `.env.example` to `.env` and set `RYO_MCP_KEY`. `ANTHROPIC_API_KEY` and `TAVILY_API_KEY` are optional.
+
+### 3 · Check the on-chain records yourself
+
+```bash
+npx tsx scripts/read-vault.ts   # verdicts stored in the Sepolia vault, with Etherscan links
+```
+
+- **Bitcoin timestamps:** `pip install opentimestamps-client`, then `ots verify witness/heads/<file>.txt.ots`.
+- **Your own x402 payment:**
+  1. Get Base Sepolia test USDC at https://faucet.circle.com.
+  2. Put that test wallet's key in `SEPOLIA_PRIVATE_KEY`.
+  3. Run `X402_SETTLE=1 X402_PAY_TO=<any address> npm start`.
+  4. Run `npx tsx scripts/x402-pay.ts http://localhost:8787`.
+
+### 4 · The official Chainlink CRE CLI (optional)
+
+You need the [CRE CLI](https://docs.chain.link/cre), a free CRE account (`cre login`), [bun](https://bun.sh) and `RYO_MCP_KEY_ALL` set to a RYO key. Then:
+
+```bash
+cd cre-workflow/causal-verdict && npm install && cd ..
+cre workflow simulate ./causal-verdict --target staging-settings --trigger-index 0
+```
+
+Output from our own runs is committed in `cre-workflow/simulation-cre-cli-*.log`.
+
+---
+
 ## Judge path (3 minutes)
 
 **Live app:** https://causalverdict.site (full server: live RYO, Claude analyst, x402 payments that settle on Base Sepolia) · **Static replay:** https://dino1x.github.io/causal-verdict-cre/ · **Repo:** https://github.com/dino1x/causal-verdict-cre
 
 
-**Built on RYO, not around it.** Every decision comes from RYO-CHAN MCP's six tools (`market_overview`, `monitor_market_sentiment_shift`, `scan_market`, `compare_tokens`, `analyze_token`, `deep_analysis`), called through a server proxy that keeps the key off the browser. Without a key, the app replays 17 real captured RYO responses, hashed and labelled. The app opens on a **Judge** tab that mirrors this section, with a "Show me" button on every row.
+**Built on RYO, not around it.** Every decision comes from RYO-CHAN MCP's six tools (`market_overview`, `monitor_market_sentiment_shift`, `scan_market`, `compare_tokens`, `analyze_token`, `deep_analysis`), called through a server proxy that keeps the key off the browser. Without a key, the app replays 17 real captured RYO responses, hashed and labelled. The app opens on an **Overview** page that mirrors this section, with an "Open" button on every row.
 
 **On-chain proofs and a Bitcoin timestamp**
 
