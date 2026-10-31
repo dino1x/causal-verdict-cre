@@ -79,7 +79,7 @@ export function AuditView({ run, mandate, equity, onInspect }: { run: RunResult;
       <div className="grid g3">
         <div className="card">
           <h2>Repeatability</h2>
-          <p className="small muted">The engine has no clock and no randomness. Replaying the recorded RYO envelopes must reproduce the same trace root, bit for bit.</p>
+          <p className="small muted">No clock, no randomness: the recorded RYO responses replay to the same root.</p>
           <button className="btn primary" onClick={doReplay}>Replay this run</button>
           {replay && (
             <p className="small">
@@ -96,7 +96,7 @@ export function AuditView({ run, mandate, equity, onInspect }: { run: RunResult;
         </div>
         <div className="card">
           <h2>FRE 902(13)/(14) evidence package</h2>
-          <p className="small muted">RYO exhibits are identified by hash (902(14)) and the machine-generated reasoning trace by replay (902(13)). The package states the 902(11) notice requirement and its limits: it covers authenticity only, and it is not self-authenticating until a qualified person signs the included certification.</p>
+          <p className="small muted">Exhibits identified by hash, the trace by replay. Covers authenticity only, and needs a qualified person's signature.</p>
           <div className="row">
             <button className="btn primary" onClick={() => download(`causal-verdict-evidence-${run.trace.root.slice(2, 10)}.json`, JSON.stringify({ ...cert, raw_envelopes: run.calls.map((c) => c.envelope) }, null, 2))}>Download package</button>
             <button className="btn" onClick={doRehash}>Re-hash all exhibits</button>
@@ -141,7 +141,7 @@ export function AuditView({ run, mandate, equity, onInspect }: { run: RunResult;
               </tbody>
             </table>
           </div>
-          <p className="small muted">"Coping with failure": in Live mode, each exhibit records the HTTP status and X-RateLimit headers, and why it fell back to a real snapshot (429, 503, timeout, offline, no key). Missing evidence stays marked unavailable.</p>
+          <p className="small muted">Live exhibits record their HTTP status, rate-limit headers and any fallback reason.</p>
         </div>
       </div>
     </div>

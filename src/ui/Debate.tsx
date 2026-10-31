@@ -63,7 +63,7 @@ export function DebateView({ run, focus, setFocus, onInspect }: { run: RunResult
               Draft STOR (MiCA Art. 92)
             </button>
           </div>
-          <p className="small muted">The Judge has no discretion over the mandate: a failed binding clause rejects regardless of how strong the bull case sounds. Argument weights only rank gate-compliant candidates.</p>
+          <p className="small muted">A failed binding clause rejects, however strong the bull case.</p>
         </div>
       </div>
       <ClaudeAnalyst key={d.symbol + run.trace.root} run={run} d={d} />
@@ -143,8 +143,8 @@ function ClaudeAnalyst({ run, d }: { run: RunResult; d: TokenDossier }) {
   );
   return (
     <div className="card">
-      <h2>Claude analyst debate (advisory) {res?.ok && <span className="badge faint">{res.model}</span>}</h2>
-      <p className="small muted">Claude argues both sides from the same structured evidence. Every claim must cite an allowed evidence path, and claims that don't are dropped and counted. The deterministic, mandate-bound Judge above still makes the decision, so the hash-chained run and its replay are unaffected. Each response is SHA-256 hashed for the file.</p>
+      <h2>Claude analyst {res?.ok && <span className="badge faint">{res.model}</span>}</h2>
+      <p className="small muted">Claude argues both sides from the same evidence. Uncited claims are dropped. Advisory only: the mandate still decides.</p>
       <button className="btn primary" onClick={go} disabled={state === "running"}>{state === "running" ? "Claude is arguing both sides…" : `Run Claude debate on ${d.symbol}`}</button>
       {res && !res.ok && <p className="small warn" style={{ marginTop: 8 }}>{res.error}</p>}
       {res?.ok && (

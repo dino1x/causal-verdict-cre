@@ -102,7 +102,7 @@ function X402Demo({ mandate }: { mandate: string }) {
       <div className="row">
         <label className="inline">symbol <input className="num" value={symbol} onChange={(e) => setSymbol(e.target.value.toUpperCase())} /></label>
         <button className="btn primary" onClick={go} disabled={busy}>{busy ? "Negotiating…" : "Run as paying AI agent"}</button>
-        <span className="small muted">exact scheme · Base Sepolia USDC · EIP-712 signature verified server-side with viem · nonce replay rejected · this tab's wallet is unfunded, so no funds move (a funded agent settles with scripts/x402-pay.ts when the server runs X402_SETTLE=1)</span>
+        <span className="small muted">Base Sepolia USDC · signature verified · replays refused · demo wallet unfunded</span>
       </div>
       {steps.map((st, i) => (
         <div key={i} style={{ marginTop: 10 }}>
@@ -128,7 +128,7 @@ export function CreView({ mandate, run }: { mandate: string; run: RunResult }) {
   return (
     <div className="grid" style={{ gap: 14 }}>
       <div className="notice">
-        <b>Chainlink CRE orchestration.</b> <span className="mono">cre-workflow/causal-verdict/main.ts</span> is built with <span className="mono">@chainlink/cre-sdk</span> 1.23 and has two triggers: a Cron trigger for automated risk monitoring, and an HTTP trigger for agents that have paid through x402. It reads RYO-CHAN MCP through <span className="mono">ConfidentialHTTPClient</span>: the <span className="mono">RYO_MCP_KEY</span> Vault-DON secret is injected inside the enclave, so node operators never see it. If a lane fails, it falls back and marks that lane unavailable. Then it evaluates the compiled mandate and sends the verdict with <span className="mono">EVMClient.writeReport</span> to <span className="mono">CausalVerdictVault.onReport</span>. A node-mode path with <span className="mono">ConsensusAggregationByFields</span> is available as <span className="mono">ryoTransport: "http"</span>. Both triggers pass the official <span className="mono">cre workflow simulate</span>; see the simulation logs.
+        <b>Chainlink CRE workflow.</b> Cron and x402-paid HTTP triggers. It reads RYO through Confidential HTTP and Chainlink SOL/USD on-chain, applies the mandate, and writes the verdict to the vault.
       </div>
       <div className="grid g2">
         <div className="card">
@@ -137,7 +137,7 @@ export function CreView({ mandate, run }: { mandate: string; run: RunResult }) {
           <div className="row" style={{ marginTop: 8 }}>
             <button className="btn primary" onClick={() => setDrafted(draftFromIntent(intent))}>Draft mandate from intent</button>
             <button className="btn" onClick={() => setDrafted(null)}>Use the active mandate</button>
-            <span className="small muted">The draft is only a suggestion. The compiler accepts or rejects it, so the workflow never runs ambiguous rules.</span>
+            <span className="small muted">The compiler accepts or rejects the draft.</span>
           </div>
           <div className="row" style={{ marginTop: 10 }}>
             <label className="inline">watchlist <input className="num" style={{ width: 160 }} value={watch} onChange={(e) => setWatch(e.target.value)} /></label>
@@ -172,7 +172,7 @@ npm run cre:simulate              # live RYO if RYO_MCP_KEY is set, else real sn
 npm run cre:compile
 cd cre-workflow && cre workflow simulate ./causal-verdict --target staging-settings --env ../.env \
   --trigger-index 1 --http-payload http-payload.example.json   # 0 = cron`}</pre>
-        <p className="small muted">Off-chain agent trace root for this session: <span className="hash">{run.trace.root}</span>. The HTTP trigger carries it into the report's evidenceRoot pre-image.</p>
+        <p className="small muted">Session trace root <span className="hash">{run.trace.root}</span></p>
       </div>
     </div>
   );

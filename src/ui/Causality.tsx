@@ -107,6 +107,7 @@ export function CausalityView({ run, focus, setFocus, posts, setPosts, channels,
   const real = run.evidenceMode === "real";
   const Tag = () => (real ? <Badge k="live">REAL FEED</Badge> : <Fixture />);
   const [chDraft, setChDraft] = useState(channels.join(", "));
+  const [chMsg, setChMsg] = useState<string | null>(null);
   const [draft, setDraft] = useState(posts === KOL_POSTS ? "" : toText(posts));
   const [msg, setMsg] = useState<string | null>(null);
   const apply = () => {
@@ -132,7 +133,7 @@ export function CausalityView({ run, focus, setFocus, posts, setPosts, channels,
       <div className="card">
         <h2>Temporal lead-lag forensics — {d.symbol} {d.whale.trap ? <Badge k="fail">EXIT-LIQUIDITY TRAP</Badge> : <Badge k="pass">no trap pattern</Badge>}</h2>
         <Timeline d={d} />
-        <p className="small muted" style={{ margin: "6px 0 10px" }}>{d.whale.detail}. Shaded band = the mandate's post-convergence window; ▲ accumulation, ▼ distribution; dot size ∝ USD.</p>
+        <p className="small muted" style={{ margin: "6px 0 10px" }}>{d.whale.detail}. Band: post-convergence window · ▲ in · ▼ out · size = USD.</p>
         <CausalChain d={d} />
       </div>
       <div className="grid g2">
@@ -163,7 +164,7 @@ export function CausalityView({ run, focus, setFocus, posts, setPosts, channels,
               </tbody>
             </table>
           </div>
-          <p className="small muted">Echo clusters: posts with ≥50% word-trigram Jaccard overlap count once. Sentiment, conviction and urgency come from a fixed lexicon, so results are deterministic and auditable.</p>
+          <p className="small muted">Copied posts count as one voice. Scoring is deterministic.</p>
         </div>
         <div className="card">
           <h2>News checker — {d.symbol}</h2>
@@ -183,7 +184,7 @@ export function CausalityView({ run, focus, setFocus, posts, setPosts, channels,
           {run.evidenceUsed.news.filter((n) => n.symbol === d.symbol).map((n) => (
             <div key={n.id} className="small" style={{ margin: "4px 0" }}>{n.minutes}m · {n.headline} <span className="faint">({n.sourceType})</span> <Src href={n.source.split(" — ")[1]} /></div>
           ))}
-          <p className="small muted">A claim counts as verified only from a primary source or from RYO's own token-profile text (live research evidence). A secondary wire alone is not verification.</p>
+          <p className="small muted">Verified only by a primary source or RYO's own token profile.</p>
           <h3>Whale wallet events <Tag /></h3>
           <table>
             <thead><tr><th>Wallet</th><th className="num">t</th><th>Kind</th><th className="num">USD</th><th>Counterparty</th></tr></thead>
@@ -198,7 +199,7 @@ export function CausalityView({ run, focus, setFocus, posts, setPosts, channels,
       </div>
       <div className="card">
         <h2>Independent market check — exchange and Chainlink {real ? <Badge k="live">REAL FEED</Badge> : <Badge k="snapshot">not used in scenario mode</Badge>}</h2>
-        <p className="small muted">Read from the exchanges and from Chainlink Data Feeds as of the reference time, independent of RYO. The exchange plane can support or oppose a trade; clause "price agreement" refuses to act on a RYO price that no independent reference confirms. Tokens without a listing or a feed show as unavailable, never filled in.</p>
+        <p className="small muted">Exchange and Chainlink data as of the run, independent of RYO. Clause 16 blocks any RYO price nothing confirms.</p>
         <div className="scroll">
           <table>
             <thead><tr><th>Token</th><th>Venue</th><th className="num">24h (1h candles)</th><th className="num">Funding / 8h</th><th className="num">OI 24h</th><th>Reference price</th><th>Price agreement</th></tr></thead>
@@ -238,14 +239,15 @@ export function CausalityView({ run, focus, setFocus, posts, setPosts, channels,
           </div>
           <div className="row" style={{ marginTop: 8 }}>
             <label className="inline">Telegram voices (public channels, ≤ 20) <input className="num" style={{ width: 360 }} value={chDraft} onChange={(e) => setChDraft(e.target.value)} /></label>
-            <button className="btn" onClick={() => setChannels(chDraft.split(/[ ,]+/).map((c) => c.replace(/^@|^t\.me\//, "")).filter(Boolean).slice(0, 20))}>Use channels</button>
-            <span className="small muted">Applies to Live runs. Replay uses the bundled capture. X and Discord need paid or bot API access, so paste posts from them below.</span>
+            <button className="btn" onClick={() => { const next = chDraft.split(/[ ,]+/).map((c) => c.replace(/^@|^t\.me\//, "")).filter(Boolean).slice(0, 20); setChannels(next); setChMsg(`${next.length} channel${next.length === 1 ? "" : "s"} set for the next live run.`); }}>Use channels</button>
+            {chMsg && <span className="small ok">{chMsg}</span>}
+            <span className="small muted">Live runs only. Paste X or Discord posts below.</span>
           </div>
         </div>
       )}
       <div className="card">
-        <h2>Bring your own evidence — up to 20 voices</h2>
-        <p className="small muted">One post per line: <span className="mono">handle | minutes before the reference time (≤ 0) | text</span>. Handle prefixes: <span className="mono">@name</span> for X, <span className="mono">#channel</span> for Discord, <span className="mono">t.me/name</span> for Telegram. {real ? "In Real-feeds mode your posts are added alongside the feeds and labelled user-supplied." : "In Scenario mode they replace the fixture posts."} Then press "Run agent".</p>
+        <h2>Add your own voices</h2>
+        <p className="small muted">One per line: <span className="mono">handle | minutes before the run (≤ 0) | text</span> — <span className="mono">@</span> X, <span className="mono">#</span> Discord, <span className="mono">t.me/</span> Telegram. Then run the agent.</p>
         <textarea className="code" style={{ minHeight: 180 }} value={draft} onChange={(e) => setDraft(e.target.value)} spellCheck={false} />
         <div className="row" style={{ marginTop: 8 }}>
           <button className="btn" onClick={apply}>Use these posts</button>

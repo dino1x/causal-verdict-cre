@@ -34,7 +34,7 @@ function VerifyPanel({ ledger }: { ledger: Ledger }) {
   return (
     <div className="card">
       <h2>Check it yourself</h2>
-      <p className="small muted">Everything below runs in your browser on the ledger shown here. No server is trusted.</p>
+      <p className="small muted">Runs in your browser. No server is trusted.</p>
       <div className="small">Ledger head <span className="hash">{head}</span></div>
       <div className="row" style={{ marginTop: 8 }}>
         <button className="btn primary" onClick={recheck}>Re-verify the chain</button>
@@ -44,7 +44,7 @@ function VerifyPanel({ ledger }: { ledger: Ledger }) {
       {tamper && <p className="small" style={{ marginTop: 8 }}><b>{tamper.label}</b> on a private copy → {tamper.chain}{tamper.head === "caught" ? "." : `, ${tamper.head}.`}</p>}
       <WitnessList head={head} />
       <p className="small" style={{ marginTop: 10 }}>
-        <b>Attack battery</b> (<span className="mono">scripts/battery.ts</span>, run by <span className="mono">npm test</span>): <Badge k={b.missedWithWitness ? "fail" : "pass"}>{b.missedWithWitness} missed of {b.total}</Badge> attacks on copies of the live ledger, a ledger with real positions, and a reasoning trace. The hash chains alone catch every edit, deletion and swap; truncating the tail or re-hashing the whole history leaves a valid chain ({b.missedByChain} such attacks), and only the published head catches those. That is why the head is witnessed outside our control.
+        <b>Attack battery</b> <Badge k={b.missedWithWitness ? "fail" : "pass"}>{b.missedWithWitness} missed of {b.total}</Badge> Every edit, deletion and swap breaks the chain; truncation and full re-hashing are caught by the published head.
       </p>
     </div>
   );
@@ -60,7 +60,7 @@ function WitnessList({ head }: { head: string }) {
         <b>Published heads</b>{" "}
         {idx >= 0 ? <Badge k="pass">this ledger matches the head witnessed at {w[idx].at}</Badge> : last ? <Badge k="partial">the ledger has advanced since the last witnessed head ({last.at})</Badge> : <Badge k="partial">no head witnessed yet</Badge>}
       </div>
-      <p className="small muted">Each head is committed to git, timestamped into Bitcoin through OpenTimestamps (verify a proof with <span className="mono">ots verify &lt;file&gt;.ots</span>; it reads pending until a block confirms it) and, from the hourly GitHub Action, signed in Sigstore's public log by the workflow's own identity.</p>
+      <p className="small muted">Each head is committed to git, stamped into Bitcoin and signed in Sigstore.</p>
       <div className="scroll" style={{ maxHeight: 160 }}>
         <table>
           <thead><tr><th>Witnessed at</th><th>Head</th><th>Covers</th><th>Proofs</th></tr></thead>
@@ -94,7 +94,7 @@ export function LedgerView() {
   return (
     <div className="grid" style={{ gap: 14 }}>
       <div className="notice">
-        <b>Practice-trade ledger.</b> An autonomous loop (<span className="mono">scripts/run-agent.ts</span>) runs the full agent every 15 minutes on live RYO data (paced to RYO’s rate limits) and real feeds, and records every practice trade it would make. Later runs re-price open positions with fresh RYO prices and close them at the stop, the targets or the 72-hour time stop. Between runs, the exchange's hourly candles decide whether a stop or target was touched (if one candle reaches both, the stop is assumed first); at each run, RYO's price marks the position. Stale runs and prices older than the position are ignored. No trade is ever executed.
+        <b>Recorded live.</b> The agent runs every 15 minutes on live RYO data and records each practice trade, closing it at the stop, a target or after 72 hours. Nothing is executed.
       </div>
       <div className="grid g4">
         <div className="card"><div className="stat-l">Agent runs recorded</div><div className="stat">{st.runs}</div><div className="small muted">{source}</div></div>

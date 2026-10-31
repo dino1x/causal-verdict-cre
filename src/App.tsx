@@ -13,14 +13,14 @@ import { CreView } from "./ui/Cre";
 import { AuditView } from "./ui/Audit";
 import { LedgerView } from "./ui/Ledger";
 import { Icon, Logo } from "./ui/icons";
-import { JudgeView } from "./ui/Judge";
+import { HomeView } from "./ui/Home";
 
-const TABS = ["Judge", "Verdict", "Ledger", "Causality", "Debate", "Mandate", "CRE + x402", "Audit"] as const;
+const TABS = ["Overview", "Verdict", "Ledger", "Causality", "Debate", "Mandate", "CRE + x402", "Audit"] as const;
 type Tab = (typeof TABS)[number];
 const TOOL_ORDER: RyoTool[] = ["market_overview", "monitor_market_sentiment_shift", "scan_market", "compare_tokens", "analyze_token", "deep_analysis"];
 
 export default function App() {
-  const [tab, setTab] = useState<Tab>("Judge");
+  const [tab, setTab] = useState<Tab>("Overview");
   const [theme, setTheme] = useState<"dark" | "light">(() => {
     try {
       const saved = localStorage.getItem("cv-theme");
@@ -124,7 +124,7 @@ export default function App() {
         </div>
       </header>
 
-      {tab !== "Judge" && <div className="toolbar">
+      {tab !== "Overview" && <div className="toolbar">
         <div className="statusline">
           {statusBadge}
           {run && (
@@ -167,7 +167,7 @@ export default function App() {
         </div>
       </div>}
 
-      {tab !== "Judge" && (
+      {tab !== "Overview" && (
         <div className="pagehead">
           <div className="eyebrow">/{NAV.find((g) => g.items.some((i) => i.tab === tab))?.group.toLowerCase()}</div>
           <h1>{page.title}</h1>
@@ -181,7 +181,7 @@ export default function App() {
           <div className="card">Running the agent on captured RYO evidence…</div>
         ) : (
           <div className="fade-in" key={tab}>
-            {tab === "Judge" && <JudgeView run={run} go={(t) => setTab(t as Tab)} />}
+            {tab === "Overview" && <HomeView run={run} go={(t) => setTab(t as Tab)} />}
             {tab === "Verdict" && <VerdictView run={run} log={log} onInspect={insp.open} onFocus={(s) => { setFocus(s); setTab("Debate"); }} />}
             {tab === "Ledger" && <LedgerView />}
             {tab === "Causality" && <CausalityView run={run} focus={focus} setFocus={setFocus} posts={posts} setPosts={setPosts} channels={channels} setChannels={setChannels} />}
@@ -193,7 +193,7 @@ export default function App() {
         )}
         {insp.node}
         <footer>
-          Practice trades only — research output, not financial advice, and nothing here places, approves or executes a trade. RYO-CHAN MCP is read-only. In "Real feeds" mode, whale, news, KOL and market evidence comes from public on-chain logs, exchanges, Chainlink Data Feeds, RSS, Tavily and Telegram, with a link to each item. Items marked <Fixture /> come from the illustrative scenario and are not live data. Snapshot bundle {short(SNAPSHOTS.bundle_sha256, 12)} captured {SNAPSHOTS.captured_at}.
+          Practice trades only. Not financial advice; nothing here places a trade. <Fixture /> marks illustrative scenario data. Snapshot {short(SNAPSHOTS.bundle_sha256, 12)} · {SNAPSHOTS.captured_at}.
         </footer>
       </main>
     </div>
@@ -202,21 +202,21 @@ export default function App() {
 
 type NavItem = { tab: Tab; label?: string; icon: keyof typeof Icon; desc: string };
 const NAV: { group: string; items: NavItem[] }[] = [
-  { group: "Overview", items: [{ tab: "Judge", label: "Overview", icon: "judge", desc: "Every rubric line → proof" }] },
+  { group: "Overview", items: [{ tab: "Overview", icon: "judge", desc: "What it is and how to check it" }] },
   { group: "Agent", items: [{ tab: "Verdict", icon: "verdict", desc: "Decision and RYO funnel" }, { tab: "Ledger", icon: "ledger", desc: "Practice trades, verified" }] },
   { group: "Evidence", items: [{ tab: "Causality", icon: "causality", desc: "Whales, voices, news, markets" }, { tab: "Debate", icon: "debate", desc: "Bull · Bear · Judge" }] },
   { group: "Governance", items: [{ tab: "Mandate", icon: "mandate", desc: "Prose ⇄ AST compiler" }, { tab: "Audit", icon: "audit", desc: "Replay and evidence" }] },
   { group: "On-chain", items: [{ tab: "CRE + x402", label: "CRE · x402", icon: "chain", desc: "Workflow and payments" }] },
 ];
 const PAGES: Record<Tab, { title: string; sub: string }> = {
-  Judge: { title: "Judge path", sub: "Every requirement of the three prizes, mapped to the screen, file or transaction that proves it" },
-  Verdict: { title: "Verdict", sub: "One atomic practice-trade decision from all six RYO-CHAN MCP tools and independent evidence" },
-  Ledger: { title: "Practice-trade ledger", sub: "Recorded on live RYO data, hash-chained, and witnessed outside our control" },
-  Causality: { title: "Cause and effect", sub: "Whale lead-lag, KOL convergence, catalyst checks and the independent market check" },
-  Debate: { title: "Bull · Bear · Judge", sub: "Opposing agents argue from the same evidence; a mandate-bound judge rules" },
-  Mandate: { title: "Fiduciary mandate", sub: "Plain-English risk mandate compiled to an AST and back, anchored to its legal sources" },
-  "CRE + x402": { title: "Chainlink CRE and x402", sub: "The on-chain workflow, AI-assisted generation, and paid verdicts for agents" },
-  Audit: { title: "Audit", sub: "Replay, tamper tests and the FRE 902(13)/(14) evidence package" },
+  Overview: { title: "Overview", sub: "" },
+  Verdict: { title: "Verdict", sub: "One practice-trade decision from six RYO tools and independent evidence." },
+  Ledger: { title: "Ledger", sub: "Every practice trade, recorded on live data and hash-chained." },
+  Causality: { title: "Cause and effect", sub: "Whales, voices, news and markets on one timeline." },
+  Debate: { title: "Bull · Bear · Judge", sub: "Two agents argue from the same evidence. The mandate decides." },
+  Mandate: { title: "Mandate", sub: "Plain-English rules, compiled and enforced." },
+  "CRE + x402": { title: "Chainlink CRE · x402", sub: "The on-chain workflow and paid verdicts for agents." },
+  Audit: { title: "Audit", sub: "Replay the run, try to tamper with it, export the evidence." },
 };
 
 function VerdictView({ run, log, onInspect, onFocus }: { run: RunResult; log: string[]; onInspect: (r: RyoResult) => void; onFocus: (s: string) => void }) {
@@ -281,7 +281,7 @@ function VerdictView({ run, log, onInspect, onFocus }: { run: RunResult; log: st
               </div>
               <div className="row" style={{ marginTop: 10 }}>
                 <button className="btn" onClick={() => onFocus(t.dossier.symbol)}>Open Bull/Bear/Judge →</button>
-                <span className="small muted">Entry/stop/targets start from RYO deep_analysis.trade_plan (ATR-14, preview only), then the mandate's stop/size clauses apply.</span>
+                <span className="small muted">Starts from RYO's ATR trade plan; the mandate sets the stop and size.</span>
               </div>
             </>
           ) : (
@@ -319,7 +319,7 @@ function VerdictView({ run, log, onInspect, onFocus }: { run: RunResult; log: st
             </table>
           </div>
           <p className="small muted">
-            Stablecoins removed from the scan before ranking. "null" means RYO reported the measurement unavailable; the mandate treats that as a failed gate, never as 0. Click a row for the full debate.
+            "null" means RYO reported it unavailable — a failed gate, never a 0. Click a row for the debate.
           </p>
         </div>
       </div>

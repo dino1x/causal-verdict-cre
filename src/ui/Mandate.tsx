@@ -34,7 +34,7 @@ export function MandateView({ prose, setProse, run }: { prose: string; setProse:
   return (
     <div className="grid" style={{ gap: 14 }}>
       <div className="notice">
-        <b>Bidirectional fiduciary mandate compiler.</b> Prose compiles to a typed AST using a fixed clause grammar. Prose it cannot parse is rejected with a line number, never guessed. The AST decompiles back to canonical prose through deterministic templates (no LLM). Editing a number in the AST rewrites the prose, and editing the prose rebuilds the AST. The agent, the Judge and the CRE workflow all evaluate this same AST.
+        <b>Mandate compiler.</b> Prose compiles to rules; anything ambiguous is rejected with a line number. Rules decompile to the same prose. Edit either side.
       </div>
       <div className="grid g2">
         <div className="card">
@@ -100,7 +100,7 @@ export function MandateView({ prose, setProse, run }: { prose: string; setProse:
             ))}
         </div>
         <p className="small muted">
-          Scope note: SEC Act §17(b) reaches promotion of <i>securities</i>; the clause treats undisclosed coordinated promotion as a red flag whatever the token's legal status. MiCA Art. 91 prohibits manipulation, including voicing an opinion on a crypto-asset while positioned without disclosing the conflict. Art. 92 requires systems that detect and report market abuse, and the agent's touting and exit-liquidity detectors are that kind of surveillance control. This is engineering, not legal advice.
+          §17(b) covers securities; the touting gate flags undisclosed promotion either way. MiCA Art. 91 bans manipulation; Art. 92 requires abuse detection. Engineering, not legal advice.
         </p>
       </div>
     </div>
