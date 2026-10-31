@@ -6,7 +6,7 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { runPipeline } from "../src/engine/pipeline";
 import { DEFAULT_MANDATE } from "../src/engine/legalAstCompiler";
-import { applyRun, emptyLedger, ledgerStats, verifyLedger, type Ledger } from "../src/engine/ledger";
+import { applyRun, emptyLedger, ledgerHead, ledgerStats, sealLedger, verifyLedger, type Ledger } from "../src/engine/ledger";
 import { proxyCall } from "../server/api";
 import { collectFeeds, DEFAULT_TG_VOICES } from "../server/feeds";
 
@@ -14,7 +14,7 @@ const once = process.argv.includes("--once");
 const minutes = Number(process.argv.find((a) => a.startsWith("--every="))?.split("=")[1] ?? 60);
 const PATH = "data/ledger.json";
 mkdirSync("data/runs", { recursive: true });
-const load = (): Ledger => (existsSync(PATH) ? JSON.parse(readFileSync(PATH, "utf8")) : emptyLedger());
+const load = (): Ledger => (existsSync(PATH) ? sealLedger(JSON.parse(readFileSync(PATH, "utf8"))) : emptyLedger());
 
 async function tick(): Promise<boolean> {
   const started = new Date().toISOString();
@@ -41,7 +41,7 @@ async function tick(): Promise<boolean> {
     writeFileSync("src/data/ledgerSnapshot.json", JSON.stringify(after, null, 2));
   }
   writeFileSync(`data/runs/${(run.referenceTime ?? started).replace(/[:.]/g, "-")}.json`, JSON.stringify({ referenceTime: run.referenceTime, traceRoot: run.trace.root, provenance: run.provenanceMix, decision: run.practiceTrade?.position.symbol ?? null, calls: run.calls.map((c) => ({ tool: c.tool, args: c.args, provenance: c.provenance, sha256: c.envelope_sha256, fallback: c.fallback_reason })), feeds: run.feedSources }, null, 2));
-  console.log(`[${started}] ref=${run.referenceTime} live=${live}/${run.calls.length} decision=${run.practiceTrade?.position.symbol ?? "none"} ${recorded ? "RECORDED" : `NOT RECORDED (${why ?? "stale reference time"})`} ledger=${JSON.stringify(ledgerStats(after))} chain=${verifyLedger(after).ok ? "ok" : "BROKEN"}`);
+  console.log(`[${started}] ref=${run.referenceTime} live=${live}/${run.calls.length} decision=${run.practiceTrade?.position.symbol ?? "none"} ${recorded ? "RECORDED" : `NOT RECORDED (${why ?? "stale reference time"})`} ledger=${JSON.stringify(ledgerStats(after))} chain=${verifyLedger(after).ok ? "ok" : "BROKEN"} head=${ledgerHead(after)}`);
   return recorded || !why; // retry soon only when live evidence was missing
 }
 

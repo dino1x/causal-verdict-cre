@@ -1,8 +1,52 @@
 import { useEffect, useState } from "react";
-import { ledgerStats, verifyLedger, type Ledger } from "../engine/ledger";
+import { ledgerHead, ledgerStats, verifyLedger, type Ledger } from "../engine/ledger";
+import battery from "../data/batteryReport.json";
 import { fmtUsd } from "../engine/ryo";
 import bundled from "../data/ledgerSnapshot.json";
 import { Badge, short } from "./common";
+
+type Tamper = { label: string; mutate: (l: Ledger) => void };
+const TAMPERS: Tamper[] = [
+  { label: "Flip the latest decision", mutate: (l) => { const r = l.runs[l.runs.length - 1]; if (r) r.decision = r.decision === "NO TRADE" ? "SELECT SOL" : "NO TRADE"; } },
+  { label: "Erase a rejection reason", mutate: (l) => { const c = l.runs.flatMap((r) => r.candidates ?? []).find((x) => x.failed.length); if (c) c.failed = []; } },
+  { label: "Rewrite an event's text", mutate: (l) => { if (l.events[0]) l.events[0].detail += " (edited)"; } },
+  { label: "Delete the latest run (truncation)", mutate: (l) => { l.runs.pop(); } },
+];
+
+function VerifyPanel({ ledger }: { ledger: Ledger }) {
+  const head = ledgerHead(ledger);
+  const [check, setCheck] = useState<string | null>(null);
+  const [tamper, setTamper] = useState<{ label: string; chain: string; head: string } | null>(null);
+  const b = battery as any;
+  const recheck = () => {
+    const t0 = performance.now();
+    const v = verifyLedger(ledger);
+    setCheck(`${v.ok ? "verified" : `BROKEN: ${v.detail}`} — ${ledger.events.length} events, ${ledger.runs.length} runs and the positions re-hashed in this browser in ${(performance.now() - t0).toFixed(1)} ms`);
+  };
+  const run = (t: Tamper) => {
+    const x: Ledger = structuredClone(ledger);
+    t.mutate(x);
+    const v = verifyLedger(x);
+    const h = ledgerHead(x);
+    setTamper({ label: t.label, chain: v.ok ? "the chain alone still verifies (a shorter ledger is a valid prefix)" : `chain breaks: ${v.detail}`, head: !v.ok ? "caught" : h === head ? "head unchanged: NOT caught" : `but its head becomes ${short(h, 10)}, which no longer matches the published head, so it is caught` });
+  };
+  return (
+    <div className="card">
+      <h2>Check it yourself</h2>
+      <p className="small muted">Everything below runs in your browser on the ledger shown here. No server is trusted.</p>
+      <div className="small">Ledger head <span className="hash">{head}</span></div>
+      <div className="row" style={{ marginTop: 8 }}>
+        <button className="btn primary" onClick={recheck}>Re-verify the chain</button>
+        {TAMPERS.map((t) => <button key={t.label} className="btn" onClick={() => run(t)}>{t.label}</button>)}
+      </div>
+      {check && <p className="small" style={{ marginTop: 8 }}><Badge k={check.startsWith("verified") ? "pass" : "fail"}>{check.split(" — ")[0]}</Badge> {check.split(" — ")[1]}</p>}
+      {tamper && <p className="small" style={{ marginTop: 8 }}><b>{tamper.label}</b> on a private copy → {tamper.chain}{tamper.head === "caught" ? "." : `, ${tamper.head}.`}</p>}
+      <p className="small" style={{ marginTop: 10 }}>
+        <b>Attack battery</b> (<span className="mono">scripts/battery.ts</span>, run by <span className="mono">npm test</span>): <Badge k={b.missedWithWitness ? "fail" : "pass"}>{b.missedWithWitness} missed of {b.total}</Badge> attacks on copies of the live ledger, a ledger with real positions, and a reasoning trace. The hash chains alone catch every edit, deletion and swap; truncating the tail or re-hashing the whole history leaves a valid chain ({b.missedByChain} such attacks), and only the published head catches those. That is why the head is witnessed outside our control.
+      </p>
+    </div>
+  );
+}
 
 export function LedgerView() {
   const [ledger, setLedger] = useState<Ledger>(bundled as unknown as Ledger);
@@ -24,8 +68,9 @@ export function LedgerView() {
         <div className="card"><div className="stat-l">Agent runs recorded</div><div className="stat">{st.runs}</div><div className="small muted">{source}</div></div>
         <div className="card"><div className="stat-l">Open / closed</div><div className="stat">{st.open} / {st.closed}</div></div>
         <div className="card"><div className="stat-l">Realized P&amp;L · avg R</div><div className={`stat ${st.realizedPnlUsd >= 0 ? "ok" : "err"}`}>{fmtUsd(st.realizedPnlUsd)}</div><div className="small muted">avg {st.avgR ?? "—"}R · win rate {st.winRate === null ? "—" : `${(st.winRate * 100).toFixed(0)}%`}</div></div>
-        <div className="card"><div className="stat-l">Ledger hash chain</div><div className="row" style={{ marginTop: 6 }}><Badge k={v.ok ? "pass" : "fail"}>{v.ok ? `${ledger.events.length} events verify` : `broken at ${v.brokenAt}`}</Badge></div></div>
+        <div className="card"><div className="stat-l">Ledger hash chain</div><div className="row" style={{ marginTop: 6 }}><Badge k={v.ok ? "pass" : "fail"}>{v.ok ? `${ledger.events.length} events · ${ledger.runs.length} runs verify` : `${v.part} ${v.brokenAt} broken`}</Badge></div></div>
       </div>
+      <VerifyPanel ledger={ledger} />
       <div className="card">
         <h2>Positions</h2>
         <div className="scroll">

@@ -55,7 +55,42 @@ export interface Ledger {
     // Why each candidate was selected or rejected: the binding gates it failed and what was observed.
     // Absent on runs recorded before this field existed.
     candidates?: RunCandidate[];
+    // Run records are hash-chained like events. stateHash seals the positions as they stood after the run,
+    // so editing a position, a run or its reasons breaks verification. Runs recorded before the run chain
+    // existed were sealed when it was introduced, with stateHash null (their positions were not captured).
+    stateHash?: string | null;
+    prev?: string;
+    hash?: string;
   }[];
+}
+
+type RunRecord = Ledger["runs"][number];
+const ZERO = "0x" + "0".repeat(64);
+const runBody = (r: RunRecord) => {
+  const { prev, hash, ...body } = r;
+  return body;
+};
+const sealRun = (l: Ledger, idx: number) => {
+  const prev = idx ? l.runs[idx - 1].hash! : ZERO;
+  l.runs[idx].prev = prev;
+  l.runs[idx].hash = hashHex(`${prev}|${idx}|${canonical(runBody(l.runs[idx]))}`);
+};
+
+/** One digest for the whole ledger: event chain head, run chain head and current positions. This is what gets witnessed. */
+export function ledgerHead(l: Ledger): string {
+  const ev = l.events.length ? l.events[l.events.length - 1].hash : ZERO;
+  return hashHex(`${ev}|${hashHex(canonical(l.runs))}|${hashHex(canonical(l.positions))}`);
+}
+
+/** Seal run records written before the run chain existed (once; stateHash null because their positions were not captured). */
+export function sealLedger(prev: Ledger): Ledger {
+  const l: Ledger = structuredClone(prev);
+  for (let i = 0; i < l.runs.length; i++)
+    if (l.runs[i].hash === undefined) {
+      l.runs[i].stateHash ??= null;
+      sealRun(l, i);
+    }
+  return l;
 }
 
 export const emptyLedger = (): Ledger => ({ version: 1, positions: [], events: [], runs: [] });
@@ -69,13 +104,24 @@ function addEvent(l: Ledger, e: Omit<LedgerEvent, "i" | "prev" | "hash">) {
   l.events.push({ ...e, i, prev, hash });
 }
 
-export function verifyLedger(l: Ledger): { ok: boolean; brokenAt: number | null } {
-  let prev = "0x" + "0".repeat(64);
-  for (const e of l.events) {
+export function verifyLedger(l: Ledger): { ok: boolean; brokenAt: number | null; part?: "event" | "run" | "positions"; detail?: string } {
+  let prev = ZERO;
+  for (const [n, e] of l.events.entries()) {
     const { i, prev: p, hash, ...body } = e;
-    if (p !== prev || hashHex(`${prev}|${i}|${canonical(body)}`) !== hash) return { ok: false, brokenAt: i };
+    if (i !== n || p !== prev || hashHex(`${prev}|${i}|${canonical(body)}`) !== hash) return { ok: false, brokenAt: n, part: "event", detail: `event ${n} does not match its hash or its predecessor` };
     prev = hash;
   }
+  let rprev = ZERO;
+  for (const [n, r] of l.runs.entries()) {
+    if (r.hash === undefined) {
+      if (l.runs.slice(n).some((x) => x.hash !== undefined)) return { ok: false, brokenAt: n, part: "run", detail: `run ${n} is unsealed but a later run is sealed` };
+      break; // a ledger written before the run chain existed
+    }
+    if (r.prev !== rprev || hashHex(`${rprev}|${n}|${canonical(runBody(r))}`) !== r.hash) return { ok: false, brokenAt: n, part: "run", detail: `run ${n} does not match its hash or its predecessor` };
+    rprev = r.hash;
+  }
+  const last = l.runs[l.runs.length - 1];
+  if (last?.stateHash && last.stateHash !== hashHex(canonical(l.positions))) return { ok: false, brokenAt: l.runs.length - 1, part: "positions", detail: "positions differ from the state sealed by the last run" };
   return { ok: true, brokenAt: null };
 }
 
@@ -173,7 +219,13 @@ export function applyRun(prev: Ledger, run: RunResult, extraPrices: Map<string, 
     const why = candidates.map((c) => `${c.symbol}: ${c.failed.map((f) => f.gate).join(", ") || "no failed gate"}`).join(" · ");
     addEvent(l, { at, kind: "no_trade", symbol: null, detail: `no candidate satisfied the mandate — ${why}`, traceRoot: run.trace.root });
   }
-  l.runs.push({ at, traceRoot: run.trace.root, provenance: run.provenanceMix, evidenceMode: run.evidenceMode, decision: t ? `SELECT ${t.position.symbol}` : "NO TRADE", candidates });
+  for (let i = 0; i < l.runs.length; i++)
+    if (l.runs[i].hash === undefined) {
+      l.runs[i].stateHash ??= null; // legacy run: seal once
+      sealRun(l, i);
+    }
+  l.runs.push({ at, traceRoot: run.trace.root, provenance: run.provenanceMix, evidenceMode: run.evidenceMode, decision: t ? `SELECT ${t.position.symbol}` : "NO TRADE", candidates, stateHash: hashHex(canonical(l.positions)) });
+  sealRun(l, l.runs.length - 1);
   return l;
 }
 

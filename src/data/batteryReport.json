@@ -1,0 +1,108 @@
+{
+  "generated_at": "2026-10-31T06:39:25.468Z",
+  "note": "chain = hash chains alone; witness = chains plus a ledger head published where the operator cannot rewrite it. Truncation and full re-hashing yield a valid chain by construction, so only the witnessed head catches them.",
+  "results": [
+    {
+      "label": "live ledger (data/ledger.json, 3 runs)",
+      "head": "0x0cd3b520da1d9c3048a5e4950dbda2789dff9a05b004cf673ebb68ca501585f4",
+      "attacks": 48,
+      "missedByChain": 26,
+      "missedWithWitness": 0,
+      "byKind": {
+        "edit": {
+          "attacks": 14,
+          "missedByChain": 0,
+          "missedWithWitness": 0
+        },
+        "delete": {
+          "attacks": 4,
+          "missedByChain": 0,
+          "missedWithWitness": 0
+        },
+        "swap": {
+          "attacks": 4,
+          "missedByChain": 0,
+          "missedWithWitness": 0
+        },
+        "truncate": {
+          "attacks": 4,
+          "missedByChain": 4,
+          "missedWithWitness": 0
+        },
+        "rehash": {
+          "attacks": 22,
+          "missedByChain": 22,
+          "missedWithWitness": 0
+        }
+      },
+      "witnessMisses": []
+    },
+    {
+      "label": "synthetic ledger (scenario run + 2 price observations)",
+      "head": "0x5619f6023fac473a6663eec71cc223eaf98ee44bb664751fbae17096b7c97b91",
+      "attacks": 84,
+      "missedByChain": 42,
+      "missedWithWitness": 0,
+      "byKind": {
+        "edit": {
+          "attacks": 23,
+          "missedByChain": 0,
+          "missedWithWitness": 0
+        },
+        "delete": {
+          "attacks": 9,
+          "missedByChain": 0,
+          "missedWithWitness": 0
+        },
+        "swap": {
+          "attacks": 8,
+          "missedByChain": 0,
+          "missedWithWitness": 0
+        },
+        "truncate": {
+          "attacks": 4,
+          "missedByChain": 2,
+          "missedWithWitness": 0
+        },
+        "rehash": {
+          "attacks": 40,
+          "missedByChain": 40,
+          "missedWithWitness": 0
+        }
+      },
+      "witnessMisses": []
+    },
+    {
+      "label": "reasoning trace (scenario run)",
+      "root": "0xbeba5adf82240b6963fe1eca07e76f0183a1da4fddc3b68194db45843079bbcb",
+      "attacks": 52,
+      "missedByChain": 2,
+      "missedWithWitness": 0,
+      "byKind": {
+        "edit": {
+          "attacks": 26,
+          "missedByChain": 0,
+          "missedWithWitness": 0
+        },
+        "delete": {
+          "attacks": 12,
+          "missedByChain": 0,
+          "missedWithWitness": 0
+        },
+        "swap": {
+          "attacks": 12,
+          "missedByChain": 0,
+          "missedWithWitness": 0
+        },
+        "truncate": {
+          "attacks": 2,
+          "missedByChain": 2,
+          "missedWithWitness": 0
+        }
+      }
+    }
+  ],
+  "total": 184,
+  "missedByChain": 70,
+  "missedWithWitness": 0
+}
