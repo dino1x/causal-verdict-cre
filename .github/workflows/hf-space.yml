@@ -1,0 +1,44 @@
+# Mirrors this repo to the Hugging Face Space that hosts the full app (Docker, free CPU).
+# Runs on every push and after each hourly agent run, so the hosted ledger stays current.
+# Needs the repository secret HF_TOKEN (a Hugging Face write token); skipped until it exists.
+name: hf-space
+on:
+  push:
+    branches: [main]
+  # Commits made by the hourly agent use GITHUB_TOKEN, which does not trigger push workflows.
+  workflow_run:
+    workflows: [agent]
+    types: [completed]
+  workflow_dispatch: {}
+permissions:
+  contents: read
+concurrency:
+  group: hf-space
+  cancel-in-progress: true
+env:
+  SPACE: dino1x/causal-verdict-cre
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Push to the Space
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          if [ -z "$HF_TOKEN" ]; then echo "HF_TOKEN not set; skipping"; exit 0; fi
+          mkdir -p /tmp/space
+          rsync -a --exclude .git --exclude .github ./ /tmp/space/
+          cd /tmp/space
+          # The Space's README needs a config header; the rest is the project README.
+          { printf -- '---\ntitle: Causal Verdict\nemoji: ⚖️\ncolorFrom: green\ncolorTo: gray\nsdk: docker\napp_port: 7860\npinned: false\nshort_description: Fiduciary agent on RYO-CHAN MCP and Chainlink CRE\n---\n\n'; cat README.md; } > README.space.md && mv README.space.md README.md
+          git init -q -b main
+          git lfs install --local
+          git lfs track "*.ots" > /dev/null
+          git config user.name "causal-verdict-sync"
+          git config user.email "causal-verdict-sync@users.noreply.github.com"
+          git add -A
+          git commit -q -m "Sync from GitHub ${GITHUB_SHA::7}"
+          git push --force "https://dino1x:${HF_TOKEN}@huggingface.co/spaces/${SPACE}" main

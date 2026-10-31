@@ -1,6 +1,5 @@
-# Keeps the Render free instance awake so the live app answers instantly, whenever someone opens it.
-# Render's free plan sleeps after 15 idle minutes; a ping every 10 minutes keeps one service inside its
-# 750 free instance-hours a month. Set the repository variable RENDER_URL (e.g. https://causal-verdict-cre.onrender.com).
+# Keeps the hosted app awake so it answers instantly, whenever someone opens it. Set the repository variable
+# APP_URL to the app's address (e.g. https://dino1x-causal-verdict-cre.hf.space).
 name: keepalive
 on:
   schedule:
@@ -9,9 +8,9 @@ on:
 permissions: {}
 jobs:
   ping:
-    if: vars.RENDER_URL != ''
+    if: vars.APP_URL != ''
     runs-on: ubuntu-latest
     timeout-minutes: 3
     steps:
       - name: Ping the health route
-        run: curl -fsS --retry 4 --retry-delay 15 --max-time 60 "${{ vars.RENDER_URL }}/api/agent/x402-info" -o /dev/null -w "HTTP %{http_code} in %{time_total}s\n"
+        run: curl -fsS --retry 4 --retry-delay 15 --max-time 60 "${{ vars.APP_URL }}/api/agent/x402-info" -o /dev/null -w "HTTP %{http_code} in %{time_total}s\n"

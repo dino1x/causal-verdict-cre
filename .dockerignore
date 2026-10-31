@@ -1,0 +1,15 @@
+node_modules
+dist
+.env
+.env.*
+!.env.example
+data
+.git
+.github
+.claude
+CLAUDE.md
+docs
+cre-workflow/**/node_modules
+cre-workflow/**/dist
+*.log
+!cre-workflow/simulation-*.log
