@@ -8,6 +8,50 @@ BLI Legal Tech Hackathon 2 · RYO-CHAN *Autonomous Agents* · Chainlink *Best wo
 
 ---
 
+## Judge path (3 minutes)
+
+**Built on RYO, not around it.** Every decision comes from RYO-CHAN MCP's six tools (`market_overview`, `monitor_market_sentiment_shift`, `scan_market`, `compare_tokens`, `analyze_token`, `deep_analysis`), called through a server proxy that keeps the key off the browser. Without a key, the app replays 17 real captured RYO responses, hashed and labelled. The app opens on a **Judge** tab that mirrors this section, with a "Show me" button on every row.
+
+**Three on-chain proofs and a Bitcoin timestamp**
+
+| What | Proof |
+|---|---|
+| Vault deployed on Sepolia, bound to the mandate hash | [deploy tx](https://sepolia.etherscan.io/tx/0x4cca438a56f868df390340092d08f3e76716e1319ec4643a8b21d0143b82925a) · [vault](https://sepolia.etherscan.io/address/0xb86d25cd0317de545c8573f040a589c34a093544) |
+| CRE workflow wrote a verdict on-chain (`cre workflow simulate --broadcast`) | [report tx](https://sepolia.etherscan.io/tx/0xea20a213693990660226b817c94b85ea4c1b6e7bc66c409e5fb4d36797c81cc6) · `npx tsx scripts/read-vault.ts` |
+| An agent paid for a verdict over x402, settled before it was served | [Base Sepolia tx](https://sepolia.basescan.org/tx/0x0406f0749a6958723822ebf24cd3d85376f11ca13ef0c01bbba63bf9daa04bf7) |
+| Ledger head timestamped into Bitcoin | [`witness/heads/`](witness/heads/) · `ots verify <file>.ots` (pending until a block confirms it) |
+
+**Check it yourself, in the browser**
+
+| Check | Where |
+|---|---|
+| Replay the run from the recorded RYO envelopes and get the identical trace root | Audit → Replay |
+| Edit one reasoning step and watch the chain break | Audit → Edit one step |
+| Re-hash every RYO exhibit | Audit → Re-hash all exhibits |
+| Re-verify the practice-trade ledger, and tamper with a private copy | Ledger → Check it yourself |
+| Compile the mandate to an AST and back to the same prose | Mandate |
+| Pay for a verdict over x402 (402 → signed retry → 200 → replay refused) | CRE + x402 |
+
+**Attack battery** (`scripts/battery.ts`, part of `npm test`): 184 attacks on copies of the live ledger, a ledger with real positions, and a reasoning trace. The hash chains catch every edit, deletion and swap. Truncating the tail or re-hashing the whole history leaves a valid chain, and only the published head catches those. With the witnessed head, **0 of 184 are missed**.
+
+**Rubric map**
+
+| Prize · criterion | Where it is |
+|---|---|
+| RYO · Combining sources (20%) | Six RYO tools chained into one gated decision with on-chain whale transfers, Whale Alert, RSS news and Telegram voices (Verdict, Causality) |
+| RYO · Coping with failure (20%) | Rate-limit headers, circuit breaker with `Retry-After`, labelled snapshot fallback, null kept null, paced loop, chaos injector (Verdict) |
+| RYO · Real thinking (25%) | Bull/Bear over structured RYO fields, a mandate-bound Judge, and a citation-checked Claude debate (Debate) |
+| RYO · Cause and effect (20%) | Whale lead-lag forensics, echo collapse, catalyst verification, and a Why column per candidate per run (Causality, Ledger) |
+| RYO · Repeatability (10%) | Hash-chained trace with exact replay; ledger head witnessed in git, Bitcoin and Sigstore (Audit, Ledger) |
+| RYO · Advanced execution (5%) | Atomic entry, size, stop, tranches, targets and time stop, anchored by CRE (Verdict, CRE + x402) |
+| Chainlink · CRE workflow + CLI simulation | `cre-workflow/` · Cron and HTTP triggers · Confidential HTTP · `simulation-cre-cli-*.log` · report tx above |
+| Chainlink · x402 · AI-generated workflows · risk monitoring | settled payment above · intent → mandate → generated config (CRE + x402) · hourly cron trigger |
+| BLI · fiduciary mandate, §17(b), MiCA Art. 91–92, FRE 902(13)/(14) | Mandate compiler and decompiler · binding touting/exit-liquidity gates · draft STOR · evidence package (Mandate, Debate, Audit) |
+
+**Runs in public.** `.github/workflows/agent.yml` runs the agent hourly on live RYO, then commits the ledger and signs its head in Sigstore with the workflow's own identity. `.github/workflows/pages.yml` publishes the replay-mode site.
+
+---
+
 ## 60-second tour
 
 ```bash

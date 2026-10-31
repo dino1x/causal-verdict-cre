@@ -125,7 +125,6 @@ syn = applyRun(syn, fake(iso(1), p0.targets[0].price + 0.01, "0xr2"));
 syn = applyRun(syn, fake(iso(2), p0.entry - 0.5, "0xr3"));
 
 const report = {
-  generated_at: new Date().toISOString(),
   note: "chain = hash chains alone; witness = chains plus a ledger head published where the operator cannot rewrite it. Truncation and full re-hashing yield a valid chain by construction, so only the witnessed head catches them.",
   results: [scoreLedger(`live ledger (${livePath}, ${live.runs.length} runs)`, live), scoreLedger("synthetic ledger (scenario run + 2 price observations)", syn), scoreTrace(run.trace.steps)],
 };

@@ -12,13 +12,14 @@ import { MandateView } from "./ui/Mandate";
 import { CreView } from "./ui/Cre";
 import { AuditView } from "./ui/Audit";
 import { LedgerView } from "./ui/Ledger";
+import { JudgeView } from "./ui/Judge";
 
-const TABS = ["Verdict", "Ledger", "Causality", "Debate", "Mandate", "CRE + x402", "Audit"] as const;
+const TABS = ["Judge", "Verdict", "Ledger", "Causality", "Debate", "Mandate", "CRE + x402", "Audit"] as const;
 type Tab = (typeof TABS)[number];
 const TOOL_ORDER: RyoTool[] = ["market_overview", "monitor_market_sentiment_shift", "scan_market", "compare_tokens", "analyze_token", "deep_analysis"];
 
 export default function App() {
-  const [tab, setTab] = useState<Tab>("Verdict");
+  const [tab, setTab] = useState<Tab>("Judge");
   const [mode, setMode] = useState<Mode>("replay");
   const [chaos, setChaos] = useState<Chaos>("none");
   const [equity, setEquity] = useState(100000);
@@ -31,6 +32,7 @@ export default function App() {
   const [log, setLog] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [status, setStatus] = useState<ProxyStatus | null>(null);
+  const [statusChecked, setStatusChecked] = useState(false);
   const [focus, setFocus] = useState<string>("SOL");
   const insp = useInspector();
   const fixtures = useMemo(() => ({ voices: F.KOL_VOICES, posts, whales: F.WHALE_EVENTS, news: F.NEWS_ITEMS }), [posts]);
@@ -62,7 +64,7 @@ export default function App() {
   );
 
   useEffect(() => {
-    getStatus().then(setStatus);
+    getStatus().then((st) => (setStatus(st), setStatusChecked(true)));
     go("replay");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -104,7 +106,9 @@ export default function App() {
             {running ? "Running agent…" : mode === "live" ? "Run agent (live RYO)" : "Run agent (replay)"}
           </button>
           <span className="small muted">
-            {status === null ? (
+            {status === null && !statusChecked ? (
+              <Badge k="snapshot">checking the RYO proxy…</Badge>
+            ) : status === null ? (
               <Badge k="snapshot">static mode · bundled RYO snapshots</Badge>
             ) : status.configured && status.whoami?.error ? (
               <Badge k="partial" title={status.whoami.error}>proxy ✓ · RYO unreachable now → snapshot fallback</Badge>
@@ -132,6 +136,7 @@ export default function App() {
         <div className="card">Running the agent on captured RYO evidence…</div>
       ) : (
         <>
+          {tab === "Judge" && <JudgeView run={run} go={(t) => setTab(t as Tab)} />}
           {tab === "Verdict" && <VerdictView run={run} log={log} onInspect={insp.open} onFocus={(s) => { setFocus(s); setTab("Debate"); }} />}
           {tab === "Ledger" && <LedgerView />}
           {tab === "Causality" && <CausalityView run={run} focus={focus} setFocus={setFocus} posts={posts} setPosts={setPosts} channels={channels} setChannels={setChannels} />}
