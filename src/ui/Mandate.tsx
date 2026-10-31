@@ -15,6 +15,7 @@ const NUM_FIELDS: Partial<Record<Clause["kind"], { key: string; step: number }[]
   anti_touting: [{ key: "minKols", step: 1 }, { key: "windowMin", step: 5 }],
   regime_scaling: [{ key: "factor", step: 0.1 }],
   min_planes: [{ key: "n", step: 1 }],
+  price_agreement: [{ key: "maxPct", step: 0.5 }],
 };
 
 export function MandateView({ prose, setProse, run }: { prose: string; setProse: (s: string) => void; run: RunResult }) {

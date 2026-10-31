@@ -13,7 +13,7 @@
   "authorizedGatewayKey": "0x0000000000000000000000000000000000000000",
   "mandate": {
     "name": "Prudent Practice Desk v1",
-    "hash": "0x44be16dadff7c6c169523f71beba3705c299c2bce1be2bb9fe6bdc717aa96e00",
+    "hash": "0xb82b743f35d2d627555d4a08895af255488360b1d880c9e9e4236c305598a97c",
     "clauses": [
       {
         "id": "C1",
@@ -96,6 +96,11 @@
         "id": "C15",
         "kind": "min_planes",
         "n": 2
+      },
+      {
+        "id": "C16",
+        "kind": "price_agreement",
+        "maxPct": 2
       }
     ]
   },
@@ -103,5 +108,16 @@
     "chainSelectorName": "ethereum-testnet-sepolia",
     "vaultAddress": "0xb86d25cd0317de545c8573f040a589c34a093544",
     "gasLimit": "1500000"
+  },
+  "priceFeeds": {
+    "chainSelectorName": "ethereum-mainnet",
+    "feeds": {
+      "BTC": "0xF4030086522a5bEEa4988F8cA5B36dbC97BeE88c",
+      "ETH": "0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419",
+      "SOL": "0x4ffC43a60e009B551865A93d232E33Fce9f01507",
+      "LINK": "0x2c1d072e956AFFC0D435Cb7AC38EF18d24d9127c",
+      "UNI": "0x553303d460EE0afB37EdFf9bE42922D8FF63220e",
+      "AAVE": "0x547a514d5e3769680Ce22B2361c10Ea13619e8a9"
+    }
   }
 }

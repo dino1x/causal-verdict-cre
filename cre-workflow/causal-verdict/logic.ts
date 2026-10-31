@@ -26,6 +26,9 @@ export interface Observation {
   planT2: number;
   planAvailable: boolean;
   fearGreed: number;
+  // Chainlink Data Feed price read by the workflow itself (EVMClient.callContract); -1 when no feed for the symbol
+  refPrice?: number;
+  refPriceAvailable?: boolean;
 }
 
 /** Off-chain evidence digest submitted by the agent through the x402-gated HTTP trigger. */
@@ -91,6 +94,10 @@ export function evaluateMandate(obs: Observation, ev: AgentEvidence, clauses: Ma
         break;
       case "min_planes":
         if (ev.supportingPlanes < n(c, "n")) fail(i, c);
+        break;
+      case "price_agreement":
+        // Compares two prices only when both exist; a missing RYO price is require_status / require_measurement territory.
+        if (obs.refPriceAvailable && obs.refPrice! > 0 && obs.price > 0 && (Math.abs(obs.price - obs.refPrice!) / obs.refPrice!) * 100 > n(c, "maxPct")) fail(i, c);
         break;
       case "risk_per_trade": riskPct = n(c, "maxPct"); break;
       case "max_position": maxPos = n(c, "maxPct"); break;

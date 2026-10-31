@@ -53,6 +53,18 @@ export interface Fixtures {
   posts: KolPost[];
   whales: WhaleEvent[];
   news: NewsItem[];
+  markets?: MarketSnap[];
+}
+
+/** Independent market data for one token as of the reference time (exchange candles and perps, Chainlink price). */
+export interface MarketSnap {
+  symbol: string;
+  venue: string | null;
+  candles: { t: number; o: number; h: number; l: number; c: number }[]; // 1h, closed before the reference time
+  fundingRate: number | null; // per 8h funding interval
+  oiChange24hPct: number | null;
+  priceRef: { price: number; source: string; updatedAt: string; url: string } | null;
+  source: string | null;
 }
 
 export interface TokenDossier {
@@ -62,6 +74,7 @@ export interface TokenDossier {
   narrative: Narrative;
   news: NewsCheck;
   whale: WhaleForensics;
+  market: MarketSnap | null;
   args: Argument[];
   planes: string[];
   gates: GateResult[];
@@ -70,7 +83,7 @@ export interface TokenDossier {
 }
 
 export interface FeedSource {
-  feed: "onchain" | "whale_alert" | "rss" | "telegram" | "fixture" | "user";
+  feed: "onchain" | "whale_alert" | "rss" | "telegram" | "fixture" | "user" | "exchange" | "chainlink" | "tavily";
   target: string;
   ok: boolean;
   items: number;
@@ -208,6 +221,7 @@ export async function runPipeline(opts: {
     whales_sha256: hashHex(canonical(fixtures.whales)),
     news_sha256: hashHex(canonical(fixtures.news)),
     voices_sha256: hashHex(canonical(fixtures.voices)),
+    markets_sha256: hashHex(canonical(fixtures.markets ?? [])),
     counts: { posts: fixtures.posts.length, whales: fixtures.whales.length, news: fixtures.news.length },
     sources: ev.sources.map((s) => `${s.ok ? "ok" : "fail"} ${s.feed} ${s.target} (${s.items})`),
   });
@@ -224,7 +238,11 @@ export async function runPipeline(opts: {
     const ryoText = [evidence.profileText, ...evidence.catalysts].filter(Boolean).join(" ");
     const news = checkNews(symbol, narrative, fixtures.news, ryoText || null);
     const whale = whaleForensics(symbol, fixtures.whales, narrative.convergenceAt, exitLiq?.windowMin ?? 90);
-    const args = argue(evidence, market, narrative, news, whale, ev.mode === "scenario");
+    const mk = fixtures.markets?.find((x) => x.symbol === symbol) ?? null;
+    const args = argue(evidence, market, narrative, news, whale, ev.mode === "scenario", mk);
+    const priceCheck = mk?.priceRef && evidence.price !== null
+      ? { ryo: +evidence.price.toPrecision(6), ref: +mk.priceRef.price.toPrecision(6), source: mk.priceRef.source, deviationPct: +((Math.abs(evidence.price - mk.priceRef.price) / mk.priceRef.price) * 100).toFixed(3), ageMin: referenceTime ? Math.round((Date.parse(referenceTime) - Date.parse(mk.priceRef.updatedAt)) / 60000) : null }
+      : null;
     const planes = supportingPlanes(args);
     const burst = narrative.convergenceAt !== null ? narrative.posts.filter((p) => p.minutes >= narrative.convergenceAt! - winMin && p.minutes <= narrative.convergenceAt! + winMin) : [];
     const statuses = [evidence.analyzeStatus, evidence.deepStatus].filter((s): s is string => s !== null);
@@ -250,13 +268,14 @@ export async function runPipeline(opts: {
             }
           : null,
         supportingPlanes: planes,
+        priceCheck,
       },
       market.regime,
     );
     const failed = gates.some((g) => g.outcome === "fail");
     const position = failed ? null : sizePosition(evidence, ast, market.regime, equityUsd);
     const judgment = judge(symbol, args, gates, position);
-    return { symbol, stage: finalists.includes(symbol) ? "deep" : "analyze", evidence, narrative, news, whale, args, planes, gates, position, judgment };
+    return { symbol, stage: finalists.includes(symbol) ? "deep" : "analyze", evidence, narrative, news, whale, market: mk, args, planes, gates, position, judgment };
   });
   for (const d of dossiers)
     trace.add(`judge.${d.symbol}`, {

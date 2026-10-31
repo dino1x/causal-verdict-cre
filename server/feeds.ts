@@ -7,6 +7,8 @@
 // To avoid look-ahead bias, items timestamped after the run's reference time are dropped.
 import type { KolPost, KolVoice, NewsItem, WhaleEvent } from "../src/data/scenarioFixtures";
 import { CLAIMS } from "../src/engine/evidence";
+import type { MarketSnap } from "../src/engine/pipeline";
+import { collectMarkets } from "./market";
 
 export interface FeedToken {
   symbol: string;
@@ -16,7 +18,7 @@ export interface FeedToken {
 }
 
 export interface FeedSource {
-  feed: "onchain" | "whale_alert" | "rss" | "telegram";
+  feed: "onchain" | "whale_alert" | "rss" | "telegram" | "exchange" | "chainlink" | "tavily";
   target: string;
   ok: boolean;
   items: number;
@@ -29,6 +31,7 @@ export interface FeedBundle {
   posts: KolPost[];
   whales: WhaleEvent[];
   news: NewsItem[];
+  markets: MarketSnap[];
   sources: FeedSource[];
 }
 
@@ -277,6 +280,42 @@ async function news(tokens: FeedToken[], refSec: number, sources: FeedSource[]):
   return out;
 }
 
+// Tavily news search (RYO's recommended news source), only when TAVILY_API_KEY is set. Free plan: 1,000 credits a
+// month, so each run searches at most TAVILY_MAX_TOKENS tokens (default 2). Results without a publication date are
+// dropped, because their timing cannot be checked against the reference time.
+const PRIMARY_DOMAINS = ["binance.com/en/support/announcement", "okx.com/help", "announcements.bybit.com", "solana.com/news", "coinbase.com/blog", "blog.chain.link"];
+async function tavily(tokens: FeedToken[], refSec: number, sources: FeedSource[]): Promise<NewsItem[]> {
+  const key = process.env.TAVILY_API_KEY;
+  if (!key) return [];
+  const out: NewsItem[] = [];
+  const day = (sec: number) => new Date(sec * 1000).toISOString().slice(0, 10);
+  for (const t of tokens.slice(0, Number(process.env.TAVILY_MAX_TOKENS ?? 2))) {
+    try {
+      const r = await fetchRetry("https://api.tavily.com/search", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
+        body: JSON.stringify({ query: `${t.name ?? t.symbol} (${t.symbol}) crypto news`, topic: "news", search_depth: "basic", max_results: 8, start_date: day(refSec - 3 * 86400), end_date: day(refSec) }),
+      }, 20000);
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      const j: any = await r.json();
+      let n = 0;
+      for (const it of j.results ?? []) {
+        const ts = Date.parse(it.published_date ?? "") / 1000;
+        if (!Number.isFinite(ts) || ts > refSec || refSec - ts > 72 * 3600) continue;
+        const text = `${it.title ?? ""} ${it.content ?? ""}`;
+        if (!mentions(text, t)) continue;
+        const primary = PRIMARY_DOMAINS.some((d) => String(it.url).includes(d));
+        out.push({ id: `tavily:${it.url}:${t.symbol}`, symbol: t.symbol, minutes: Math.round((ts - refSec) / 60), headline: it.title, sourceType: primary ? "primary" : "secondary", source: `Tavily — ${it.url}`, claimKeywords: CLAIMS.filter((c) => text.toLowerCase().includes(c)) });
+        n++;
+      }
+      sources.push({ feed: "tavily", target: t.symbol, ok: true, items: n, detail: `${(j.results ?? []).length} results; ${n} dated before ref and mentioning ${t.symbol}` });
+    } catch (e) {
+      sources.push({ feed: "tavily", target: t.symbol, ok: false, items: 0, detail: String((e as Error).message) });
+    }
+  }
+  return out;
+}
+
 // Public channels verified reachable and active (2026-10-30). Voices feed the KOL radar; exchange announcement
 // channels are the issuer/venue itself, so their posts enter the news checker as PRIMARY sources instead.
 export const PRIMARY_TG = ["binance_announcements", "bybit_announcements", "okxannouncements"];
@@ -326,7 +365,7 @@ async function telegramVoices(channels: string[], tokens: FeedToken[], refSec: n
 export async function collectFeeds(tokens: FeedToken[], referenceTime: string, channels: string[] = DEFAULT_TG_VOICES): Promise<FeedBundle> {
   const refSec = Math.floor(Date.parse(referenceTime) / 1000);
   const sources: FeedSource[] = [];
-  const [onchain, wa, nw, tg] = await Promise.all([
+  const [onchain, wa, nw, tg, tv, markets] = await Promise.all([
     (async () => {
       const all: WhaleEvent[] = [];
       for (const t of tokens) all.push(...(await onchainWhales(t, refSec, sources))); // sequential: gentle on public RPCs
@@ -335,8 +374,10 @@ export async function collectFeeds(tokens: FeedToken[], referenceTime: string, c
     whaleAlert(tokens.map((t) => t.symbol), refSec, sources),
     news(tokens, refSec, sources),
     telegramVoices(channels, tokens, refSec, sources),
+    tavily(tokens, refSec, sources),
+    collectMarkets(tokens.map((t) => t.symbol), referenceTime, sources),
   ]);
   const byKey = (a: { id: string }, b: { id: string }) => a.id.localeCompare(b.id);
   sources.sort((a, b) => (a.feed + a.target).localeCompare(b.feed + b.target));
-  return { referenceTime, voices: tg.voices, posts: tg.posts.sort(byKey), whales: [...onchain, ...wa].sort(byKey), news: [...nw, ...tg.primaryNews].sort(byKey), sources };
+  return { referenceTime, voices: tg.voices, posts: tg.posts.sort(byKey), whales: [...onchain, ...wa].sort(byKey), news: [...nw, ...tg.primaryNews, ...tv].sort(byKey), markets, sources };
 }

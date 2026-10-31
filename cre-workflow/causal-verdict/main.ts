@@ -23,6 +23,8 @@ import {
   median,
   ok,
   prepareReportRequest,
+  encodeCallMsg,
+  LAST_FINALIZED_BLOCK_NUMBER,
   Runner,
   text,
   type HTTPPayload,
@@ -31,6 +33,7 @@ import {
   type CronPayload,
 } from "@chainlink/cre-sdk";
 import { z } from "zod";
+import { decodeAbiParameters, toHex } from "viem";
 import { encodeVerdictReport, evaluateMandate, observe, toBase64, type AgentEvidence, type Observation } from "./logic";
 
 const configSchema = z.object({
@@ -47,6 +50,7 @@ const configSchema = z.object({
     clauses: z.array(z.object({ id: z.string(), kind: z.string() }).passthrough()),
   }),
   evm: z.object({ chainSelectorName: z.string(), vaultAddress: z.string(), gasLimit: z.string() }),
+  priceFeeds: z.object({ chainSelectorName: z.string(), feeds: z.record(z.string(), z.string()) }),
 });
 type Config = z.infer<typeof configSchema>;
 
@@ -160,6 +164,35 @@ const observationConsensus = ConsensusAggregationByFields<Observation>({
   fearGreed: median,
 });
 
+// Read the Chainlink Data Feed for this symbol through the EVM capability (Ethereum mainnet, last finalized block).
+// The price_agreement clause then refuses to act on a RYO price that the feed does not confirm.
+function readChainlinkPrice(runtime: Runtime<Config>, symbol: string, obs: Observation) {
+  obs.refPrice = -1;
+  obs.refPriceAvailable = false;
+  const feed = runtime.config.priceFeeds.feeds[symbol];
+  if (!feed) {
+    runtime.log(`[${symbol}] no Chainlink Data Feed configured — price agreement not applicable`);
+    return;
+  }
+  const net = getNetwork({ chainFamily: "evm", chainSelectorName: runtime.config.priceFeeds.chainSelectorName, isTestnet: false });
+  if (!net) throw new Error(`unknown chain ${runtime.config.priceFeeds.chainSelectorName}`);
+  const evm = new cre.capabilities.EVMClient(net.chainSelector.selector);
+  const call = (data: `0x${string}`) =>
+    evm.callContract(runtime, { call: encodeCallMsg({ from: "0x0000000000000000000000000000000000000000", to: feed as `0x${string}`, data }), blockNumber: LAST_FINALIZED_BLOCK_NUMBER }).result().data;
+  try {
+    const dec = decodeAbiParameters([{ type: "uint8" }], toHex(call("0x313ce567")))[0]; // decimals()
+    const [, answer, , updatedAt] = decodeAbiParameters([{ type: "uint80" }, { type: "int256" }, { type: "uint256" }, { type: "uint256" }, { type: "uint80" }], toHex(call("0xfeaf968c"))); // latestRoundData()
+    obs.refPrice = Number(answer) / 10 ** dec;
+    obs.refPriceAvailable = obs.refPrice > 0;
+    const at = new Date(Number(updatedAt) * 1000).toISOString();
+    runtime.log(obs.price > 0
+      ? `[${symbol}] Chainlink ${symbol}/USD ${obs.refPrice} (round updated ${at}) vs RYO ${obs.price}: ${((Math.abs(obs.price - obs.refPrice) / obs.refPrice) * 100).toFixed(2)}% apart`
+      : `[${symbol}] Chainlink ${symbol}/USD ${obs.refPrice} (round updated ${at}); RYO price unavailable, so there is nothing to compare`);
+  } catch (e) {
+    runtime.log(`[${symbol}] Chainlink read failed (${(e as Error).message}) — price agreement not applicable`);
+  }
+}
+
 function verifyAndAnchor(runtime: Runtime<Config>, symbol: string, evidence: AgentEvidence): string {
   const config = runtime.config;
   let obs: Observation;
@@ -170,6 +203,7 @@ function verifyAndAnchor(runtime: Runtime<Config>, symbol: string, evidence: Age
     const http = new cre.capabilities.HTTPClient();
     obs = http.sendRequest(runtime, fetchObservation, observationConsensus)(config, key, symbol).result();
   }
+  readChainlinkPrice(runtime, symbol, obs);
   runtime.log(`[${symbol}] ${config.ryoTransport} observation: status=${obs.status} regime=${obs.regime} verdict=${obs.verdict} confluence=${obs.confluenceAvailable ? obs.confluence : "unavailable"} rsi=${obs.rsiAvailable ? obs.rsi14 : "unavailable"} atr%=${obs.atrAvailable ? obs.atrPct : "unavailable"}`);
 
   const verdict = evaluateMandate(obs, evidence, config.mandate.clauses, config.equityUsd);

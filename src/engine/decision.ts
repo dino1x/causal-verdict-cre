@@ -2,11 +2,12 @@
 // compiled mandate, and the atomic Buy-the-Dip position (entry + size + stop + exits as one object).
 import type { TokenEvidence } from "./ryo";
 import type { Narrative, NewsCheck, WhaleForensics } from "./evidence";
+import type { MarketSnap } from "./pipeline";
 import { clauseOf, type GateResult, type MandateAST } from "./legalAstCompiler";
 
 export interface Argument {
   side: "bull" | "bear";
-  plane: "ryo_market" | "ryo_sentiment" | "kol" | "whale" | "news";
+  plane: "ryo_market" | "ryo_sentiment" | "kol" | "whale" | "news" | "exchange";
   claim: string;
   /** Exact evidence path the argument rests on, e.g. deep_analysis(SOL).data.technical_analysis.rsi_14 */
   cite: string;
@@ -27,7 +28,7 @@ export interface MarketContext {
 }
 
 /** `fixture` marks KOL / whale / news arguments as scenario evidence (false when they come from real feeds). */
-export function argue(t: TokenEvidence, m: MarketContext, n: Narrative, news: NewsCheck, w: WhaleForensics, fixture = true): Argument[] {
+export function argue(t: TokenEvidence, m: MarketContext, n: Narrative, news: NewsCheck, w: WhaleForensics, fixture = true, mk: MarketSnap | null = null): Argument[] {
   const A: Argument[] = [];
   const s = t.symbol;
   const add = (a: Argument) => A.push(a);
@@ -66,6 +67,33 @@ export function argue(t: TokenEvidence, m: MarketContext, n: Narrative, news: Ne
   for (const c of news.claims) {
     if (c.verdict === "verified_primary" || c.verdict === "corroborated_by_ryo") add({ side: "bull", plane: "news", claim: `Catalyst '${c.claim}' is verified (${c.basis}).`, cite: `news_check(${s}).${c.claim}`, value: c.verdict, weight: 0.4, fixture: fixture && c.verdict !== "corroborated_by_ryo" });
     else if (c.verdict === "rumor_only" || c.verdict === "unsupported") add({ side: "bear", plane: "news", claim: `Catalyst '${c.claim}' is ${c.verdict.replace("_", " ")} — narrative without a primary source.`, cite: `news_check(${s}).${c.claim}`, value: c.verdict, weight: 0.5, fixture });
+  }
+  // ---- Exchange plane: price action and perpetual positioning read from the exchange itself, independent of RYO.
+  // Scored symmetrically: it can corroborate RYO or contradict it.
+  if (mk && mk.candles.length >= 2) {
+    const first = mk.candles[0], last = mk.candles[mk.candles.length - 1];
+    const ch = ((last.c - first.o) / first.o) * 100;
+    const venue = mk.venue ?? "exchange";
+    if (mk.oiChange24hPct !== null && Math.abs(mk.oiChange24hPct) >= 5) {
+      const oi = mk.oiChange24hPct, up = ch >= 0;
+      const [side, claim, weight]: [Argument["side"], string, number] =
+        oi > 0 && !up ? ["bear", `Open interest +${oi.toFixed(1)}% while price fell ${ch.toFixed(1)}%: new shorts are pressing the move.`, 0.4]
+        : oi > 0 && up ? ["bull", `Open interest +${oi.toFixed(1)}% with price +${ch.toFixed(1)}%: new positions are backing the move.`, 0.4]
+        : !up ? ["bull", `Open interest ${oi.toFixed(1)}% while price fell ${ch.toFixed(1)}%: leverage is being flushed, not added.`, 0.3]
+        : ["bear", `Open interest ${oi.toFixed(1)}% while price rose ${ch.toFixed(1)}%: a short-covering rally without new buyers.`, 0.3];
+      add({ side, plane: "exchange", claim, cite: `exchange(${s}).oiChange24hPct`, value: `${oi.toFixed(2)}% (${venue})`, weight, fixture: false });
+    }
+    if (mk.fundingRate !== null) {
+      const ann = mk.fundingRate * 3 * 365 * 100;
+      if (ann > 30) add({ side: "bear", plane: "exchange", claim: `Perp funding ${ann.toFixed(0)}% annualised: longs are crowded and paying to stay in.`, cite: `exchange(${s}).fundingRate`, value: `${mk.fundingRate} (${venue})`, weight: 0.4, fixture: false });
+      else if (ann < -10) add({ side: "bull", plane: "exchange", claim: `Perp funding ${ann.toFixed(0)}% annualised: shorts are paying, so the crowd is leaning the other way.`, cite: `exchange(${s}).fundingRate`, value: `${mk.fundingRate} (${venue})`, weight: 0.3, fixture: false });
+    }
+    const lo = Math.min(...mk.candles.map((c) => c.l)), hi = Math.max(...mk.candles.map((c) => c.h));
+    if (hi > lo) {
+      const pos = (last.c - lo) / (hi - lo);
+      if (pos <= 0.15 && ch < 0) add({ side: "bear", plane: "exchange", claim: `Closing at the bottom of its 24h range (${(pos * 100).toFixed(0)}%) after a ${ch.toFixed(1)}% day: no sign of a bounce yet.`, cite: `exchange(${s}).candles_1h`, value: `${last.c} in ${lo}–${hi}`, weight: 0.3, fixture: false });
+      else if (pos >= 0.6 && ch < 0) add({ side: "bull", plane: "exchange", claim: `Recovered to ${(pos * 100).toFixed(0)}% of its 24h range after the drop: buyers stepped in.`, cite: `exchange(${s}).candles_1h`, value: `${last.c} in ${lo}–${hi}`, weight: 0.3, fixture: false });
+    }
   }
   return A;
 }

@@ -53,7 +53,7 @@
     "bybit_announcements",
     "okxannouncements"
   ],
-  "captured_at": "2026-10-30T22:02:51.341Z",
+  "captured_at": "2026-10-31T07:00:50.040Z",
   "referenceTime": "2026-10-30T19:22:58Z",
   "voices": [
     {
@@ -361,16 +361,6 @@
       "usd": 82995,
       "source": "https://etherscan.io/tx/0xeb2c85b761ac06ebc4913300ad1b45a9165e46c7e3b2c6d91f7759c977f07a14",
       "counterparty": "contract (DEX/router)"
-    },
-    {
-      "id": "wa:104341",
-      "wallet": "whale-alert#104341",
-      "symbol": "PEPE",
-      "minutes": -1292,
-      "kind": "exchange_withdrawal",
-      "usd": 37481346,
-      "source": "https://t.me/whale_alert_io/104341",
-      "counterparty": "Binance Hack 2026"
     }
   ],
   "news": [
@@ -407,13 +397,648 @@
       "claimKeywords": []
     }
   ],
+  "markets": [
+    {
+      "symbol": "BEAM",
+      "venue": "bybit",
+      "candles": [
+        {
+          "t": 1793300400000,
+          "o": 0.003411,
+          "h": 0.003418,
+          "l": 0.003394,
+          "c": 0.00341
+        },
+        {
+          "t": 1793304000000,
+          "o": 0.00341,
+          "h": 0.003416,
+          "l": 0.003311,
+          "c": 0.003355
+        },
+        {
+          "t": 1793307600000,
+          "o": 0.003355,
+          "h": 0.003411,
+          "l": 0.003306,
+          "c": 0.003358
+        },
+        {
+          "t": 1793311200000,
+          "o": 0.003358,
+          "h": 0.003358,
+          "l": 0.003278,
+          "c": 0.003327
+        },
+        {
+          "t": 1793314800000,
+          "o": 0.003327,
+          "h": 0.003348,
+          "l": 0.003302,
+          "c": 0.003338
+        },
+        {
+          "t": 1793318400000,
+          "o": 0.003338,
+          "h": 0.003346,
+          "l": 0.003246,
+          "c": 0.00328
+        },
+        {
+          "t": 1793322000000,
+          "o": 0.00328,
+          "h": 0.003316,
+          "l": 0.00323,
+          "c": 0.003236
+        },
+        {
+          "t": 1793325600000,
+          "o": 0.003236,
+          "h": 0.003265,
+          "l": 0.003227,
+          "c": 0.003264
+        },
+        {
+          "t": 1793329200000,
+          "o": 0.003264,
+          "h": 0.003444,
+          "l": 0.003264,
+          "c": 0.003376
+        },
+        {
+          "t": 1793332800000,
+          "o": 0.003376,
+          "h": 0.003673,
+          "l": 0.003369,
+          "c": 0.003642
+        },
+        {
+          "t": 1793336400000,
+          "o": 0.003642,
+          "h": 0.004037,
+          "l": 0.003598,
+          "c": 0.003942
+        },
+        {
+          "t": 1793340000000,
+          "o": 0.003942,
+          "h": 0.004188,
+          "l": 0.003765,
+          "c": 0.004095
+        },
+        {
+          "t": 1793343600000,
+          "o": 0.004095,
+          "h": 0.004438,
+          "l": 0.003982,
+          "c": 0.004305
+        },
+        {
+          "t": 1793347200000,
+          "o": 0.004305,
+          "h": 0.004525,
+          "l": 0.004186,
+          "c": 0.004509
+        },
+        {
+          "t": 1793350800000,
+          "o": 0.004509,
+          "h": 0.004747,
+          "l": 0.004412,
+          "c": 0.004601
+        },
+        {
+          "t": 1793354400000,
+          "o": 0.004601,
+          "h": 0.00475,
+          "l": 0.004532,
+          "c": 0.004638
+        },
+        {
+          "t": 1793358000000,
+          "o": 0.004638,
+          "h": 0.004753,
+          "l": 0.004539,
+          "c": 0.004707
+        },
+        {
+          "t": 1793361600000,
+          "o": 0.004707,
+          "h": 0.004903,
+          "l": 0.004546,
+          "c": 0.004685
+        },
+        {
+          "t": 1793365200000,
+          "o": 0.004685,
+          "h": 0.005338,
+          "l": 0.004648,
+          "c": 0.005226
+        },
+        {
+          "t": 1793368800000,
+          "o": 0.005226,
+          "h": 0.005349,
+          "l": 0.00489,
+          "c": 0.005051
+        },
+        {
+          "t": 1793372400000,
+          "o": 0.005051,
+          "h": 0.005071,
+          "l": 0.004658,
+          "c": 0.004763
+        },
+        {
+          "t": 1793376000000,
+          "o": 0.004763,
+          "h": 0.00489,
+          "l": 0.004534,
+          "c": 0.004831
+        },
+        {
+          "t": 1793379600000,
+          "o": 0.004831,
+          "h": 0.004932,
+          "l": 0.004701,
+          "c": 0.004749
+        },
+        {
+          "t": 1793383200000,
+          "o": 0.004749,
+          "h": 0.004792,
+          "l": 0.00445,
+          "c": 0.004528
+        }
+      ],
+      "fundingRate": 0.00005,
+      "oiChange24hPct": 31.16,
+      "priceRef": {
+        "price": 0.004528,
+        "source": "bybit BEAM/USDT 1h close",
+        "updatedAt": "2026-10-30T19:00:00.000Z",
+        "url": "https://www.bybit.com/en/trade/spot/BEAM/USDT"
+      },
+      "source": "https://www.bybit.com/en/trade/spot/BEAM/USDT"
+    },
+    {
+      "symbol": "SOL",
+      "venue": "binance",
+      "candles": [
+        {
+          "t": 1793300400000,
+          "o": 100.63,
+          "h": 100.66,
+          "l": 99.8,
+          "c": 99.82
+        },
+        {
+          "t": 1793304000000,
+          "o": 99.83,
+          "h": 99.94,
+          "l": 95,
+          "c": 96.17
+        },
+        {
+          "t": 1793307600000,
+          "o": 96.17,
+          "h": 98.11,
+          "l": 95.41,
+          "c": 97.57
+        },
+        {
+          "t": 1793311200000,
+          "o": 97.57,
+          "h": 97.84,
+          "l": 96.55,
+          "c": 97.07
+        },
+        {
+          "t": 1793314800000,
+          "o": 97.07,
+          "h": 97.12,
+          "l": 95.6,
+          "c": 95.64
+        },
+        {
+          "t": 1793318400000,
+          "o": 95.65,
+          "h": 95.78,
+          "l": 92.34,
+          "c": 94.9
+        },
+        {
+          "t": 1793322000000,
+          "o": 94.89,
+          "h": 95,
+          "l": 93.16,
+          "c": 93.99
+        },
+        {
+          "t": 1793325600000,
+          "o": 93.99,
+          "h": 95.54,
+          "l": 93.5,
+          "c": 95.45
+        },
+        {
+          "t": 1793329200000,
+          "o": 95.44,
+          "h": 97.29,
+          "l": 95.4,
+          "c": 97.25
+        },
+        {
+          "t": 1793332800000,
+          "o": 97.25,
+          "h": 97.66,
+          "l": 96.78,
+          "c": 97.28
+        },
+        {
+          "t": 1793336400000,
+          "o": 97.29,
+          "h": 98.59,
+          "l": 97.28,
+          "c": 98
+        },
+        {
+          "t": 1793340000000,
+          "o": 98,
+          "h": 98.58,
+          "l": 97.79,
+          "c": 98.3
+        },
+        {
+          "t": 1793343600000,
+          "o": 98.3,
+          "h": 98.3,
+          "l": 97.02,
+          "c": 97.35
+        },
+        {
+          "t": 1793347200000,
+          "o": 97.35,
+          "h": 97.61,
+          "l": 96.92,
+          "c": 97.4
+        },
+        {
+          "t": 1793350800000,
+          "o": 97.41,
+          "h": 97.5,
+          "l": 96.74,
+          "c": 96.89
+        },
+        {
+          "t": 1793354400000,
+          "o": 96.89,
+          "h": 97.36,
+          "l": 96.29,
+          "c": 97.34
+        },
+        {
+          "t": 1793358000000,
+          "o": 97.33,
+          "h": 97.41,
+          "l": 96.33,
+          "c": 96.57
+        },
+        {
+          "t": 1793361600000,
+          "o": 96.56,
+          "h": 96.9,
+          "l": 96.42,
+          "c": 96.89
+        },
+        {
+          "t": 1793365200000,
+          "o": 96.89,
+          "h": 96.89,
+          "l": 94.6,
+          "c": 95.33
+        },
+        {
+          "t": 1793368800000,
+          "o": 95.32,
+          "h": 95.36,
+          "l": 93.96,
+          "c": 94.57
+        },
+        {
+          "t": 1793372400000,
+          "o": 94.56,
+          "h": 95.9,
+          "l": 94.14,
+          "c": 94.89
+        },
+        {
+          "t": 1793376000000,
+          "o": 94.9,
+          "h": 95.44,
+          "l": 94.4,
+          "c": 94.95
+        },
+        {
+          "t": 1793379600000,
+          "o": 94.94,
+          "h": 95.19,
+          "l": 94.19,
+          "c": 94.48
+        },
+        {
+          "t": 1793383200000,
+          "o": 94.48,
+          "h": 94.63,
+          "l": 93.62,
+          "c": 94.28
+        }
+      ],
+      "fundingRate": 0.0001,
+      "oiChange24hPct": -7.09,
+      "priceRef": {
+        "price": 94.97,
+        "source": "Chainlink SOL/USD",
+        "updatedAt": "2026-10-30T13:45:47.000Z",
+        "url": "https://etherscan.io/address/0x4ffC43a60e009B551865A93d232E33Fce9f01507"
+      },
+      "source": "https://www.binance.com/en/trade/SOL_USDT"
+    },
+    {
+      "symbol": "PEPE",
+      "venue": "binance",
+      "candles": [
+        {
+          "t": 1793300400000,
+          "o": 0.00000527,
+          "h": 0.00000532,
+          "l": 0.00000522,
+          "c": 0.00000525
+        },
+        {
+          "t": 1793304000000,
+          "o": 0.00000525,
+          "h": 0.00000526,
+          "l": 0.00000479,
+          "c": 0.00000491
+        },
+        {
+          "t": 1793307600000,
+          "o": 0.00000492,
+          "h": 0.00000504,
+          "l": 0.00000465,
+          "c": 0.00000466
+        },
+        {
+          "t": 1793311200000,
+          "o": 0.00000466,
+          "h": 0.00000467,
+          "l": 0.00000442,
+          "c": 0.00000448
+        },
+        {
+          "t": 1793314800000,
+          "o": 0.00000448,
+          "h": 0.00000469,
+          "l": 0.0000044,
+          "c": 0.00000456
+        },
+        {
+          "t": 1793318400000,
+          "o": 0.00000455,
+          "h": 0.00000463,
+          "l": 0.00000431,
+          "c": 0.00000461
+        },
+        {
+          "t": 1793322000000,
+          "o": 0.0000046,
+          "h": 0.00000471,
+          "l": 0.00000455,
+          "c": 0.00000466
+        },
+        {
+          "t": 1793325600000,
+          "o": 0.00000466,
+          "h": 0.00000481,
+          "l": 0.00000458,
+          "c": 0.00000475
+        },
+        {
+          "t": 1793329200000,
+          "o": 0.00000474,
+          "h": 0.00000494,
+          "l": 0.00000474,
+          "c": 0.00000492
+        },
+        {
+          "t": 1793332800000,
+          "o": 0.00000493,
+          "h": 0.00000501,
+          "l": 0.00000485,
+          "c": 0.00000498
+        },
+        {
+          "t": 1793336400000,
+          "o": 0.00000498,
+          "h": 0.00000508,
+          "l": 0.00000494,
+          "c": 0.00000499
+        },
+        {
+          "t": 1793340000000,
+          "o": 0.00000498,
+          "h": 0.00000505,
+          "l": 0.00000494,
+          "c": 0.000005
+        },
+        {
+          "t": 1793343600000,
+          "o": 0.000005,
+          "h": 0.00000501,
+          "l": 0.00000483,
+          "c": 0.0000049
+        },
+        {
+          "t": 1793347200000,
+          "o": 0.0000049,
+          "h": 0.00000503,
+          "l": 0.00000484,
+          "c": 0.00000498
+        },
+        {
+          "t": 1793350800000,
+          "o": 0.00000497,
+          "h": 0.000005,
+          "l": 0.00000489,
+          "c": 0.00000493
+        },
+        {
+          "t": 1793354400000,
+          "o": 0.00000492,
+          "h": 0.00000535,
+          "l": 0.0000049,
+          "c": 0.00000533
+        },
+        {
+          "t": 1793358000000,
+          "o": 0.00000534,
+          "h": 0.0000055,
+          "l": 0.00000502,
+          "c": 0.00000529
+        },
+        {
+          "t": 1793361600000,
+          "o": 0.00000528,
+          "h": 0.00000541,
+          "l": 0.00000524,
+          "c": 0.00000536
+        },
+        {
+          "t": 1793365200000,
+          "o": 0.00000536,
+          "h": 0.00000538,
+          "l": 0.0000051,
+          "c": 0.00000517
+        },
+        {
+          "t": 1793368800000,
+          "o": 0.00000518,
+          "h": 0.00000522,
+          "l": 0.00000511,
+          "c": 0.00000519
+        },
+        {
+          "t": 1793372400000,
+          "o": 0.00000519,
+          "h": 0.00000534,
+          "l": 0.00000496,
+          "c": 0.00000508
+        },
+        {
+          "t": 1793376000000,
+          "o": 0.00000508,
+          "h": 0.00000521,
+          "l": 0.00000505,
+          "c": 0.00000514
+        },
+        {
+          "t": 1793379600000,
+          "o": 0.00000514,
+          "h": 0.00000529,
+          "l": 0.00000505,
+          "c": 0.00000513
+        },
+        {
+          "t": 1793383200000,
+          "o": 0.00000513,
+          "h": 0.00000518,
+          "l": 0.00000501,
+          "c": 0.00000507
+        }
+      ],
+      "fundingRate": null,
+      "oiChange24hPct": null,
+      "priceRef": {
+        "price": 0.00000507,
+        "source": "binance PEPE/USDT 1h close",
+        "updatedAt": "2026-10-30T19:00:00.000Z",
+        "url": "https://www.binance.com/en/trade/PEPE_USDT"
+      },
+      "source": "https://www.binance.com/en/trade/PEPE_USDT"
+    }
+  ],
   "sources": [
+    {
+      "feed": "chainlink",
+      "target": "BEAM",
+      "ok": false,
+      "items": 0,
+      "detail": "no Chainlink Data Feed on Ethereum mainnet for this token"
+    },
+    {
+      "feed": "chainlink",
+      "target": "GROW",
+      "ok": false,
+      "items": 0,
+      "detail": "no Chainlink Data Feed on Ethereum mainnet for this token"
+    },
+    {
+      "feed": "chainlink",
+      "target": "MAGMA",
+      "ok": false,
+      "items": 0,
+      "detail": "no Chainlink Data Feed on Ethereum mainnet for this token"
+    },
+    {
+      "feed": "chainlink",
+      "target": "PEPE",
+      "ok": false,
+      "items": 0,
+      "detail": "no Chainlink Data Feed on Ethereum mainnet for this token"
+    },
+    {
+      "feed": "chainlink",
+      "target": "Q",
+      "ok": false,
+      "items": 0,
+      "detail": "no Chainlink Data Feed on Ethereum mainnet for this token"
+    },
+    {
+      "feed": "chainlink",
+      "target": "SOL / USD",
+      "ok": true,
+      "items": 1,
+      "detail": "round updated 2026-10-30T13:45:47.000Z at 94.97"
+    },
+    {
+      "feed": "exchange",
+      "target": "BEAM bybit",
+      "ok": true,
+      "items": 24,
+      "detail": "24 1h candles before 2026-10-30T19:22:58Z; funding 0.00005; OI 24h 31.2% (bybit)"
+    },
+    {
+      "feed": "exchange",
+      "target": "GROW",
+      "ok": false,
+      "items": 0,
+      "detail": "unavailable: binance: HTTP 400; okx: Instrument ID, Instrument ID code, or Spread ID doesn't exis; bybit: Not supported symbols"
+    },
+    {
+      "feed": "exchange",
+      "target": "MAGMA",
+      "ok": false,
+      "items": 0,
+      "detail": "unavailable: binance: HTTP 400; okx: Instrument ID, Instrument ID code, or Spread ID doesn't exis; bybit: Not supported symbols"
+    },
+    {
+      "feed": "exchange",
+      "target": "PEPE binance",
+      "ok": true,
+      "items": 24,
+      "detail": "24 1h candles before 2026-10-30T19:22:58Z; funding unavailable; OI 24h unavailable (no perp)"
+    },
+    {
+      "feed": "exchange",
+      "target": "Q",
+      "ok": false,
+      "items": 0,
+      "detail": "unavailable: binance: HTTP 400; okx: Instrument ID, Instrument ID code, or Spread ID doesn't exis; bybit: Not supported symbols"
+    },
+    {
+      "feed": "exchange",
+      "target": "SOL binance",
+      "ok": true,
+      "items": 24,
+      "detail": "24 1h candles before 2026-10-30T19:22:58Z; funding 0.0001; OI 24h -7.1% (binance)"
+    },
     {
       "feed": "onchain",
       "target": "BEAM@bsc",
       "ok": true,
       "items": 0,
-      "detail": "1665 Transfer logs in 180m before ref (blocks 130696368–130720368); 0 ≥ $25k; 0 attributable"
+      "detail": "1665 Transfer logs in 180m before ref (blocks 130696373–130720368); 0 ≥ $25k; 0 attributable"
     },
     {
       "feed": "onchain",
@@ -427,7 +1052,7 @@
       "target": "GROW@bsc",
       "ok": true,
       "items": 0,
-      "detail": "0 Transfer logs in 180m before ref (blocks 130696371–130720369); 0 ≥ $25k; 0 attributable"
+      "detail": "0 Transfer logs in 180m before ref (blocks 130696373–130720368); 0 ≥ $25k; 0 attributable"
     },
     {
       "feed": "onchain",
@@ -455,7 +1080,7 @@
       "target": "Q@bsc",
       "ok": true,
       "items": 1,
-      "detail": "10484 Transfer logs in 180m before ref (blocks 130696367–130720367); 5 ≥ $25k; 1 attributable"
+      "detail": "10481 Transfer logs in 180m before ref (blocks 130696373–130720368); 5 ≥ $25k; 1 attributable"
     },
     {
       "feed": "onchain",
@@ -532,7 +1157,7 @@
       "target": "t.me/cointelegraph",
       "ok": true,
       "items": 0,
-      "detail": "31 recent posts; 0 mention the universe in the 24h before ref"
+      "detail": "32 recent posts; 0 mention the universe in the 24h before ref"
     },
     {
       "feed": "telegram",
@@ -553,7 +1178,7 @@
       "target": "t.me/lookonchainchannel",
       "ok": true,
       "items": 5,
-      "detail": "30 recent posts; 5 mention the universe in the 24h before ref"
+      "detail": "31 recent posts; 5 mention the universe in the 24h before ref"
     },
     {
       "feed": "telegram",
@@ -574,7 +1199,7 @@
       "target": "t.me/WatcherGuru",
       "ok": true,
       "items": 0,
-      "detail": "26 recent posts; 0 mention the universe in the 24h before ref"
+      "detail": "27 recent posts; 0 mention the universe in the 24h before ref"
     },
     {
       "feed": "telegram",
@@ -594,9 +1219,9 @@
       "feed": "whale_alert",
       "target": "t.me/whale_alert_io",
       "ok": true,
-      "items": 1,
-      "detail": "60 recent posts scanned; 1 exchange flows for BEAM, Q, MAGMA, GROW, SOL, PEPE"
+      "items": 0,
+      "detail": "60 recent posts scanned; 0 exchange flows for BEAM, Q, MAGMA, GROW, SOL, PEPE"
     }
   ],
-  "bundle_sha256": "5fc674507f329b4a2d428087cf4c7795563c1530d860637654517531d850a4a1"
+  "bundle_sha256": "54c730304b3e2a387e056f953a808864c1f1b78b05a98f222dd26847c4133858"
 }

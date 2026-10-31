@@ -15,4 +15,5 @@ const n = (await pub.readContract({ address, abi, functionName: "verdictCount" }
 console.log(`vault ${address} · ${n} verdict(s) · https://sepolia.etherscan.io/address/${address}`);
 for (let i = 0n; i < n; i++) console.log(i, await pub.readContract({ address, abi, functionName: "verdict", args: [i] }));
 const logs = await pub.getLogs({ address, fromBlock: BigInt(dep.block) });
-for (const l of logs) console.log(`${l.transactionHash === dep.tx ? "deploy" : "report"} tx ${l.transactionHash} (block ${l.blockNumber}) — https://sepolia.etherscan.io/tx/${l.transactionHash}`);
+const activations = new Set((dep.mandateActivations ?? []).map((a: { tx: string }) => a.tx));
+for (const l of logs) console.log(`${l.transactionHash === dep.tx ? "deploy" : activations.has(l.transactionHash) ? "mandate activation" : "report"} tx ${l.transactionHash} (block ${l.blockNumber}) — https://sepolia.etherscan.io/tx/${l.transactionHash}`);

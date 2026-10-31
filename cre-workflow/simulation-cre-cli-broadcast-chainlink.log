@@ -1,0 +1,33 @@
+# cre workflow simulate ./causal-verdict --target staging-settings --trigger-index 0 --broadcast   (CRE CLI v1.39.0, @chainlink/cre-sdk 1.23.0)
+# Mandate v1 with clause 16 (price agreement). Chainlink SOL/USD read inside the workflow via EVMClient.callContract (Ethereum mainnet, last finalized block).
+# Report tx (MockKeystoneForwarder -> CausalVerdictVault): https://sepolia.etherscan.io/tx/0xc4e4dd3024e12a24c99c7918fa70880fa9dd05b3a05135cbc96a13ff7588547f
+Initializing...
+Loading settings...
+Checking RPC connectivity...
+Compiling workflow...
+✓ Workflow compiled
+✓ Simulation limits enabled
+  HTTP: req=120kb resp=250kb timeout=10s | ConfHTTP: req=125kb resp=500kb timeout=1m30s | Consensus obs=25kb | ChainWrite evm_report=50kb evm_gas=10000000 solana_report=265b solana_cu=300000 | WASM binary=100mb compressed=20mb
+  Binary hash: 5e9ddec8e18a62e391ae466705511bd01c83b8a0faebb3bacb886530755a8605
+  Config hash: c113487cc9a077968b7ea4da92fe1be52add68a9e68d0a935a4f14b4e0305f13
+2026-10-31T08:52:44Z [SIMULATION] Simulator Initialized
+
+2026-10-31T08:52:44Z [SIMULATION] Running trigger trigger=cron-trigger@1.0.0
+2026-10-31T08:53:14Z [USER LOG] [SOL] deep_analysis failed: [3]InvalidArgument: failed to execute HTTP request: Post "https://app-ryochan.com/api/mcp/tools/deep_analysis/call": context deadline exceeded (Client.Timeout e
+2026-10-31T08:53:15Z [USER LOG] [SOL] using analyze_token fallback: confluence, derivatives and trade_plan lanes are unavailable
+2026-10-31T08:53:19Z [USER LOG] [SOL] Chainlink SOL/USD 96.87847646 (round updated 2026-10-31T01:37:59.000Z) vs RYO 95.46029902146826: 1.46% apart
+2026-10-31T08:53:19Z [USER LOG] [SOL] confidential observation: status=partial regime=neutral verdict=unknown confluence=unavailable rsi=28.5 atr%=4.35
+2026-10-31T08:53:19Z [USER LOG] [SOL] mandate Prudent Practice Desk v1: REJECT failed=[C4:min_confluence, C15:min_planes] sizeBps=0
+2026-10-31T08:53:37Z [USER LOG] [SOL] report written runId=0x387105445eecff1702ae943d37a3859a2cd89ab11e4dd3064265aa795ee2f37b evidenceRoot=0x785e47f4d008aa6db1a10f68d74688161d851247f5f8f015f05c838ebcdaecaf txStatus=2
+
+✓ Workflow Simulation Result:
+"{\"symbol\":\"SOL\",\"decision\":\"REJECT\",\"failed\":[\"C4:min_confluence\",\"C15:min_planes\"],\"runId\":\"0x387105445eecff1702ae943d37a3859a2cd89ab11e4dd3064265aa795ee2f37b\",\"evidenceRoot\":\"0x785e47f4d008aa6db1a10f68d74688161d851247f5f8f015f05c838ebcdaecaf\"}"
+
+2026-10-31T08:53:37Z [SIMULATION] Execution finished signal received
+2026-10-31T08:53:37Z [SIMULATION] Skipping WorkflowEngineV2
+
+╭──────────────────────────────────────────────────────╮
+│ Simulation complete! Ready to deploy your workflow?  │
+│                                                      │
+│ Run cre account access to request deployment access. │
+╰──────────────────────────────────────────────────────╯

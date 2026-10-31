@@ -17,6 +17,35 @@
       "failedGates": [
         "C15:min_planes"
       ]
+    },
+    {
+      "tx": "0x203fcbe84805e4706c801210f9fe64a642f6fe8f9038397b7c1a7ed19f51ac86",
+      "block": "12032223",
+      "via": "cre workflow simulate --broadcast",
+      "symbol": "SOL",
+      "decision": "REJECT",
+      "mandateHash": "0xb82b743f35d2d627555d4a08895af255488360b1d880c9e9e4236c305598a97c",
+      "note": "RYO rate-limited (429) during this run, so the workflow failed closed. C16 also failed here because of a bug since fixed: the price check compared RYO's missing price (sentinel -1) with Chainlink; a missing price now leaves C16 to the status and measurement clauses."
+    },
+    {
+      "tx": "0xc4e4dd3024e12a24c99c7918fa70880fa9dd05b3a05135cbc96a13ff7588547f",
+      "block": "12032466",
+      "via": "cre workflow simulate --broadcast",
+      "symbol": "SOL",
+      "decision": "REJECT",
+      "failedGates": [
+        "C4:min_confluence",
+        "C15:min_planes"
+      ],
+      "mandateHash": "0xb82b743f35d2d627555d4a08895af255488360b1d880c9e9e4236c305598a97c",
+      "chainlink": "SOL/USD 96.878 read in-workflow vs RYO 95.460 (1.46% apart): C16 passed"
+    }
+  ],
+  "mandateActivations": [
+    {
+      "tx": "0x3ec3beb1a5519c213d14eed5003bb5fcc599fea4616949f0a3a7cd5ed0ba07c7",
+      "block": "12032220",
+      "mandateHash": "0xb82b743f35d2d627555d4a08895af255488360b1d880c9e9e4236c305598a97c"
     }
   ]
 }

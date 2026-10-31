@@ -2,24 +2,24 @@
   "note": "chain = hash chains alone; witness = chains plus a ledger head published where the operator cannot rewrite it. Truncation and full re-hashing yield a valid chain by construction, so only the witnessed head catches them.",
   "results": [
     {
-      "label": "live ledger (data/ledger.json, 3 runs)",
-      "head": "0x0cd3b520da1d9c3048a5e4950dbda2789dff9a05b004cf673ebb68ca501585f4",
-      "attacks": 48,
-      "missedByChain": 26,
+      "label": "live ledger (data/ledger.json, 4 runs)",
+      "head": "0x58a66186bf4f37c0b72561bcf19ed5970281600005ffdc1df84f555072982b8e",
+      "attacks": 66,
+      "missedByChain": 35,
       "missedWithWitness": 0,
       "byKind": {
         "edit": {
-          "attacks": 14,
+          "attacks": 19,
           "missedByChain": 0,
           "missedWithWitness": 0
         },
         "delete": {
-          "attacks": 4,
+          "attacks": 6,
           "missedByChain": 0,
           "missedWithWitness": 0
         },
         "swap": {
-          "attacks": 4,
+          "attacks": 6,
           "missedByChain": 0,
           "missedWithWitness": 0
         },
@@ -29,8 +29,8 @@
           "missedWithWitness": 0
         },
         "rehash": {
-          "attacks": 22,
-          "missedByChain": 22,
+          "attacks": 31,
+          "missedByChain": 31,
           "missedWithWitness": 0
         }
       },
@@ -38,7 +38,7 @@
     },
     {
       "label": "synthetic ledger (scenario run + 2 price observations)",
-      "head": "0x5619f6023fac473a6663eec71cc223eaf98ee44bb664751fbae17096b7c97b91",
+      "head": "0x11aa8b484583e88e58fbcfabbe7287003ebe016e07f7abd2c38259e54032be9c",
       "attacks": 84,
       "missedByChain": 42,
       "missedWithWitness": 0,
@@ -73,7 +73,7 @@
     },
     {
       "label": "reasoning trace (scenario run)",
-      "root": "0xbeba5adf82240b6963fe1eca07e76f0183a1da4fddc3b68194db45843079bbcb",
+      "root": "0xd78f009b09e2b0144be7dbbc04150d5f852c13b82383899e70e67de7b3598691",
       "attacks": 52,
       "missedByChain": 2,
       "missedWithWitness": 0,
@@ -101,7 +101,7 @@
       }
     }
   ],
-  "total": 184,
-  "missedByChain": 70,
+  "total": 202,
+  "missedByChain": 79,
   "missedWithWitness": 0
 }

@@ -18,7 +18,8 @@ export type Clause =
   | { kind: "anti_touting"; minKols: number; windowMin: number }
   | { kind: "regime_scaling"; regime: string; factor: number }
   | { kind: "min_planes"; n: number }
-  | { kind: "perp_veto" };
+  | { kind: "perp_veto" }
+  | { kind: "price_agreement"; maxPct: number };
 
 export interface ClauseNode {
   id: string; // C1, C2 ...
@@ -46,6 +47,7 @@ export interface CompileError {
 }
 
 const UPIA2 = { code: "UPIA §2(a)–(c)", title: "Uniform Prudent Investor Act — standard of care, risk and return objectives" };
+const UPIA2D = { code: "UPIA §2(d)", title: "Uniform Prudent Investor Act — duty to verify facts relevant to investment decisions" };
 const UPIA3 = { code: "UPIA §3", title: "Uniform Prudent Investor Act — duty to diversify" };
 const S17B = { code: "Securities Act 1933 §17(b), 15 U.S.C. §77q(b)", title: "Anti-touting: undisclosed paid promotion" };
 const MICA91 = { code: "MiCA Art. 91(2)", title: "Regulation (EU) 2023/1114 — prohibition of market manipulation (incl. voicing opinions while positioned)" };
@@ -66,6 +68,7 @@ export const ANCHORS: Record<Clause["kind"], LegalAnchor> = {
   regime_scaling: { ...UPIA2, why: "Risk tolerance adapts to general economic conditions (UPIA §2(c)(1))." },
   min_planes: { ...MICA92, why: "Corroboration across independent evidence planes reduces reliance on a single manipulable feed." },
   perp_veto: { ...UPIA2, why: "Derivatives crowding / squeeze veto from RYO is binding." },
+  price_agreement: { ...UPIA2D, why: "A trustee must make a reasonable effort to verify facts; the research price is checked against an independent reference (a Chainlink Data Feed, else exchange trades) before it is acted on." },
 };
 
 // ---- Grammar: one pattern per clause kind. Patterns are matched against a normalized line. ----
@@ -86,6 +89,7 @@ const RULES: Rule[] = [
   { kind: "regime_scaling", re: new RegExp(`^scale position size by ${N} when the market regime is ([a-z_]+)`), build: (m) => ({ kind: "regime_scaling", factor: +m[1], regime: m[2] }) },
   { kind: "min_planes", re: new RegExp(`^require at least ${N} independent evidence planes to support entry`), build: (m) => ({ kind: "min_planes", n: +m[1] }) },
   { kind: "perp_veto", re: /^honor the ryo derivatives veto/, build: () => ({ kind: "perp_veto" }) },
+  { kind: "price_agreement", re: new RegExp(`^require the ryo price to agree with an independent reference price within ${N}%`), build: (m) => ({ kind: "price_agreement", maxPct: +m[1] }) },
 ];
 
 const normalize = (s: string) =>
@@ -168,6 +172,7 @@ export function decompileClause(c: Clause): string {
     case "regime_scaling": return `Scale position size by ${f(c.factor)} when the market regime is ${c.regime}.`;
     case "min_planes": return `Require at least ${f(c.n)} independent evidence planes to support entry.`;
     case "perp_veto": return "Honor the RYO derivatives veto.";
+    case "price_agreement": return `Require the RYO price to agree with an independent reference price within ${f(c.maxPct)}%.`;
   }
 }
 
@@ -200,7 +205,8 @@ export const DEFAULT_MANDATE = `MANDATE "Prudent Practice Desk v1"
 12. Block entry when whale wallets that accumulated before KOL convergence send to exchanges within 90 minutes after it.
 13. Block entry when 5 or more independent KOLs promote the token within 30 minutes without a verified primary-source catalyst.
 14. Scale position size by 0.5 when the market regime is risk_off.
-15. Require at least 2 independent evidence planes to support entry.`;
+15. Require at least 2 independent evidence planes to support entry.
+16. Require the RYO price to agree with an independent reference price within 2%.`;
 
 // ---------------------------------------------------------------- evaluation
 
@@ -216,6 +222,8 @@ export interface GateFacts {
   exitLiquidityTrap: { detected: boolean; detail: string } | null;
   touting: { independentKols: number; windowMin: number; verifiedCatalyst: boolean; detail: string } | null;
   supportingPlanes: string[];
+  // RYO price vs an independent reference (Chainlink Data Feed, else exchange trades); null when none was available
+  priceCheck?: { ryo: number; ref: number; source: string; deviationPct: number; ageMin: number | null } | null;
 }
 
 export interface GateResult {
@@ -265,6 +273,16 @@ export function evaluate(ast: MandateAST, x: GateFacts, regime: string | null): 
           const trig = t.independentKols >= c.minKols && t.windowMin <= c.windowMin && !t.verifiedCatalyst;
           return trig ? res("fail", t.detail, `${x.symbol}: ${t.independentKols} independent KOLs within ${t.windowMin}m and no verified primary-source catalyst.`) : res("pass", t.detail);
         }
+      case "price_agreement": {
+        const p = x.priceCheck;
+        if (!p) return res("not_applicable", "no independent reference price for this token");
+        const obs = `RYO ${p.ryo} vs ${p.source} ${p.ref} (${p.deviationPct.toFixed(2)}% apart${p.ageMin !== null ? `, reference ${p.ageMin} min old` : ""})`;
+        return p.deviationPct <= c.maxPct
+          ? res("pass", obs)
+          : res("fail", obs, p.deviationPct > 25
+              ? `${x.symbol}: RYO's price is ${p.deviationPct.toFixed(1)}% away from ${p.source}; the reference may be a different asset sharing the ticker, so the price stays unconfirmed and the mandate will not act on it.`
+              : `${x.symbol}: RYO's price is ${p.deviationPct.toFixed(2)}% away from ${p.source}; the mandate will not act on an unconfirmed price.`);
+      }
       case "min_planes":
         return x.supportingPlanes.length >= c.n ? res("pass", `supporting planes: ${x.supportingPlanes.join(", ") || "none"}`) : res("fail", `supporting planes: ${x.supportingPlanes.join(", ") || "none"}`, `${x.symbol}: only ${x.supportingPlanes.length} of ${c.n} required independent planes support entry.`);
       case "regime_scaling":

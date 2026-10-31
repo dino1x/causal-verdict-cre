@@ -196,6 +196,33 @@ export function CausalityView({ run, focus, setFocus, posts, setPosts, channels,
           </table>
         </div>
       </div>
+      <div className="card">
+        <h2>Independent market check — exchange and Chainlink {real ? <Badge k="live">REAL FEED</Badge> : <Badge k="snapshot">not used in scenario mode</Badge>}</h2>
+        <p className="small muted">Read from the exchanges and from Chainlink Data Feeds as of the reference time, independent of RYO. The exchange plane can support or oppose a trade; clause "price agreement" refuses to act on a RYO price that no independent reference confirms. Tokens without a listing or a feed show as unavailable, never filled in.</p>
+        <div className="scroll">
+          <table>
+            <thead><tr><th>Token</th><th>Venue</th><th className="num">24h (1h candles)</th><th className="num">Funding / 8h</th><th className="num">OI 24h</th><th>Reference price</th><th>Price agreement</th></tr></thead>
+            <tbody>
+              {run.dossiers.map((x) => {
+                const m = x.market;
+                const g = x.gates.find((y) => y.kind === "price_agreement");
+                const ch = m && m.candles.length >= 2 ? ((m.candles[m.candles.length - 1].c - m.candles[0].o) / m.candles[0].o) * 100 : null;
+                return (
+                  <tr key={x.symbol}>
+                    <td><b>{x.symbol}</b></td>
+                    <td className="small">{m?.venue ?? "—"}</td>
+                    <td className="num">{ch === null ? "—" : `${ch >= 0 ? "+" : ""}${ch.toFixed(2)}%`}</td>
+                    <td className="num">{m?.fundingRate === null || m?.fundingRate === undefined ? "—" : `${(m.fundingRate * 100).toFixed(4)}%`}</td>
+                    <td className="num">{m?.oiChange24hPct === null || m?.oiChange24hPct === undefined ? "—" : `${m.oiChange24hPct >= 0 ? "+" : ""}${m.oiChange24hPct}%`}</td>
+                    <td className="small">{m?.priceRef ? <a href={m.priceRef.url} target="_blank" rel="noreferrer">{m.priceRef.source} {m.priceRef.price}</a> : "unavailable"}</td>
+                    <td className="small">{g ? <><Badge k={g.outcome === "fail" ? "fail" : g.outcome === "pass" ? "pass" : "partial"}>{g.outcome.replace("_", " ")}</Badge> {g.observed}</> : "clause not in mandate"}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
       {real && (
         <div className="card">
           <h2>Feed status for this run</h2>

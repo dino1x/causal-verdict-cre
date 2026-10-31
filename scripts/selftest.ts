@@ -72,6 +72,18 @@ led = L.applyRun(led, fakeRun(iso(1), pos0.targets[0].price + 0.01, "0xr2"));
 check("target 1 fills 50% and the stop moves to entry", led.positions[0].fills[0]?.reason === "target1" && led.positions[0].stopNow === pos0.entry);
 led = L.applyRun(led, fakeRun(iso(2), pos0.entry - 0.5, "0xr3"));
 check("runner stops out at breakeven; position closes with the target-1 profit", led.positions[0].status === "closed" && led.positions[0].realizedPnlUsd > 0, `${led.positions[0].realizedPnlUsd} USD, ${led.positions[0].realizedR}R`);
+// Between runs: the exchange's 1h candles show the stop was touched even though the next observed price is above it.
+{
+  let l2 = L.applyRun(L.emptyLedger(), run);
+  const q = l2.positions[0];
+  const opened = Date.parse(q.openedAt);
+  const hourStart = opened + 3_600_000;
+  const withCandles = { ...fakeRun(new Date(opened + 3 * 3_600_000).toISOString(), q.entry + 0.2, "0xc1"), evidenceUsed: { voices: [], posts: [], whales: [], news: [], markets: [{ symbol: q.symbol, venue: "binance", candles: [{ t: hourStart, o: q.entry, h: q.entry + 0.3, l: q.stopNow - 0.01, c: q.entry - 0.1 }], fundingRate: null, oiChange24hPct: null, priceRef: null, source: null }] } } as any;
+  l2 = L.applyRun(l2, withCandles);
+  const p2 = l2.positions[0];
+  check("a stop touched between runs (candle low) closes the position at the stop", p2.status === "closed" && p2.fills[0]?.reason === "stop" && p2.fills[0].price === q.stopNow, JSON.stringify(p2.fills));
+  check("ledger with candle fills verifies", L.verifyLedger(l2).ok);
+}
 check("ledger hash chain verifies", L.verifyLedger(led).ok);
 const bad = structuredClone(led);
 bad.events[1].detail = "edited";

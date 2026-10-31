@@ -28,6 +28,7 @@ function draftFromIntent(intent: string): string {
     { kind: "require_measurement", field: "atr_14_pct" },
     { kind: "reject_verdict", verdicts: ["avoid"] },
     { kind: "perp_veto" },
+    { kind: "price_agreement", maxPct: pct(/(?:agree|deviat\w*|price check)\D{0,20}(\d+(?:\.\d+)?)\s*%/, 2) },
     { kind: "stop_rule", atrMult: pct(/(\d+(?:\.\d+)?)\s*(?:x\s*)?atr\s*stop|stop\D{0,10}(\d+(?:\.\d+)?)\s*x?\s*atr/, 1.5), maxPct: pct(/never more than (\d+(?:\.\d+)?)\s*%/, 8) },
   ];
   if (!/allow (?:pumps|hype)/.test(t)) {

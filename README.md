@@ -12,12 +12,13 @@ BLI Legal Tech Hackathon 2 · RYO-CHAN *Autonomous Agents* · Chainlink *Best wo
 
 **Built on RYO, not around it.** Every decision comes from RYO-CHAN MCP's six tools (`market_overview`, `monitor_market_sentiment_shift`, `scan_market`, `compare_tokens`, `analyze_token`, `deep_analysis`), called through a server proxy that keeps the key off the browser. Without a key, the app replays 17 real captured RYO responses, hashed and labelled. The app opens on a **Judge** tab that mirrors this section, with a "Show me" button on every row.
 
-**Three on-chain proofs and a Bitcoin timestamp**
+**On-chain proofs and a Bitcoin timestamp**
 
 | What | Proof |
 |---|---|
 | Vault deployed on Sepolia, bound to the mandate hash | [deploy tx](https://sepolia.etherscan.io/tx/0x4cca438a56f868df390340092d08f3e76716e1319ec4643a8b21d0143b82925a) · [vault](https://sepolia.etherscan.io/address/0xb86d25cd0317de545c8573f040a589c34a093544) |
 | CRE workflow wrote a verdict on-chain (`cre workflow simulate --broadcast`) | [report tx](https://sepolia.etherscan.io/tx/0xea20a213693990660226b817c94b85ea4c1b6e7bc66c409e5fb4d36797c81cc6) · `npx tsx scripts/read-vault.ts` |
+| The CRE workflow read Chainlink SOL/USD itself, checked RYO's price against it (clause 16), then wrote the verdict | [report tx](https://sepolia.etherscan.io/tx/0xc4e4dd3024e12a24c99c7918fa70880fa9dd05b3a05135cbc96a13ff7588547f) · [mandate activation](https://sepolia.etherscan.io/tx/0x3ec3beb1a5519c213d14eed5003bb5fcc599fea4616949f0a3a7cd5ed0ba07c7) |
 | An agent paid for a verdict over x402, settled before it was served | [Base Sepolia tx](https://sepolia.basescan.org/tx/0x0406f0749a6958723822ebf24cd3d85376f11ca13ef0c01bbba63bf9daa04bf7) |
 | Ledger head timestamped into Bitcoin | [`witness/heads/`](witness/heads/) · `ots verify <file>.ots` (pending until a block confirms it) |
 
@@ -38,7 +39,7 @@ BLI Legal Tech Hackathon 2 · RYO-CHAN *Autonomous Agents* · Chainlink *Best wo
 
 | Prize · criterion | Where it is |
 |---|---|
-| RYO · Combining sources (20%) | Six RYO tools chained into one gated decision with on-chain whale transfers, Whale Alert, RSS news and Telegram voices (Verdict, Causality) |
+| RYO · Combining sources (20%) | Six RYO tools chained into one gated decision with on-chain whale transfers, Whale Alert, news (RSS, Telegram, Tavily), Telegram voices, an exchange plane and a Chainlink reference price (Verdict, Causality) |
 | RYO · Coping with failure (20%) | Rate-limit headers, circuit breaker with `Retry-After`, labelled snapshot fallback, null kept null, paced loop, chaos injector (Verdict) |
 | RYO · Real thinking (25%) | Bull/Bear over structured RYO fields, a mandate-bound Judge, and a citation-checked Claude debate (Debate) |
 | RYO · Cause and effect (20%) | Whale lead-lag forensics, echo collapse, catalyst verification, and a Why column per candidate per run (Causality, Ledger) |
@@ -126,11 +127,14 @@ Each run makes 17 calls across **all six tools**. It chains them; it does not ju
 | News | Cointelegraph, Decrypt and CoinDesk RSS | Matched by cashtag, ticker or RYO asset name. Outlets count as *secondary* sources: a claim is verified only by a primary source or corroborated by RYO's own token profile. |
 | KOL voices | 11 public Telegram channels verified as active (Lookonchain, Watcher.Guru, Whale Alert, Cointelegraph, Wu Blockchain, BWEnews, CoinDesk, Unfolded, Bitcoin Magazine, CryptoQuant, Glassnode), editable in the Causality tab, ≤ 20 | X and Discord need a paid API or a bot, so posts from those are pasted in and labelled *user-supplied* |
 | Primary sources | Exchange announcement channels (Binance, Bybit, OKX) | Routed to the news checker as **primary** evidence, since the venue is the source itself, not into the KOL radar |
+| **Exchange market data** (`server/market.ts`) | Binance, then OKX, then Bybit public APIs: the 24 hourly candles that closed before the reference time, the perpetual funding rate and the 24h open-interest change | Feeds a new **exchange plane**, scored symmetrically (it can support or oppose a trade), and lets the ledger see highs and lows between runs. A pair whose last candle is stale is treated as **delisted or a different asset sharing the ticker** (Binance's old BEAMUSDT is caught this way) |
+| **Chainlink Data Feeds** | `SYM / USD` aggregators on Ethereum mainnet, read through public RPCs at the round that was current at the reference time | Each address is checked by its own `description()` on every read. It is the reference price for clause 16 when one exists; otherwise the latest exchange close |
+| **Tavily news search** | RYO's recommended news source, used when `TAVILY_API_KEY` is set (at most `TAVILY_MAX_TOKENS` tokens per run, default 2) | Results without a publication date are dropped, because their timing can't be checked against the reference time |
 
 **No look-ahead:** anything timestamped after the run's reference time is dropped. Feeds that fail or have no coverage (e.g. MAGMA is a Sui token) are listed as **unavailable** in the feed-status table, never filled in. Feed inputs are hashed into the trace (`evidence.inputs`), so real-feed runs replay to an identical root too.
 
 ### 2c · Practice-trade ledger (`src/engine/ledger.ts`, `scripts/run-agent.ts`, Ledger tab)
-The bounty asks agents to *record the practice trades they would make*. An autonomous loop runs the full agent on **live** RYO data and real feeds every 30–60 minutes. It records each practice trade, then re-prices open positions with later RYO observations and closes them at the stop, the targets (50% at T1, after which the stop moves to entry) or the 72-hour time stop. The ledger is append-only and hash-chained. It accepts **only live evidence**: a run whose `market_overview` wasn't live, or whose selected token's reads weren't live, is logged as *not recorded*. Prices older than a position never mark it. Positions are marked only at observation points (intra-period highs and lows aren't observed), and that is stated in the UI.
+The bounty asks agents to *record the practice trades they would make*. An autonomous loop runs the full agent on **live** RYO data and real feeds every 15 minutes, paced to RYO's rate limits. It records each practice trade, then re-prices open positions with later RYO observations and closes them at the stop, the targets (50% at T1, after which the stop moves to entry) or the 72-hour time stop. The ledger is append-only and hash-chained. It accepts **only live evidence**: a run whose `market_overview` wasn't live, or whose selected token's reads weren't live, is logged as *not recorded*. Prices older than a position never mark it. Between runs, the exchange's hourly candles decide whether a stop or target was touched; if one candle reaches both, the stop is assumed first (the conservative reading). At each run, RYO's price marks the position.
 
 ### 3 · Real thinking (`src/engine/decision.ts`)
 Bull and Bear agents argue from the *same* evidence. Every argument cites the exact field it rests on (e.g. `deep_analysis(SOL).data.technical_analysis.rsi_14 = 29.4`). The **Judge has no discretion over the mandate**: a failed binding clause rejects the trade however good the bull case sounds. For each rejection it lists the formal counterexample and "what would change the ruling".
@@ -142,17 +146,18 @@ Claude Opus 5.5 argues Bull and Bear from the **same structured evidence** the d
 Entry, size, stop and exits are one object. RYO's ATR-14 `trade_plan` is the starting point, then mandate clauses apply: risk % per trade, max position, `max(entry − k·ATR, entry·(1 − cap))` stop, and regime scaling. Two dip tranches (60% at entry, 40% half an ATR lower), 50/50 exits at 1R/2R, a 72-hour time stop.
 
 ### 5 · Repeatability (`Trace` in `pipeline.ts`, Audit tab)
-Every step is hashed as `hash(prev | i | label | sha256(payload))`. The engine has no clock and no randomness, so **Replay** on the recorded envelopes reproduces the identical root (`0x38ee42f3…920f` on the bundled snapshots). Editing any step breaks the chain at that step.
+Every step is hashed as `hash(prev | i | label | sha256(payload))`. The engine has no clock and no randomness, so **Replay** on the recorded envelopes reproduces the identical root (`0xbd8063e1…9934` on the bundled RYO snapshots with the bundled real feeds). Editing any step breaks the chain at that step.
 
 ---
 
 ## BLI LegalTech: bidirectional fiduciary mandate compiler (`src/engine/legalAstCompiler.ts`)
 
-- **Prose → AST.** A controlled-language grammar with 14 clause types. Prose it cannot parse is **rejected with a line number, never guessed**. Duplicate or conflicting limits and out-of-range values are compile errors.
+- **Prose → AST.** A controlled-language grammar with 15 clause types. Prose it cannot parse is **rejected with a line number, never guessed**. Duplicate or conflicting limits and out-of-range values are compile errors.
 - **AST → prose.** A deterministic, non-LLM decompiler. `decompile(compile(x))` is a tested fixpoint, so there is no semantic drift. Edit a number in the AST and the prose rewrites itself; edit the prose and the AST rebuilds.
 - **One AST, three enforcers.** The in-browser Judge, the x402 gateway and the on-chain CRE workflow (`config.staging.json` is generated from the AST, and `mandateHash` is checked by the vault) all evaluate the same AST.
 - **Legal anchors** on every clause:
   - UPIA §2 (standard of care; liquidity and economic conditions as listed circumstances)
+  - UPIA §2(d) (duty to verify facts: clause 16 checks RYO's price against Chainlink or exchange trades before acting)
   - UPIA §3 (diversification)
   - Securities Act §17(b) (anti-touting; it reaches *securities*, so the clause flags undisclosed coordinated promotion whatever the token's status)
   - **MiCA Art. 91(2)** (manipulation, including voicing opinions while positioned)
@@ -210,7 +215,7 @@ cre workflow simulate ./causal-verdict --target staging-settings --env ../.env -
 | **Key never reaches the browser** | `.env` is gitignored. All live calls go `browser → /api/ryo/call → server/api.ts → RYO`. No `VITE_` variables exist. `npm run check:secrets` scans every shippable file, including `dist/`, for the key. |
 | **No fabricated RYO data** | Snapshots are verbatim envelopes from `scripts/capture-ryo.mjs`, each with its SHA-256, re-verifiable in the browser. A request with no live answer and no snapshot is shown as **unavailable**, never invented. KOL, whale and news inputs come from real public feeds with per-item links. The fictional scenario is a separate, labelled mode. |
 | **Envelope preserved** | `schema_version`, `status`, `data_mode`, `as_of`, `availability` and `warnings` are shown per exhibit (click any funnel chip). `null` stays `null`: BEAM's missing RSI fails a gate rather than reading as 0. |
-| Combining sources (20%) | 6 tools × 17 calls chained into one decision, plus KOL, whale and news planes. The `min_planes` clause requires ≥2 independent planes to agree. |
+| Combining sources (20%) | 6 tools × 17 calls chained into one decision, plus KOL, whale, news (RSS, Telegram, Tavily) and exchange planes, and a Chainlink reference price. The `min_planes` clause requires ≥2 independent planes to agree. |
 | Coping with failure (20%) | Reads `X-RateLimit-*`. The capture client retries 429/503/network errors with exponential backoff and jitter. The live proxy fails fast into a **circuit breaker** (honours `Retry-After`), which sends calls to real snapshots during an outage. **Chaos injector** (429, 503, timeout, offline). Every fallback carries its reason. `partial` lanes stay visible. *This was exercised for real: RYO went unreachable during the build, and live runs degraded to labelled snapshots in about 20 s.* The autonomous loop runs in a separate **patient mode**. RYO also enforces a per-key `6/min for mcp_fanout` limit, and a 17-call burst hit it. So the loop queues calls behind a sliding 6-per-minute window and waits out each 429's `Retry-After` instead of falling back. Live calls per run went from 5/17 to 15–17/17 (tested offline against a mock in `scripts/patient-test.ts`). |
 | Real thinking (25%) | Adversarial Bull/Bear over structured fields, a Judge bound by the AST, counterfactuals |
 | Cause and effect (20%) | Lead-lag timeline, a causal chain per token, explained rejections |
@@ -235,8 +240,9 @@ cre workflow simulate ./causal-verdict --target staging-settings --env ../.env -
 | Ledger: open → target 1 → breakeven stop, stale runs ignored, tamper detection | ✅ `npm test` |
 | **Official `cre workflow simulate` (CLI v1.39.0), both triggers** | ✅ `cre-workflow/simulation-cre-cli-{http,cron}.log`. Compile → Vault-DON secret → Confidential HTTP to RYO → mandate → signed report → `writeReport` (`txStatus=SUCCESS`, dry run). In both runs RYO's `deep_analysis` (~30–33s) exceeded the **simulator's** fixed 30s Confidential HTTP client timeout, which ignores the requested 80s. The workflow fell back to `analyze_token` and correctly **rejected** SOL on the missing confluence (C4). The production limit is 90s. |
 | Claude analyst debate on live run data | ✅ SOL: 15 claims, 0 dropped against 37 allowed citation paths (Debate tab) |
-| **Vault deployed on Sepolia** | ✅ [`0xb86d25cd…3544`](https://sepolia.etherscan.io/address/0xb86d25cd0317de545c8573f040a589c34a093544) ([deploy tx](https://sepolia.etherscan.io/tx/0x4cca438a56f868df390340092d08f3e76716e1319ec4643a8b21d0143b82925a)), bound to mandate `0x44be16da…6e00` and to the CRE simulator's `MockKeystoneForwarder`. `contracts/deployment.sepolia.json` |
+| **Vault deployed on Sepolia** | ✅ [`0xb86d25cd…3544`](https://sepolia.etherscan.io/address/0xb86d25cd0317de545c8573f040a589c34a093544) ([deploy tx](https://sepolia.etherscan.io/tx/0x4cca438a56f868df390340092d08f3e76716e1319ec4643a8b21d0143b82925a)), bound to the CRE simulator's `MockKeystoneForwarder`. Deployed with mandate `0x44be16da…6e00`; the 16-clause mandate `0xb82b743f…a97c` was then activated by the owner ([activation tx](https://sepolia.etherscan.io/tx/0x3ec3beb1a5519c213d14eed5003bb5fcc599fea4616949f0a3a7cd5ed0ba07c7)). `contracts/deployment.sepolia.json` |
 | **CRE report written on-chain** | ✅ `cre workflow simulate --broadcast` (cron trigger) → live RYO via Confidential HTTP → mandate REJECT on `C15:min_planes` → signed report → [forwarder tx](https://sepolia.etherscan.io/tx/0xea20a213693990660226b817c94b85ea4c1b6e7bc66c409e5fb4d36797c81cc6) → `VerdictRecorded` in the vault. `cre-workflow/simulation-cre-cli-broadcast.log`; check it yourself with `npx tsx scripts/read-vault.ts`. The first attempt reverted inside the vault because the 600k gas limit was below the ~930k a verdict write costs; the limit is now 1.5M. Production DON deployment needs CRE deploy access, which this account does not have yet. |
+| **CRE reads a Chainlink Data Feed inside the workflow** | ✅ `EVMClient.callContract` reads `decimals()` and `latestRoundData()` from the SOL/USD feed on Ethereum mainnet at the last finalized block. The workflow compares it with RYO's price under clause 16 (Chainlink 96.878 vs RYO 95.460, 1.46% apart: pass) and writes the verdict: [report tx](https://sepolia.etherscan.io/tx/0xc4e4dd3024e12a24c99c7918fa70880fa9dd05b3a05135cbc96a13ff7588547f), `cre-workflow/simulation-cre-cli-broadcast-chainlink.log`. Disclosure: one earlier verdict ([tx](https://sepolia.etherscan.io/tx/0x203fcbe84805e4706c801210f9fe64a642f6fe8f9038397b7c1a7ed19f51ac86)) was written while RYO was rate-limiting. The workflow failed closed, but clause 16 also failed there because of a bug, since fixed: it compared RYO's *missing* price with Chainlink. |
 
 ---
 

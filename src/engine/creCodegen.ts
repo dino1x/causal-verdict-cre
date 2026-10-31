@@ -18,6 +18,16 @@ export interface CreGenOptions {
   gatewayKey: string;
 }
 
+// Verified on-chain by description() (see server/market.ts, which re-checks it on every read).
+export const CHAINLINK_FEED_ADDRESSES: Record<string, string> = {
+  BTC: "0xF4030086522a5bEEa4988F8cA5B36dbC97BeE88c",
+  ETH: "0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419",
+  SOL: "0x4ffC43a60e009B551865A93d232E33Fce9f01507",
+  LINK: "0x2c1d072e956AFFC0D435Cb7AC38EF18d24d9127c",
+  UNI: "0x553303d460EE0afB37EdFf9bE42922D8FF63220e",
+  AAVE: "0x547a514d5e3769680Ce22B2361c10Ea13619e8a9",
+};
+
 export const DEFAULT_GEN: CreGenOptions = {
   watchlist: ["SOL"],
   schedule: "0 */15 * * * *",
@@ -43,6 +53,8 @@ export function generateCreConfig(ast: MandateAST, o: CreGenOptions = DEFAULT_GE
       clauses: ast.clauses.map((c) => ({ id: c.id, ...c.clause })),
     },
     evm: { chainSelectorName: "ethereum-testnet-sepolia", vaultAddress: o.vaultAddress, gasLimit: "1500000" },
+    // Chainlink Data Feeds the workflow reads itself (Ethereum mainnet, last finalized block) for price agreement.
+    priceFeeds: { chainSelectorName: "ethereum-mainnet", feeds: CHAINLINK_FEED_ADDRESSES },
   };
 }
 
@@ -64,6 +76,7 @@ export function generateGateSource(ast: MandateAST): string {
       case "require_measurement": lines.push(cite, `  if (!obs.${c.field === "rsi_14" ? "rsiAvailable" : "atrAvailable"}) failed.push("${id}");`); break;
       case "reject_verdict": lines.push(cite, `  if (${JSON.stringify(c.verdicts)}.includes(obs.verdict)) failed.push("${id}");`); break;
       case "perp_veto": lines.push(cite, `  if (obs.perpVeto) failed.push("${id}");`); break;
+      case "price_agreement": lines.push(cite, `  if (obs.refPriceAvailable && Math.abs(obs.price - obs.refPrice) / obs.refPrice * 100 > ${c.maxPct}) failed.push("${id}"); // Chainlink Data Feed read inside the workflow`); break;
       case "anti_exit_liquidity": lines.push(cite, `  if (ev.exitLiquidityTrap) failed.push("${id}"); // window ${c.windowMin}m, computed off-chain`); break;
       case "anti_touting": lines.push(cite, `  if (ev.toutingFlag) failed.push("${id}"); // >=${c.minKols} KOLs / ${c.windowMin}m, computed off-chain`); break;
       case "min_planes": lines.push(cite, `  if (ev.supportingPlanes < ${c.n}) failed.push("${id}");`); break;

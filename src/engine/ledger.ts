@@ -157,35 +157,56 @@ export function applyRun(prev: Ledger, run: RunResult, extraPrices: Map<string, 
 
   for (const p of l.positions.filter((x) => x.status === "open")) {
     if (Date.parse(at) <= Date.parse(p.openedAt)) continue;
+    const fill = (when: string, pct: number, price: number, reason: LedgerPosition["fills"][number]["reason"], how: string) => {
+      const usd = (price - p.entry) * p.units * (pct / 100);
+      p.fills.push({ at: when, price, pct, reason, pnlUsd: +usd.toFixed(2) });
+      p.remainingPct -= pct;
+      p.realizedPnlUsd = +(p.realizedPnlUsd + usd).toFixed(2);
+      addEvent(l, { at: when, kind: "fill", symbol: p.symbol, detail: `${reason}: ${pct}% at ${price} (${usd >= 0 ? "+" : ""}${usd.toFixed(2)} USD) — ${how}`, traceRoot: run.trace.root });
+    };
+    const [t1, t2] = p.targets;
+    // 1. Between runs: walk the exchange's 1h candles since the last mark, so a stop or target touched between
+    //    observations is honoured. If one candle reaches both the stop and a target, the order inside it is
+    //    unknown and the stop is assumed first (the conservative reading).
+    const lastMark = p.marks[p.marks.length - 1]?.at ?? p.openedAt;
+    const mk = run.evidenceUsed?.markets?.find((x) => x.symbol === p.symbol);
+    for (const c of mk?.candles ?? []) {
+      const end = new Date(c.t + 3_600_000).toISOString();
+      if (c.t < Date.parse(lastMark) || Date.parse(end) > Date.parse(at) || p.remainingPct <= 0) continue;
+      const how = `${mk!.venue} 1h candle ${new Date(c.t).toISOString()} (low ${c.l}, high ${c.h})`;
+      if (c.l <= p.stopNow) fill(end, p.remainingPct, p.stopNow, "stop", how);
+      else {
+        if (t1 && p.fills.every((f) => f.reason !== "target1") && c.h >= t1.price) {
+          fill(end, t1.closePct, t1.price, "target1", how);
+          p.stopNow = p.entry; // runner is now risk-free
+        }
+        if (t2 && p.remainingPct > 0 && c.h >= t2.price) fill(end, p.remainingPct, t2.price, "target2", how);
+      }
+    }
+    // 2. At this run's observation point: RYO's own price.
     const obs = prices.get(p.symbol);
     // Only a price observed after the position was opened may mark it.
-    if (!obs || Date.parse(obs.asOf) <= Date.parse(p.openedAt)) {
+    if (p.remainingPct > 0 && (!obs || Date.parse(obs.asOf) <= Date.parse(p.openedAt))) {
       addEvent(l, { at, kind: "mark", symbol: p.symbol, detail: "no RYO price this run — position not marked (missing, not assumed)", traceRoot: run.trace.root });
       continue;
     }
-    p.marks.push({ at, price: obs.price, source: obs.source });
-    const fill = (pct: number, price: number, reason: LedgerPosition["fills"][number]["reason"]) => {
-      const usd = (price - p.entry) * p.units * (pct / 100);
-      p.fills.push({ at, price, pct, reason, pnlUsd: +usd.toFixed(2) });
-      p.remainingPct -= pct;
-      p.realizedPnlUsd = +(p.realizedPnlUsd + usd).toFixed(2);
-      addEvent(l, { at, kind: "fill", symbol: p.symbol, detail: `${reason}: ${pct}% at ${price} (${usd >= 0 ? "+" : ""}${usd.toFixed(2)} USD)`, traceRoot: run.trace.root });
-    };
-    if (obs.price <= p.stopNow) fill(p.remainingPct, p.stopNow, "stop");
-    else {
-      const [t1, t2] = p.targets;
-      if (t1 && p.fills.every((f) => f.reason !== "target1") && obs.price >= t1.price) {
-        fill(t1.closePct, t1.price, "target1");
-        p.stopNow = p.entry; // runner is now risk-free
+    if (p.remainingPct > 0 && obs) {
+      p.marks.push({ at, price: obs.price, source: obs.source });
+      if (obs.price <= p.stopNow) fill(at, p.remainingPct, p.stopNow, "stop", "RYO price at the observation point");
+      else {
+        if (t1 && p.fills.every((f) => f.reason !== "target1") && obs.price >= t1.price) {
+          fill(at, t1.closePct, t1.price, "target1", "RYO price at the observation point");
+          p.stopNow = p.entry;
+        }
+        if (t2 && p.remainingPct > 0 && obs.price >= t2.price) fill(at, p.remainingPct, t2.price, "target2", "RYO price at the observation point");
+        if (p.remainingPct > 0 && hoursBetween(p.openedAt, at) >= p.timeStopHours) fill(at, p.remainingPct, obs.price, "time_stop", "72h time stop at the RYO price");
       }
-      if (t2 && p.remainingPct > 0 && obs.price >= t2.price) fill(p.remainingPct, t2.price, "target2");
-      if (p.remainingPct > 0 && hoursBetween(p.openedAt, at) >= p.timeStopHours) fill(p.remainingPct, obs.price, "time_stop");
     }
     if (p.remainingPct <= 0) {
       p.status = "closed";
       p.realizedR = p.riskUsd ? +(p.realizedPnlUsd / p.riskUsd).toFixed(3) : null;
       addEvent(l, { at, kind: "close", symbol: p.symbol, detail: `closed: ${p.realizedPnlUsd >= 0 ? "+" : ""}${p.realizedPnlUsd} USD (${p.realizedR}R)`, traceRoot: run.trace.root });
-    } else addEvent(l, { at, kind: "mark", symbol: p.symbol, detail: `marked at ${obs.price} (unrealized ${((obs.price - p.entry) * p.units * (p.remainingPct / 100)).toFixed(2)} USD)`, traceRoot: run.trace.root });
+    } else addEvent(l, { at, kind: "mark", symbol: p.symbol, detail: `marked at ${obs!.price} (unrealized ${((obs!.price - p.entry) * p.units * (p.remainingPct / 100)).toFixed(2)} USD)`, traceRoot: run.trace.root });
   }
 
   const t = run.practiceTrade;

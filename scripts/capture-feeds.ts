@@ -21,7 +21,7 @@ await runPipeline({
     return { mode: "real", fixtures: bundle, sources: bundle.sources };
   },
 });
-captured.bundle_sha256 = sha256Hex(canonical({ posts: captured.posts, whales: captured.whales, news: captured.news }));
+captured.bundle_sha256 = sha256Hex(canonical({ posts: captured.posts, whales: captured.whales, news: captured.news, markets: captured.markets ?? [] }));
 writeFileSync("src/data/feedSnapshots.json", JSON.stringify(captured, null, 2));
 for (const s of captured.sources) console.log(s.ok ? "ok " : "ERR", s.feed, s.target, s.items, s.detail);
 console.log(`ref ${captured.referenceTime}: ${captured.whales.length} whale events, ${captured.news.length} news, ${captured.posts.length} posts → src/data/feedSnapshots.json`);
