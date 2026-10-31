@@ -58,6 +58,11 @@
           "at": "2026-10-31T19:59:45Z",
           "price": 95.7041790914268,
           "source": "analyze_token(SOL) live as_of 2026-10-31T20:01:11Z sha 895815a481bd"
+        },
+        {
+          "at": "2026-10-31T20:56:18Z",
+          "price": 95.54142481960524,
+          "source": "analyze_token(SOL) live as_of 2026-10-31T20:59:02Z sha cff15b1619f8"
         }
       ],
       "realizedPnlUsd": 0,
@@ -234,6 +239,26 @@
       "i": 16,
       "prev": "0xa5fa998d581a15957c9e3e17001b8faf82a3333e0eeb999e31a2cdc3287adf2d",
       "hash": "0x8b2228618ec397e09f1a8e15336688842ee81e3c452c0d70f5926adfae99b81b"
+    },
+    {
+      "at": "2026-10-31T20:56:18Z",
+      "kind": "mark",
+      "symbol": "SOL",
+      "detail": "marked at 95.54142481960524 (unrealized 38.04 USD)",
+      "traceRoot": "0x5a038016c85738a09b6940fb221a918ec952c9a37256ba5c9d7e0228f70d160a",
+      "i": 17,
+      "prev": "0x8b2228618ec397e09f1a8e15336688842ee81e3c452c0d70f5926adfae99b81b",
+      "hash": "0xbb794abca98670d668b8d9558f6eb91c425717a7d14c916caa9cddefbf50003d"
+    },
+    {
+      "at": "2026-10-31T20:56:18Z",
+      "kind": "no_trade",
+      "symbol": null,
+      "detail": "no candidate satisfied the mandate — AIN: C15:min_planes · RSR: C7:require_measurement, C8:require_measurement, C15:min_planes · COW: C4:min_confluence, C7:require_measurement, C8:require_measurement, C15:min_planes · MAGMA: C4:min_confluence, C5:min_turnover, C15:min_planes · SOL: C5:min_turnover, C15:min_planes · PEPE: C7:require_measurement, C8:require_measurement, C15:min_planes",
+      "traceRoot": "0x5a038016c85738a09b6940fb221a918ec952c9a37256ba5c9d7e0228f70d160a",
+      "i": 18,
+      "prev": "0xbb794abca98670d668b8d9558f6eb91c425717a7d14c916caa9cddefbf50003d",
+      "hash": "0xce2323c5edc9d5fdaaed3a067882315937efac23cefc9143d2c9a9691ddcc48f"
     }
   ],
   "runs": [
@@ -1453,6 +1478,120 @@
       "stateHash": "0x872af67d89f64849d1c6f8a84ba713963ac028e4a983c255488d7d88221854fc",
       "prev": "0xf5ff8954d1e531fcafc16682cab35778be2a0b9c5fc89afecec12caf6d08badb",
       "hash": "0x2a63129b1250e648181cf3d6b800784f71ca7ed6436f00a9f52fcd4617f14172"
+    },
+    {
+      "at": "2026-10-31T20:56:18Z",
+      "traceRoot": "0x5a038016c85738a09b6940fb221a918ec952c9a37256ba5c9d7e0228f70d160a",
+      "provenance": {
+        "live": 17
+      },
+      "evidenceMode": "real",
+      "decision": "NO TRADE",
+      "candidates": [
+        {
+          "symbol": "AIN",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C15:min_planes",
+              "observed": "AIN: only 0 of 2 required independent planes support entry."
+            }
+          ]
+        },
+        {
+          "symbol": "RSR",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C7:require_measurement",
+              "observed": "RSR: RYO returned rsi_14=null; a missing measurement is not treated as neutral."
+            },
+            {
+              "gate": "C8:require_measurement",
+              "observed": "RSR: RYO returned atr_14_pct=null; a missing measurement is not treated as neutral."
+            },
+            {
+              "gate": "C15:min_planes",
+              "observed": "RSR: only 1 of 2 required independent planes support entry."
+            }
+          ]
+        },
+        {
+          "symbol": "COW",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C4:min_confluence",
+              "observed": "COW: no measured confluence, so the minimum 0.6 cannot be shown to hold."
+            },
+            {
+              "gate": "C7:require_measurement",
+              "observed": "COW: RYO returned rsi_14=null; a missing measurement is not treated as neutral."
+            },
+            {
+              "gate": "C8:require_measurement",
+              "observed": "COW: RYO returned atr_14_pct=null; a missing measurement is not treated as neutral."
+            },
+            {
+              "gate": "C15:min_planes",
+              "observed": "COW: only 0 of 2 required independent planes support entry."
+            }
+          ]
+        },
+        {
+          "symbol": "MAGMA",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C4:min_confluence",
+              "observed": "MAGMA: no measured confluence, so the minimum 0.6 cannot be shown to hold."
+            },
+            {
+              "gate": "C5:min_turnover",
+              "observed": "MAGMA: turnover 0.0183 < 0.05; a stop could not be filled near its modeled price."
+            },
+            {
+              "gate": "C15:min_planes",
+              "observed": "MAGMA: only 0 of 2 required independent planes support entry."
+            }
+          ]
+        },
+        {
+          "symbol": "SOL",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C5:min_turnover",
+              "observed": "SOL: turnover 0.0322 < 0.05; a stop could not be filled near its modeled price."
+            },
+            {
+              "gate": "C15:min_planes",
+              "observed": "SOL: only 0 of 2 required independent planes support entry."
+            }
+          ]
+        },
+        {
+          "symbol": "PEPE",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C7:require_measurement",
+              "observed": "PEPE: RYO returned rsi_14=null; a missing measurement is not treated as neutral."
+            },
+            {
+              "gate": "C8:require_measurement",
+              "observed": "PEPE: RYO returned atr_14_pct=null; a missing measurement is not treated as neutral."
+            },
+            {
+              "gate": "C15:min_planes",
+              "observed": "PEPE: only 1 of 2 required independent planes support entry."
+            }
+          ]
+        }
+      ],
+      "stateHash": "0x2425131fe73a163893e9a7773a0d4f25540f9e202b628421f468c0edf020e679",
+      "prev": "0x2a63129b1250e648181cf3d6b800784f71ca7ed6436f00a9f52fcd4617f14172",
+      "hash": "0x7ae25687fabd7f47956a048dcf8606b3d547e7db2d9580274d4432e0e3d8a353"
     }
   ]
 }
