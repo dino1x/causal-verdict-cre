@@ -1,0 +1,15 @@
+{
+  "what": "One x402 payment for a Causal-Verdict verdict, settled on Base Sepolia through the public x402 facilitator",
+  "command": "X402_SETTLE=1 X402_PAY_TO=<merchant> npm start; npx tsx scripts/x402-pay.ts http://localhost:8787 SOL",
+  "request": { "endpoint": "POST /api/agent/verdict", "symbol": "SOL", "first_response": "402 Payment Required (exact scheme, 0.01 USDC, base-sepolia)" },
+  "verdict": { "http": 200, "symbol": "SOL", "decision": "SELECT", "traceRoot": "0x56030412f40f66d55f411d1d93ff1d05910fe88a04d2fb8e1f2e239680b43d04", "evidence": "bundled real RYO snapshots + bundled real feed capture" },
+  "settlement": {
+    "transaction": "0x0406f0749a6958723822ebf24cd3d85376f11ca13ef0c01bbba63bf9daa04bf7",
+    "explorer": "https://sepolia.basescan.org/tx/0x0406f0749a6958723822ebf24cd3d85376f11ca13ef0c01bbba63bf9daa04bf7",
+    "block": 52528189,
+    "status": "success",
+    "submitted_by_facilitator": "0xd407e409e34e0b9afb99ecceb609bdbcd5e7f1bf",
+    "usdc_transfer": { "from": "0x5222A33A4CaBC993F8354b9fCfD753Cc8C1439FA", "to": "0x451988253D2c8476BefF48a5f1920b38BA5256B1", "amount": "0.01" },
+    "nonce": "0x074dbfa7d3aa9fdbaa7327099e0a80249d7b90660969e7c035ad93f76ed6a5fc"
+  }
+}

@@ -143,7 +143,7 @@ Every step is hashed as `hash(prev | i | label | sha256(payload))`. The engine h
 
 A paid verdict is computed on **real evidence only**: live feeds on a live run, otherwise the bundled real feed capture. It is never computed on the scenario fixtures, and the response states its `evidenceMode` and feed status.
 
-The UI runs the flow with an ephemeral, unfunded browser wallet, so no funds move there. A real agent pays with `npx tsx scripts/x402-pay.ts [server] [SYMBOL]`, which uses `SEPOLIA_PRIVATE_KEY` on Base Sepolia. The settlement path was exercised against the live facilitator: with an unfunded payer it submitted `transferWithAuthorization`, the transfer reverted, and the gateway correctly refused the verdict with a 402. Fund the payer with test USDC from [faucet.circle.com](https://faucet.circle.com) to settle.
+The UI runs the flow with an ephemeral, unfunded browser wallet, so no funds move there. A real agent pays with `npx tsx scripts/x402-pay.ts [server] [SYMBOL]`, which uses `SEPOLIA_PRIVATE_KEY` on Base Sepolia. **Settled for real:** [0.01 USDC on Base Sepolia](https://sepolia.basescan.org/tx/0x0406f0749a6958723822ebf24cd3d85376f11ca13ef0c01bbba63bf9daa04bf7), submitted by the facilitator, from the agent wallet to the merchant, before the verdict was served. With an unfunded payer the transfer reverts and the gateway refuses the verdict with a 402. Test USDC: [faucet.circle.com](https://faucet.circle.com).
 
 ```bash
 npm run contract:compile       # solc 0.8.24 → contracts/out/CausalVerdictVault.json
@@ -185,7 +185,7 @@ cre workflow simulate ./causal-verdict --target staging-settings --env ../.env -
 | Vault accepts the workflow's report bytes in a real EVM; non-forwarder reverts | ✅ `npm run cre:simulate` |
 | Live RYO inside the local DON round | ✅ `cre-workflow/simulation-live.log` |
 | x402 402 → signed retry → 200 → replay refused | ✅ in-app (CRE + x402 tab) |
-| x402 settlement through the public facilitator | ✅ integration: payload accepted, `transferWithAuthorization` submitted, unfunded payer refused with 402 · ⏳ funded settlement needs test USDC (`scripts/x402-pay.ts`) |
+| **x402 payment settled on-chain** | ✅ an agent wallet paid 0.01 USDC for a SOL verdict; the public facilitator submitted `transferWithAuthorization` and the gateway served the verdict only after settlement: [BaseScan tx](https://sepolia.basescan.org/tx/0x0406f0749a6958723822ebf24cd3d85376f11ca13ef0c01bbba63bf9daa04bf7) · [`examples/x402-settlement-base-sepolia.json`](examples/x402-settlement-base-sepolia.json). An unfunded payer is refused with 402. |
 | Workflow compiles to WASM with the SDK's `cre-compile` (Javy), passing its type-check and its restricted-API check | ✅ `npm run cre:compile` → `dist/workflow.wasm` (2.65 MB) |
 | Real-feed evidence: linked sources, no look-ahead, deterministic replay | ✅ `npm test` |
 | Ledger: open → target 1 → breakeven stop, stale runs ignored, tamper detection | ✅ `npm test` |
