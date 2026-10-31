@@ -34,6 +34,7 @@ export function realFeedProvider(live: boolean, userPosts: KolPost[], channels: 
       const r = await fetch("/api/feeds", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ tokens, referenceTime, channels }) });
       if (!r.ok) throw new Error(`HTTP ${r.status}`);
       const b = await r.json();
+      if (b.error) throw new Error(b.error);
       return { mode: "real" as const, ...merge(b, userPosts, b.sources) };
     } catch (e) {
       return fromSnapshot(`feed proxy unreachable (${(e as Error).message})`);

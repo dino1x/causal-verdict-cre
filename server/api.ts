@@ -221,6 +221,22 @@ function send(res: ServerResponse, status: number, body: unknown, headers: Recor
   res.end(JSON.stringify(body));
 }
 
+/** For slow work (Claude, feed collection): send headers now and a space every 10 s so proxies never cut an idle
+ *  connection, then the JSON. Leading whitespace is valid JSON; errors arrive in the body, since the status is already 200. */
+async function sendSlow(res: ServerResponse, work: () => Promise<unknown>, onError: (e: any) => unknown) {
+  res.writeHead(200, { "Content-Type": "application/json", "Cache-Control": "no-store", "X-Accel-Buffering": "no" });
+  res.write(" ");
+  const beat = setInterval(() => res.write(" "), 10_000);
+  let body: unknown;
+  try {
+    body = await work();
+  } catch (e) {
+    body = onError(e);
+  }
+  clearInterval(beat);
+  res.end(JSON.stringify(body));
+}
+
 async function readBody(req: IncomingMessage): Promise<any> {
   const chunks: Buffer[] = [];
   for await (const c of req) chunks.push(c as Buffer);
@@ -307,7 +323,7 @@ export async function handleApi(req: IncomingMessage, res: ServerResponse): Prom
       if (!Array.isArray(tokens) || !tokens.length || tokens.length > 12) return send(res, 400, { error: "tokens[] (1-12) required" }), true;
       const ref = typeof referenceTime === "string" && Number.isFinite(Date.parse(referenceTime)) ? referenceTime : new Date().toISOString();
       const ch = Array.isArray(channels) ? channels.filter((c: unknown) => typeof c === "string" && /^[A-Za-z0-9_]{4,32}$/.test(c)).slice(0, 20) : undefined;
-      send(res, 200, await collectFeeds(tokens, ref, ch));
+      await sendSlow(res, () => collectFeeds(tokens, ref, ch), (e) => ({ error: String(e?.message ?? e).slice(0, 300) }));
       return true;
     }
     if (url.pathname === "/api/ai/debate" && req.method === "GET") {
@@ -318,11 +334,7 @@ export async function handleApi(req: IncomingMessage, res: ServerResponse): Prom
       if (!(process.env.ANTHROPIC_API_KEY || process.env.ANTHROPIC_AUTH_TOKEN)) return send(res, 503, { ok: false, error: "Claude analyst not configured: set ANTHROPIC_API_KEY in the server's .env" }), true;
       const body = await readBody(req);
       if (typeof body.symbol !== "string" || !Array.isArray(body.deterministicArgs) || !Array.isArray(body.gates)) return send(res, 400, { ok: false, error: "bad debate payload" }), true;
-      try {
-        send(res, 200, await claudeDebate(body));
-      } catch (e: any) {
-        send(res, e?.status && e.status < 600 ? e.status : 502, { ok: false, error: String(e?.message ?? e).slice(0, 300) });
-      }
+      await sendSlow(res, () => claudeDebate(body), (e) => ({ ok: false, error: `${e?.status ? `HTTP ${e.status}: ` : ""}${String(e?.message ?? e).slice(0, 300)}` }));
       return true;
     }
     if (url.pathname === "/api/ledger" && req.method === "GET") {
