@@ -334,6 +334,10 @@ export async function handleApi(req: IncomingMessage, res: ServerResponse): Prom
       }
       return true;
     }
+    if (url.pathname === "/api/health" && req.method === "GET") {
+      send(res, 200, { ok: true, uptime_s: Math.round(process.uptime()), rss_mb: Math.round(process.memoryUsage().rss / 2 ** 20) });
+      return true;
+    }
     if (url.pathname === "/api/agent/x402-info" && req.method === "GET") {
       send(res, 200, { ...X402, priceUsdc6: X402.priceUsdc6.toString(), settles: process.env.X402_SETTLE === "1", demoPayer: demoPayer?.address ?? null });
       return true;

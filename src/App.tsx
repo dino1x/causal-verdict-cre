@@ -67,7 +67,7 @@ export default function App() {
         const r = await runPipeline({ fetcher: makeFetcher(m, chaos), mandateProse: mandate, equityUsd: equity, evidence, onProgress: (msg) => setLog((l) => [...l, msg]) });
         setRun(r);
         if (r.practiceTrade) setFocus(r.practiceTrade.dossier.symbol);
-        if (m === "live") getStatus().then(setStatus);
+        if (m === "live") getStatus().then((st) => st && setStatus(st));
       } catch (e) {
         setError(String((e as Error).message));
       } finally {
@@ -78,7 +78,10 @@ export default function App() {
   );
 
   useEffect(() => {
-    getStatus().then((st) => (setStatus(st), setStatusChecked(true)));
+    // A refresh that fails keeps the last known status; only the first check (with one retry) decides static mode.
+    getStatus()
+      .then((st) => st ?? new Promise<ProxyStatus | null>((r) => setTimeout(() => getStatus().then(r), 2500)))
+      .then((st) => (setStatus(st), setStatusChecked(true)));
     go("replay");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -142,7 +145,7 @@ export default function App() {
         <div className="controls">
           <div className="seg" role="group" aria-label="Data mode">
             <button className={mode === "replay" ? "on" : ""} onClick={() => setMode("replay")}>Replay</button>
-            <button className={mode === "live" ? "on" : ""} onClick={() => { setMode("live"); getStatus().then(setStatus); }} title={liveAvailable ? "Calls RYO through the server proxy" : "Server has no RYO_MCP_KEY — live calls will fall back to snapshots"}>
+            <button className={mode === "live" ? "on" : ""} onClick={() => { setMode("live"); getStatus().then((st) => st && setStatus(st)); }} title={liveAvailable ? "Calls RYO through the server proxy" : "Server has no RYO_MCP_KEY — live calls will fall back to snapshots"}>
               Live RYO
             </button>
           </div>
