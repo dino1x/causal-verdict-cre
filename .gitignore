@@ -17,3 +17,6 @@ cre-workflow/**/dist/
 CLAUDE.md
 docs/
 /data/
+
+# OpenTimestamps upgrade backups
+*.ots.bak
