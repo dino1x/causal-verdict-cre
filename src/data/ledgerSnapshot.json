@@ -108,6 +108,11 @@
           "at": "2026-11-01T05:21:25Z",
           "price": 95.47696334966417,
           "source": "analyze_token(SOL) live as_of 2026-11-01T05:24:56Z sha a736fa9ee9ca"
+        },
+        {
+          "at": "2026-11-01T06:07:46Z",
+          "price": 95.74924680891407,
+          "source": "analyze_token(SOL) live as_of 2026-11-01T06:14:17Z sha 73199f625062"
         }
       ],
       "realizedPnlUsd": 0,
@@ -484,6 +489,26 @@
       "i": 36,
       "prev": "0x1895572c0c740e8d1fb7a3508264e318f058b5ac6cb2210e11787e432a103179",
       "hash": "0xe1dc89e1195c7a3eac7d7c5355f0033e7b1de76a965b75598af45a8ad5f80f6b"
+    },
+    {
+      "at": "2026-11-01T06:07:46Z",
+      "kind": "mark",
+      "symbol": "SOL",
+      "detail": "marked at 95.74924680891407 (unrealized 59.87 USD)",
+      "traceRoot": "0x24b0deb400dee5c50f43706a3c7fb86be330da6c88e3133358fa0702f6fb941d",
+      "i": 37,
+      "prev": "0xe1dc89e1195c7a3eac7d7c5355f0033e7b1de76a965b75598af45a8ad5f80f6b",
+      "hash": "0x67c7f7b6f105cae12413d18381f4690b2fe7165a86f590c281c3491024437310"
+    },
+    {
+      "at": "2026-11-01T06:07:46Z",
+      "kind": "no_trade",
+      "symbol": null,
+      "detail": "no candidate satisfied the mandate — RSR: C7:require_measurement, C8:require_measurement, C15:min_planes · BEAM: C7:require_measurement, C8:require_measurement · ZAMA: C4:min_confluence, C15:min_planes · MAGMA: C4:min_confluence, C5:min_turnover, C15:min_planes · SOL: C5:min_turnover, C15:min_planes · PEPE: C7:require_measurement, C8:require_measurement, C15:min_planes",
+      "traceRoot": "0x24b0deb400dee5c50f43706a3c7fb86be330da6c88e3133358fa0702f6fb941d",
+      "i": 38,
+      "prev": "0x67c7f7b6f105cae12413d18381f4690b2fe7165a86f590c281c3491024437310",
+      "hash": "0x5dee5e9e0e341f7e3d5fd9debd01636a7e2432ec248e3d8054b917a265db7f3a"
     }
   ],
   "runs": [
@@ -2832,6 +2857,117 @@
       "stateHash": "0x2648603df886f9ede33c923108c4b415c7db7e8c91fdfcb204f36f9878349610",
       "prev": "0x554e3b53871702929a5dc8d887f125904eb4248ac8c2444af3568d2d5e911828",
       "hash": "0xd851d39182ea5d9fd2f63e5daf0cbe3e5c4304adf401f66d9d6bc09ad0bda741"
+    },
+    {
+      "at": "2026-11-01T06:07:46Z",
+      "traceRoot": "0x24b0deb400dee5c50f43706a3c7fb86be330da6c88e3133358fa0702f6fb941d",
+      "provenance": {
+        "live": 16,
+        "unavailable": 1
+      },
+      "evidenceMode": "real",
+      "decision": "NO TRADE",
+      "candidates": [
+        {
+          "symbol": "RSR",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C7:require_measurement",
+              "observed": "RSR: RYO returned rsi_14=null; a missing measurement is not treated as neutral."
+            },
+            {
+              "gate": "C8:require_measurement",
+              "observed": "RSR: RYO returned atr_14_pct=null; a missing measurement is not treated as neutral."
+            },
+            {
+              "gate": "C15:min_planes",
+              "observed": "RSR: only 1 of 2 required independent planes support entry."
+            }
+          ]
+        },
+        {
+          "symbol": "BEAM",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C7:require_measurement",
+              "observed": "BEAM: RYO returned rsi_14=null; a missing measurement is not treated as neutral."
+            },
+            {
+              "gate": "C8:require_measurement",
+              "observed": "BEAM: RYO returned atr_14_pct=null; a missing measurement is not treated as neutral."
+            }
+          ]
+        },
+        {
+          "symbol": "ZAMA",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C4:min_confluence",
+              "observed": "ZAMA: no measured confluence, so the minimum 0.6 cannot be shown to hold."
+            },
+            {
+              "gate": "C15:min_planes",
+              "observed": "ZAMA: only 1 of 2 required independent planes support entry."
+            }
+          ]
+        },
+        {
+          "symbol": "MAGMA",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C4:min_confluence",
+              "observed": "MAGMA: no measured confluence, so the minimum 0.6 cannot be shown to hold."
+            },
+            {
+              "gate": "C5:min_turnover",
+              "observed": "MAGMA: turnover 0.0220 < 0.05; a stop could not be filled near its modeled price."
+            },
+            {
+              "gate": "C15:min_planes",
+              "observed": "MAGMA: only 0 of 2 required independent planes support entry."
+            }
+          ]
+        },
+        {
+          "symbol": "SOL",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C5:min_turnover",
+              "observed": "SOL: turnover 0.0229 < 0.05; a stop could not be filled near its modeled price."
+            },
+            {
+              "gate": "C15:min_planes",
+              "observed": "SOL: only 1 of 2 required independent planes support entry."
+            }
+          ]
+        },
+        {
+          "symbol": "PEPE",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C7:require_measurement",
+              "observed": "PEPE: RYO returned rsi_14=null; a missing measurement is not treated as neutral."
+            },
+            {
+              "gate": "C8:require_measurement",
+              "observed": "PEPE: RYO returned atr_14_pct=null; a missing measurement is not treated as neutral."
+            },
+            {
+              "gate": "C15:min_planes",
+              "observed": "PEPE: only 1 of 2 required independent planes support entry."
+            }
+          ]
+        }
+      ],
+      "stateHash": "0xc2792c96a9201ea65e8a968f21864e62d9c390411962e45a8f7512ad6d8148a9",
+      "prev": "0xd851d39182ea5d9fd2f63e5daf0cbe3e5c4304adf401f66d9d6bc09ad0bda741",
+      "hash": "0xd56af9fe2fec53d249ebbb4bed6dba8972da836382419ce57ba808119bbf07f9"
     }
   ]
 }
