@@ -6,6 +6,9 @@ import { fmtUsd } from "../engine/ryo";
 import bundled from "../data/ledgerSnapshot.json";
 import { Badge, short } from "./common";
 
+// The agent adds a run every hour, so the tables show the newest rows unless asked; verification always covers all of it.
+const RECENT = 50;
+
 type Witness = { at: string; head: string; runs: number; events: number; file: string };
 
 type Tamper = { label: string; mutate: (l: Ledger) => void };
@@ -84,6 +87,7 @@ function WitnessList({ head, witnesses: w }: { head: string; witnesses: Witness[
 export function LedgerView() {
   const [ledger, setLedger] = useState<Ledger>(bundled as unknown as Ledger);
   const [witnesses, setWitnesses] = useState<Witness[]>(bundledWitnesses as Witness[]);
+  const [all, setAll] = useState(false);
   const [source, setSource] = useState("committed by the agent Action (src/data/ledgerSnapshot.json)");
   useEffect(() => {
     // The hosted server follows the agent's commits on GitHub; the ledger and its witness list come from one commit.
@@ -145,7 +149,7 @@ export function LedgerView() {
             <table>
               <thead><tr><th>Reference time</th><th>Decision</th><th>Why (deciding gates per candidate)</th><th>RYO provenance</th><th>Evidence</th><th>Trace root</th></tr></thead>
               <tbody>
-                {[...ledger.runs].reverse().map((r) => (
+                {[...ledger.runs].reverse().slice(0, all ? undefined : RECENT).map((r) => (
                   <tr key={r.traceRoot}>
                     <td className="small">{r.at}</td>
                     <td><Badge k={r.decision.startsWith("SELECT") ? "select" : "reject"}>{r.decision}</Badge></td>
@@ -171,7 +175,7 @@ export function LedgerView() {
         <div className="card">
           <h2>Ledger events (hash-chained)</h2>
           <div className="scroll" style={{ maxHeight: 420 }}>
-            {[...ledger.events].reverse().map((e) => (
+            {[...ledger.events].reverse().slice(0, all ? undefined : RECENT).map((e) => (
               <div key={e.i} className="step">
                 <div className="mono faint">#{e.i}</div>
                 <div>
@@ -184,6 +188,12 @@ export function LedgerView() {
           </div>
         </div>
       </div>
+      {(ledger.runs.length > RECENT || ledger.events.length > RECENT) && (
+        <div className="row small muted" style={{ marginTop: 10 }}>
+          {all ? `Showing all ${ledger.runs.length} runs and ${ledger.events.length} events.` : `Showing the newest ${RECENT} runs and ${RECENT} events of ${ledger.runs.length} and ${ledger.events.length}.`}
+          <button className="btn" onClick={() => setAll(!all)}>{all ? "Show newest only" : "Show all"}</button>
+        </div>
+      )}
     </div>
   );
 }
