@@ -78,6 +78,11 @@
           "at": "2026-10-31T23:24:49Z",
           "price": 95.39883817197511,
           "source": "analyze_token(SOL) live as_of 2026-10-31T23:26:17Z sha d2ad9825362b"
+        },
+        {
+          "at": "2026-11-01T00:21:20Z",
+          "price": 95.29570486249412,
+          "source": "analyze_token(SOL) live as_of 2026-11-01T00:23:43Z sha b2c99dac3b9d"
         }
       ],
       "realizedPnlUsd": 0,
@@ -334,6 +339,26 @@
       "i": 24,
       "prev": "0x44f6f280db4ad826b28e269bb67ea089aad89dd9147c0e0728411a2adc0d9dfe",
       "hash": "0x5cabb6e63a9907595bdfbcccf5203c0a2b0a403b822e326c7611186d12106b49"
+    },
+    {
+      "at": "2026-11-01T00:21:20Z",
+      "kind": "mark",
+      "symbol": "SOL",
+      "detail": "marked at 95.29570486249412 (unrealized 12.22 USD)",
+      "traceRoot": "0xd3151145def6ecd7ff46a46f531ac4beba2befe288924f450856d393a0c37776",
+      "i": 25,
+      "prev": "0x5cabb6e63a9907595bdfbcccf5203c0a2b0a403b822e326c7611186d12106b49",
+      "hash": "0x2ee62281844f680ba20cee40be1f6ff5a0356ac06adc1dc105ebe56c6d9ac6d9"
+    },
+    {
+      "at": "2026-11-01T00:21:20Z",
+      "kind": "no_trade",
+      "symbol": null,
+      "detail": "no candidate satisfied the mandate — GROW: C5:min_turnover, C6:max_atr, C15:min_planes · AIN: C15:min_planes · MAGMA: C4:min_confluence, C5:min_turnover, C15:min_planes · RSR: C4:min_confluence, C7:require_measurement, C8:require_measurement, C15:min_planes · SOL: C5:min_turnover, C15:min_planes · PEPE: C7:require_measurement, C8:require_measurement, C15:min_planes",
+      "traceRoot": "0xd3151145def6ecd7ff46a46f531ac4beba2befe288924f450856d393a0c37776",
+      "i": 26,
+      "prev": "0x2ee62281844f680ba20cee40be1f6ff5a0356ac06adc1dc105ebe56c6d9ac6d9",
+      "hash": "0xb4b1aaeb8058e30f25f25066e45a1292fe4fbd4be95e60142fc4c99b932c3052"
     }
   ],
   "runs": [
@@ -2005,6 +2030,120 @@
       "stateHash": "0xb4a0d257386528e3b7a27c6dc94f5a8fe69f7e61deb90852f56c8689d1e61582",
       "prev": "0xb2fbf0acbff6eff457abd839c2fefb57e8eb1f69349c188970917d1b3799d934",
       "hash": "0xca8d3957457111227f8b3832c15cff0449e7e44d0e72d7f187c44d923bec72bd"
+    },
+    {
+      "at": "2026-11-01T00:21:20Z",
+      "traceRoot": "0xd3151145def6ecd7ff46a46f531ac4beba2befe288924f450856d393a0c37776",
+      "provenance": {
+        "live": 17
+      },
+      "evidenceMode": "real",
+      "decision": "NO TRADE",
+      "candidates": [
+        {
+          "symbol": "GROW",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C5:min_turnover",
+              "observed": "GROW: turnover 0.0016 < 0.05; a stop could not be filled near its modeled price."
+            },
+            {
+              "gate": "C6:max_atr",
+              "observed": "GROW: ATR(14) 26.24% > 25% tolerance."
+            },
+            {
+              "gate": "C15:min_planes",
+              "observed": "GROW: only 0 of 2 required independent planes support entry."
+            }
+          ]
+        },
+        {
+          "symbol": "AIN",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C15:min_planes",
+              "observed": "AIN: only 0 of 2 required independent planes support entry."
+            }
+          ]
+        },
+        {
+          "symbol": "MAGMA",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C4:min_confluence",
+              "observed": "MAGMA: no measured confluence, so the minimum 0.6 cannot be shown to hold."
+            },
+            {
+              "gate": "C5:min_turnover",
+              "observed": "MAGMA: turnover 0.0185 < 0.05; a stop could not be filled near its modeled price."
+            },
+            {
+              "gate": "C15:min_planes",
+              "observed": "MAGMA: only 0 of 2 required independent planes support entry."
+            }
+          ]
+        },
+        {
+          "symbol": "RSR",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C4:min_confluence",
+              "observed": "RSR: no measured confluence, so the minimum 0.6 cannot be shown to hold."
+            },
+            {
+              "gate": "C7:require_measurement",
+              "observed": "RSR: RYO returned rsi_14=null; a missing measurement is not treated as neutral."
+            },
+            {
+              "gate": "C8:require_measurement",
+              "observed": "RSR: RYO returned atr_14_pct=null; a missing measurement is not treated as neutral."
+            },
+            {
+              "gate": "C15:min_planes",
+              "observed": "RSR: only 0 of 2 required independent planes support entry."
+            }
+          ]
+        },
+        {
+          "symbol": "SOL",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C5:min_turnover",
+              "observed": "SOL: turnover 0.0291 < 0.05; a stop could not be filled near its modeled price."
+            },
+            {
+              "gate": "C15:min_planes",
+              "observed": "SOL: only 0 of 2 required independent planes support entry."
+            }
+          ]
+        },
+        {
+          "symbol": "PEPE",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C7:require_measurement",
+              "observed": "PEPE: RYO returned rsi_14=null; a missing measurement is not treated as neutral."
+            },
+            {
+              "gate": "C8:require_measurement",
+              "observed": "PEPE: RYO returned atr_14_pct=null; a missing measurement is not treated as neutral."
+            },
+            {
+              "gate": "C15:min_planes",
+              "observed": "PEPE: only 1 of 2 required independent planes support entry."
+            }
+          ]
+        }
+      ],
+      "stateHash": "0x31bc00997c190904bec5e14436fa62417e316b989725d26a2a72b3e4a8014322",
+      "prev": "0xca8d3957457111227f8b3832c15cff0449e7e44d0e72d7f187c44d923bec72bd",
+      "hash": "0xd7f346e5140cf40c4b79a4864538498677736da45960bccc46a432378b549e1c"
     }
   ]
 }
