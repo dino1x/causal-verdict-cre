@@ -153,6 +153,11 @@
           "at": "2026-11-01T23:47:07Z",
           "price": 94.3837755936917,
           "source": "analyze_token(SOL) live as_of 2026-11-01T23:49:29Z sha 371891c3efdc"
+        },
+        {
+          "at": "2026-11-02T00:47:05Z",
+          "price": 93.95493584465869,
+          "source": "analyze_token(SOL) live as_of 2026-11-02T00:48:34Z sha 44b9ec9bcb78"
         }
       ],
       "realizedPnlUsd": 0,
@@ -709,6 +714,26 @@
       "i": 54,
       "prev": "0x84a7a8d3db4c0bb7cd06c6e19b825591be998933d54a91076314413245735c46",
       "hash": "0x3db003d535c86bab8bdd3846b091c76bde6af19e3c7a7b15c14d01473d65a12e"
+    },
+    {
+      "at": "2026-11-02T00:47:05Z",
+      "kind": "mark",
+      "symbol": "SOL",
+      "detail": "marked at 93.95493584465869 (unrealized -128.65 USD)",
+      "traceRoot": "0x4ccce09e8af862e48229e7979cf71f9e6f27e72dda10182f7f3047915ffc6793",
+      "i": 55,
+      "prev": "0x3db003d535c86bab8bdd3846b091c76bde6af19e3c7a7b15c14d01473d65a12e",
+      "hash": "0xbf247c92f97bc156e4f8c5e115c0e9c9a94edb289967ef85171d81975351f59e"
+    },
+    {
+      "at": "2026-11-02T00:47:05Z",
+      "kind": "no_trade",
+      "symbol": null,
+      "detail": "no candidate satisfied the mandate — AIN: C15:min_planes · TRUMP: C15:min_planes, C16:price_agreement · 牛来: C4:min_confluence, C15:min_planes · HOT: C4:min_confluence, C15:min_planes, C16:price_agreement · SOL: C5:min_turnover, C15:min_planes · PEPE: C7:require_measurement, C8:require_measurement, C15:min_planes",
+      "traceRoot": "0x4ccce09e8af862e48229e7979cf71f9e6f27e72dda10182f7f3047915ffc6793",
+      "i": 56,
+      "prev": "0xbf247c92f97bc156e4f8c5e115c0e9c9a94edb289967ef85171d81975351f59e",
+      "hash": "0x4ece5dde0b06c611bb6d2a0fd2d3620140d19328a752a6f40d15c69cf3e3c26d"
     }
   ],
   "runs": [
@@ -3993,6 +4018,108 @@
       "stateHash": "0x0136cd18cc15b5a2f15aeab4ec5898ed650ced0af82fa650a2c1561b5e3f987e",
       "prev": "0x6d626860a2159342bf4e533dc9c4acdee2f9988b65105a9608f80f57686d659d",
       "hash": "0xbfe0efe2a521fc0ab91a50b0b737dd26b1bedc4fcaf8378c3e162b51bbf2537b"
+    },
+    {
+      "at": "2026-11-02T00:47:05Z",
+      "traceRoot": "0x4ccce09e8af862e48229e7979cf71f9e6f27e72dda10182f7f3047915ffc6793",
+      "provenance": {
+        "live": 17
+      },
+      "evidenceMode": "real",
+      "decision": "NO TRADE",
+      "candidates": [
+        {
+          "symbol": "AIN",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C15:min_planes",
+              "observed": "AIN: only 1 of 2 required independent planes support entry."
+            }
+          ]
+        },
+        {
+          "symbol": "TRUMP",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C15:min_planes",
+              "observed": "TRUMP: only 0 of 2 required independent planes support entry."
+            },
+            {
+              "gate": "C16:price_agreement",
+              "observed": "TRUMP: RYO's price is 2.04% away from binance TRUMP/USDT 1h close; the mandate will not act on an unconfirmed price."
+            }
+          ]
+        },
+        {
+          "symbol": "牛来",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C4:min_confluence",
+              "observed": "牛来: no measured confluence, so the minimum 0.6 cannot be shown to hold."
+            },
+            {
+              "gate": "C15:min_planes",
+              "observed": "牛来: only 1 of 2 required independent planes support entry."
+            }
+          ]
+        },
+        {
+          "symbol": "HOT",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C4:min_confluence",
+              "observed": "HOT: no measured confluence, so the minimum 0.6 cannot be shown to hold."
+            },
+            {
+              "gate": "C15:min_planes",
+              "observed": "HOT: only 0 of 2 required independent planes support entry."
+            },
+            {
+              "gate": "C16:price_agreement",
+              "observed": "HOT: RYO's price is 3.47% away from binance HOT/USDT 1h close; the mandate will not act on an unconfirmed price."
+            }
+          ]
+        },
+        {
+          "symbol": "SOL",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C5:min_turnover",
+              "observed": "SOL: turnover 0.0280 < 0.05; a stop could not be filled near its modeled price."
+            },
+            {
+              "gate": "C15:min_planes",
+              "observed": "SOL: only 1 of 2 required independent planes support entry."
+            }
+          ]
+        },
+        {
+          "symbol": "PEPE",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C7:require_measurement",
+              "observed": "PEPE: RYO returned rsi_14=null; a missing measurement is not treated as neutral."
+            },
+            {
+              "gate": "C8:require_measurement",
+              "observed": "PEPE: RYO returned atr_14_pct=null; a missing measurement is not treated as neutral."
+            },
+            {
+              "gate": "C15:min_planes",
+              "observed": "PEPE: only 1 of 2 required independent planes support entry."
+            }
+          ]
+        }
+      ],
+      "stateHash": "0x7ebb984491b43c9111981f6d99665585e749fdfc94e380493029688f63d3ac23",
+      "prev": "0xbfe0efe2a521fc0ab91a50b0b737dd26b1bedc4fcaf8378c3e162b51bbf2537b",
+      "hash": "0xf2a379bc3f69ee9851587c3d436c8e8ba733e80c529a07a32ce4054f2a31ffbf"
     }
   ]
 }
