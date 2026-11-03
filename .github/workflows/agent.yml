@@ -21,6 +21,10 @@ jobs:
     timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Not the triggering commit: a run that waited in the concurrency queue must start from the ledger the
+          # run before it just committed, or its own ledger commit cannot be rebased on top.
+          ref: main
       - uses: actions/setup-node@v4
         with:
           node-version: 20
