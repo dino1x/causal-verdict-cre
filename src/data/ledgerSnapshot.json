@@ -2032,6 +2032,16 @@
       "i": 158,
       "prev": "0x830650ba831b6d4735388e777e439731a4c283e9a200d8116f8906638ec2b2ac",
       "hash": "0xec876569ba871c9801aeb723f930d5622ad70805b429b6aa4881abde4a7f2029"
+    },
+    {
+      "at": "2026-11-04T05:57:09Z",
+      "kind": "no_trade",
+      "symbol": null,
+      "detail": "no candidate satisfied the mandate — HOT: C15:min_planes, C16:price_agreement · W: C7:require_measurement, C8:require_measurement, C15:min_planes · AGT: C4:min_confluence, C6:max_atr, C15:min_planes · FLUID: C4:min_confluence, C5:min_turnover, C7:require_measurement, C8:require_measurement, C15:min_planes, C16:price_agreement · SOL: C5:min_turnover · PEPE: C7:require_measurement, C8:require_measurement, C15:min_planes",
+      "traceRoot": "0x88c0860b9002355a7e1d6b9060ebc5c24fc078715915d22bae6e209453bd713a",
+      "i": 159,
+      "prev": "0xec876569ba871c9801aeb723f930d5622ad70805b429b6aa4881abde4a7f2029",
+      "hash": "0x898f227b26940de0a59a83d88b7ffa2cf0aece485f4e9c1cdcd93acb4f52ecda"
     }
   ],
   "runs": [
@@ -11253,6 +11263,128 @@
       "stateHash": "0x947ccb9f3217295e57a4e40f64608a34afce34059d9abd8a5c9c7050e6c0cd05",
       "prev": "0xe0bbedff731be955d6f98ddb5f4db801790f8cbfc8c7bcf560e0b453ad9fb1c1",
       "hash": "0x2f196f18b10d10f71680eacfbc834cd3cd81d929c492d463ecd3f44254eecc5c"
+    },
+    {
+      "at": "2026-11-04T05:57:09Z",
+      "traceRoot": "0x88c0860b9002355a7e1d6b9060ebc5c24fc078715915d22bae6e209453bd713a",
+      "provenance": {
+        "live": 17
+      },
+      "evidenceMode": "real",
+      "decision": "NO TRADE",
+      "candidates": [
+        {
+          "symbol": "HOT",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C15:min_planes",
+              "observed": "HOT: only 1 of 2 required independent planes support entry."
+            },
+            {
+              "gate": "C16:price_agreement",
+              "observed": "HOT: RYO's price is 5.72% away from binance HOT/USDT 1h close; the mandate will not act on an unconfirmed price."
+            }
+          ]
+        },
+        {
+          "symbol": "W",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C7:require_measurement",
+              "observed": "W: RYO returned rsi_14=null; a missing measurement is not treated as neutral."
+            },
+            {
+              "gate": "C8:require_measurement",
+              "observed": "W: RYO returned atr_14_pct=null; a missing measurement is not treated as neutral."
+            },
+            {
+              "gate": "C15:min_planes",
+              "observed": "W: only 1 of 2 required independent planes support entry."
+            }
+          ]
+        },
+        {
+          "symbol": "AGT",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C4:min_confluence",
+              "observed": "AGT: no measured confluence, so the minimum 0.6 cannot be shown to hold."
+            },
+            {
+              "gate": "C6:max_atr",
+              "observed": "AGT: ATR(14) 36.79% > 25% tolerance."
+            },
+            {
+              "gate": "C15:min_planes",
+              "observed": "AGT: only 0 of 2 required independent planes support entry."
+            }
+          ]
+        },
+        {
+          "symbol": "FLUID",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C4:min_confluence",
+              "observed": "FLUID: no measured confluence, so the minimum 0.6 cannot be shown to hold."
+            },
+            {
+              "gate": "C5:min_turnover",
+              "observed": "FLUID: turnover 0.0281 < 0.05; a stop could not be filled near its modeled price."
+            },
+            {
+              "gate": "C7:require_measurement",
+              "observed": "FLUID: RYO returned rsi_14=null; a missing measurement is not treated as neutral."
+            },
+            {
+              "gate": "C8:require_measurement",
+              "observed": "FLUID: RYO returned atr_14_pct=null; a missing measurement is not treated as neutral."
+            },
+            {
+              "gate": "C15:min_planes",
+              "observed": "FLUID: only 0 of 2 required independent planes support entry."
+            },
+            {
+              "gate": "C16:price_agreement",
+              "observed": "FLUID: RYO's price is 3.25% away from okx FLUID/USDT 1h close; the mandate will not act on an unconfirmed price."
+            }
+          ]
+        },
+        {
+          "symbol": "SOL",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C5:min_turnover",
+              "observed": "SOL: turnover 0.0478 < 0.05; a stop could not be filled near its modeled price."
+            }
+          ]
+        },
+        {
+          "symbol": "PEPE",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C7:require_measurement",
+              "observed": "PEPE: RYO returned rsi_14=null; a missing measurement is not treated as neutral."
+            },
+            {
+              "gate": "C8:require_measurement",
+              "observed": "PEPE: RYO returned atr_14_pct=null; a missing measurement is not treated as neutral."
+            },
+            {
+              "gate": "C15:min_planes",
+              "observed": "PEPE: only 1 of 2 required independent planes support entry."
+            }
+          ]
+        }
+      ],
+      "stateHash": "0x947ccb9f3217295e57a4e40f64608a34afce34059d9abd8a5c9c7050e6c0cd05",
+      "prev": "0x2f196f18b10d10f71680eacfbc834cd3cd81d929c492d463ecd3f44254eecc5c",
+      "hash": "0x34d84f594295957d8fb44904df92e683dba4693d2fa0d0cc7e3cbc559543be60"
     }
   ]
 }
