@@ -2002,6 +2002,16 @@
       "i": 155,
       "prev": "0x0890ea881abd357e0969080ab49e85374950660c9039ae90335c81a910792ace",
       "hash": "0x6673c6002a6b57a48b9efaef488fce21cbb4b96dda0d29b294d3e8ccccdf5b21"
+    },
+    {
+      "at": "2026-11-04T02:57:04Z",
+      "kind": "no_trade",
+      "symbol": null,
+      "detail": "no candidate satisfied the mandate — YELLOW: C5:min_turnover, C15:min_planes · HOT: C15:min_planes, C16:price_agreement · W: C4:min_confluence, C7:require_measurement, C8:require_measurement, C15:min_planes, C16:price_agreement · RUNE: C4:min_confluence, C15:min_planes · SOL: C5:min_turnover, C15:min_planes, C16:price_agreement · PEPE: C7:require_measurement, C8:require_measurement, C15:min_planes",
+      "traceRoot": "0x075a04ab8a0616dea0649ce3a0c94d002799ef25b265403f8ffbaff7b56fefff",
+      "i": 156,
+      "prev": "0x6673c6002a6b57a48b9efaef488fce21cbb4b96dda0d29b294d3e8ccccdf5b21",
+      "hash": "0x71b67b7317b788e763da91259600d75497e20d2fd2f147a8118b40394780141c"
     }
   ],
   "runs": [
@@ -10876,6 +10886,125 @@
       "stateHash": "0x947ccb9f3217295e57a4e40f64608a34afce34059d9abd8a5c9c7050e6c0cd05",
       "prev": "0x4b094d027a7c2ac944e5ee6395811aea35d9348f4d05d598d94fe4d9c09a4b16",
       "hash": "0x2d7cf2bd67ea178cf9c81e927ecc88d6d29ff7a1026cf6104eee6655378b01fb"
+    },
+    {
+      "at": "2026-11-04T02:57:04Z",
+      "traceRoot": "0x075a04ab8a0616dea0649ce3a0c94d002799ef25b265403f8ffbaff7b56fefff",
+      "provenance": {
+        "live": 16,
+        "unavailable": 1
+      },
+      "evidenceMode": "real",
+      "decision": "NO TRADE",
+      "candidates": [
+        {
+          "symbol": "YELLOW",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C5:min_turnover",
+              "observed": "YELLOW: turnover 0.0180 < 0.05; a stop could not be filled near its modeled price."
+            },
+            {
+              "gate": "C15:min_planes",
+              "observed": "YELLOW: only 0 of 2 required independent planes support entry."
+            }
+          ]
+        },
+        {
+          "symbol": "HOT",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C15:min_planes",
+              "observed": "HOT: only 1 of 2 required independent planes support entry."
+            },
+            {
+              "gate": "C16:price_agreement",
+              "observed": "HOT: RYO's price is 2.26% away from binance HOT/USDT 1h close; the mandate will not act on an unconfirmed price."
+            }
+          ]
+        },
+        {
+          "symbol": "W",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C4:min_confluence",
+              "observed": "W: no measured confluence, so the minimum 0.6 cannot be shown to hold."
+            },
+            {
+              "gate": "C7:require_measurement",
+              "observed": "W: RYO returned rsi_14=null; a missing measurement is not treated as neutral."
+            },
+            {
+              "gate": "C8:require_measurement",
+              "observed": "W: RYO returned atr_14_pct=null; a missing measurement is not treated as neutral."
+            },
+            {
+              "gate": "C15:min_planes",
+              "observed": "W: only 0 of 2 required independent planes support entry."
+            },
+            {
+              "gate": "C16:price_agreement",
+              "observed": "W: RYO's price is 2.21% away from binance W/USDT 1h close; the mandate will not act on an unconfirmed price."
+            }
+          ]
+        },
+        {
+          "symbol": "RUNE",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C4:min_confluence",
+              "observed": "RUNE: no measured confluence, so the minimum 0.6 cannot be shown to hold."
+            },
+            {
+              "gate": "C15:min_planes",
+              "observed": "RUNE: only 1 of 2 required independent planes support entry."
+            }
+          ]
+        },
+        {
+          "symbol": "SOL",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C5:min_turnover",
+              "observed": "SOL: turnover 0.0418 < 0.05; a stop could not be filled near its modeled price."
+            },
+            {
+              "gate": "C15:min_planes",
+              "observed": "SOL: only 1 of 2 required independent planes support entry."
+            },
+            {
+              "gate": "C16:price_agreement",
+              "observed": "SOL: RYO's price is 2.33% away from Chainlink SOL/USD; the mandate will not act on an unconfirmed price."
+            }
+          ]
+        },
+        {
+          "symbol": "PEPE",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C7:require_measurement",
+              "observed": "PEPE: RYO returned rsi_14=null; a missing measurement is not treated as neutral."
+            },
+            {
+              "gate": "C8:require_measurement",
+              "observed": "PEPE: RYO returned atr_14_pct=null; a missing measurement is not treated as neutral."
+            },
+            {
+              "gate": "C15:min_planes",
+              "observed": "PEPE: only 1 of 2 required independent planes support entry."
+            }
+          ]
+        }
+      ],
+      "stateHash": "0x947ccb9f3217295e57a4e40f64608a34afce34059d9abd8a5c9c7050e6c0cd05",
+      "prev": "0x2d7cf2bd67ea178cf9c81e927ecc88d6d29ff7a1026cf6104eee6655378b01fb",
+      "hash": "0xc77c2b95e7857488eab4c47c2720029bded95ef345abbd45087e515a6e33a573"
     }
   ]
 }
