@@ -513,6 +513,11 @@
           "at": "2026-11-04T18:27:07Z",
           "price": 95.75658985166757,
           "source": "analyze_token(SOL) live as_of 2026-11-04T18:33:38Z sha 32b1b85a2782"
+        },
+        {
+          "at": "2026-11-04T19:27:03Z",
+          "price": 95.28546886387868,
+          "source": "analyze_token(SOL) live as_of 2026-11-04T19:29:54Z sha 8c7577bf5c5b"
         }
       ],
       "realizedPnlUsd": 0,
@@ -575,6 +580,11 @@
           "at": "2026-11-04T18:27:07Z",
           "price": 0.7538080940032545,
           "source": "analyze_token(DGAI) live as_of 2026-11-04T18:33:37Z sha ae80201b037f"
+        },
+        {
+          "at": "2026-11-04T19:27:03Z",
+          "price": 0.7918767637276137,
+          "source": "analyze_token(DGAI) live as_of 2026-11-04T19:29:53Z sha 9867b708f31c"
         }
       ],
       "realizedPnlUsd": 0,
@@ -2451,6 +2461,36 @@
       "i": 186,
       "prev": "0x08f59a69689b684fb461eedb02cfd3effc2dc4b5c0510b608d18de4be40bfdab",
       "hash": "0x90feb1240ad2dbd68a8d14c2cde289037265985972a6dffab517f2b0e74730bc"
+    },
+    {
+      "at": "2026-11-04T19:27:03Z",
+      "kind": "mark",
+      "symbol": "SOL",
+      "detail": "marked at 95.28546886387868 (unrealized 170.49 USD)",
+      "traceRoot": "0xf6720d3199de8120a9d92e08eb1d874fea97d9b759572ea7eb866bdec4de20bd",
+      "i": 187,
+      "prev": "0x90feb1240ad2dbd68a8d14c2cde289037265985972a6dffab517f2b0e74730bc",
+      "hash": "0xa9ab08904dc7e56fb08cba7fd2477f94a9d5c9ab988bf6cafacb5e57acdef265"
+    },
+    {
+      "at": "2026-11-04T19:27:03Z",
+      "kind": "mark",
+      "symbol": "DGAI",
+      "detail": "marked at 0.7918767637276137 (unrealized 550.32 USD)",
+      "traceRoot": "0xf6720d3199de8120a9d92e08eb1d874fea97d9b759572ea7eb866bdec4de20bd",
+      "i": 188,
+      "prev": "0xa9ab08904dc7e56fb08cba7fd2477f94a9d5c9ab988bf6cafacb5e57acdef265",
+      "hash": "0x5e59fc89290cee0a02278575862fd7d989392c728236c61198b30848b5eb59cc"
+    },
+    {
+      "at": "2026-11-04T19:27:03Z",
+      "kind": "no_trade",
+      "symbol": "SOL",
+      "detail": "SELECT SOL again — already open, not doubled",
+      "traceRoot": "0xf6720d3199de8120a9d92e08eb1d874fea97d9b759572ea7eb866bdec4de20bd",
+      "i": 189,
+      "prev": "0x5e59fc89290cee0a02278575862fd7d989392c728236c61198b30848b5eb59cc",
+      "hash": "0x01a251ef6efe575eb6823c8415b4bd80c28b8b8cde3a4da60cfbf576db5d513c"
     }
   ],
   "runs": [
@@ -13249,6 +13289,107 @@
       "stateHash": "0xfabca599792299c3c7aa318cf2ea64b4a2b1e78167653c7f05343d6bb154d738",
       "prev": "0x8fad0eaee1f78974a4534690c215dbc05315a622da2935e9e3940d6c1f348d13",
       "hash": "0x22bdc46889862db23d7563c93f9dc5ea5d787b68824a3e450caaf9f473adb8fa"
+    },
+    {
+      "at": "2026-11-04T19:27:03Z",
+      "traceRoot": "0xf6720d3199de8120a9d92e08eb1d874fea97d9b759572ea7eb866bdec4de20bd",
+      "provenance": {
+        "live": 17
+      },
+      "evidenceMode": "real",
+      "decision": "SELECT SOL",
+      "candidates": [
+        {
+          "symbol": "DGAI",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C15:min_planes",
+              "observed": "DGAI: only 1 of 2 required independent planes support entry."
+            }
+          ]
+        },
+        {
+          "symbol": "CAP",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C15:min_planes",
+              "observed": "CAP: only 0 of 2 required independent planes support entry."
+            }
+          ]
+        },
+        {
+          "symbol": "FLUID",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C4:min_confluence",
+              "observed": "FLUID: no measured confluence, so the minimum 0.6 cannot be shown to hold."
+            },
+            {
+              "gate": "C5:min_turnover",
+              "observed": "FLUID: turnover 0.0376 < 0.05; a stop could not be filled near its modeled price."
+            },
+            {
+              "gate": "C7:require_measurement",
+              "observed": "FLUID: RYO returned rsi_14=null; a missing measurement is not treated as neutral."
+            },
+            {
+              "gate": "C8:require_measurement",
+              "observed": "FLUID: RYO returned atr_14_pct=null; a missing measurement is not treated as neutral."
+            },
+            {
+              "gate": "C15:min_planes",
+              "observed": "FLUID: only 1 of 2 required independent planes support entry."
+            }
+          ]
+        },
+        {
+          "symbol": "ZANO",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C4:min_confluence",
+              "observed": "ZANO: no measured confluence, so the minimum 0.6 cannot be shown to hold."
+            },
+            {
+              "gate": "C5:min_turnover",
+              "observed": "ZANO: turnover 0.0181 < 0.05; a stop could not be filled near its modeled price."
+            },
+            {
+              "gate": "C15:min_planes",
+              "observed": "ZANO: only 0 of 2 required independent planes support entry."
+            }
+          ]
+        },
+        {
+          "symbol": "SOL",
+          "decision": "SELECT",
+          "failed": []
+        },
+        {
+          "symbol": "PEPE",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C7:require_measurement",
+              "observed": "PEPE: RYO returned rsi_14=null; a missing measurement is not treated as neutral."
+            },
+            {
+              "gate": "C8:require_measurement",
+              "observed": "PEPE: RYO returned atr_14_pct=null; a missing measurement is not treated as neutral."
+            },
+            {
+              "gate": "C15:min_planes",
+              "observed": "PEPE: only 1 of 2 required independent planes support entry."
+            }
+          ]
+        }
+      ],
+      "stateHash": "0xa267431521ca55f6103640ebf64b036fa2f9d252ca21b4f159e8f713d4bf322a",
+      "prev": "0x22bdc46889862db23d7563c93f9dc5ea5d787b68824a3e450caaf9f473adb8fa",
+      "hash": "0x140c6aa70e9c50d42a01ce6941b2b62bc4b6da0d8bb8f6e9c6a2ee2b5287b56d"
     }
   ]
 }
