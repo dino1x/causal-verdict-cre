@@ -543,6 +543,11 @@
           "at": "2026-11-04T23:52:09Z",
           "price": 95.62693437013651,
           "source": "analyze_token(SOL) live as_of 2026-11-04T23:53:42Z sha 20943966bf97"
+        },
+        {
+          "at": "2026-11-05T00:52:08Z",
+          "price": 96.0563715916503,
+          "source": "analyze_token(SOL) live as_of 2026-11-05T00:53:43Z sha b73c1c3d1c1c"
         }
       ],
       "realizedPnlUsd": 0,
@@ -635,6 +640,48 @@
           "at": "2026-11-04T23:52:09Z",
           "price": 0.7693167888862416,
           "source": "analyze_token(DGAI) live as_of 2026-11-04T23:53:42Z sha 89ec51d01561"
+        },
+        {
+          "at": "2026-11-05T00:52:08Z",
+          "price": 0.7751722592419066,
+          "source": "analyze_token(DGAI) live as_of 2026-11-05T00:53:42Z sha 5f60a2a06a94"
+        }
+      ],
+      "realizedPnlUsd": 0,
+      "realizedR": null
+    },
+    {
+      "id": "0xf98a19476aace97f",
+      "symbol": "CAP",
+      "openedAt": "2026-11-05T00:52:08Z",
+      "openTraceRoot": "0xf98a19476aace97f85d44ec177a4c17d50bb7bc468b356371590f1a6ddd56f1c",
+      "mandateHash": "0xb82b743f35d2d627555d4a08895af255488360b1d880c9e9e4236c305598a97c",
+      "entry": 0.09697193,
+      "stop": 0.0892141756,
+      "targets": [
+        {
+          "price": 0.11825242,
+          "r": 2.74,
+          "closePct": 50
+        },
+        {
+          "price": 0.13953291,
+          "r": 5.49,
+          "closePct": 50
+        }
+      ],
+      "units": 103123,
+      "riskUsd": 800,
+      "timeStopHours": 72,
+      "status": "open",
+      "remainingPct": 100,
+      "stopNow": 0.0892141756,
+      "fills": [],
+      "marks": [
+        {
+          "at": "2026-11-05T00:52:08Z",
+          "price": 0.09697193,
+          "source": "entry (RYO deep_analysis.trade_plan.entry)"
         }
       ],
       "realizedPnlUsd": 0,
@@ -2691,6 +2738,36 @@
       "i": 204,
       "prev": "0x2489f4d3dd57dab911eee675e1e16bec887ef144239b7b7e02d932b784aca8a5",
       "hash": "0x3c4cedd05da6f13884cd79abc0a4b3d67cb4d6baa14d964b5f014f5aac932945"
+    },
+    {
+      "at": "2026-11-05T00:52:08Z",
+      "kind": "mark",
+      "symbol": "SOL",
+      "detail": "marked at 96.0563715916503 (unrealized 252.77 USD)",
+      "traceRoot": "0xf98a19476aace97f85d44ec177a4c17d50bb7bc468b356371590f1a6ddd56f1c",
+      "i": 205,
+      "prev": "0x3c4cedd05da6f13884cd79abc0a4b3d67cb4d6baa14d964b5f014f5aac932945",
+      "hash": "0x9e9bb3dc5bc591796bb1137e7f57dc30a625564cdfc06ad435fb668d3b66e765"
+    },
+    {
+      "at": "2026-11-05T00:52:08Z",
+      "kind": "mark",
+      "symbol": "DGAI",
+      "detail": "marked at 0.7751722592419066 (unrealized 327.77 USD)",
+      "traceRoot": "0xf98a19476aace97f85d44ec177a4c17d50bb7bc468b356371590f1a6ddd56f1c",
+      "i": 206,
+      "prev": "0x9e9bb3dc5bc591796bb1137e7f57dc30a625564cdfc06ad435fb668d3b66e765",
+      "hash": "0x56462fca2a28bfc35131ffd4fc3e54cb79d94358a3f152dc0e66bf50f19bcda7"
+    },
+    {
+      "at": "2026-11-05T00:52:08Z",
+      "kind": "open",
+      "symbol": "CAP",
+      "detail": "open 103123 @ 0.09697193, stop 0.0892142, targets 0.11825242/0.13953291, risk 800 USD",
+      "traceRoot": "0xf98a19476aace97f85d44ec177a4c17d50bb7bc468b356371590f1a6ddd56f1c",
+      "i": 207,
+      "prev": "0x56462fca2a28bfc35131ffd4fc3e54cb79d94358a3f152dc0e66bf50f19bcda7",
+      "hash": "0xa800fcf0d7458a8b0ef6f740cb461b55d4317f9340641adcdfaed1027937428f"
     }
   ],
   "runs": [
@@ -14101,6 +14178,106 @@
       "stateHash": "0xcb403703374d1fb77742ff40572ff309cec4e555835dc8a217aeb478b504ec1d",
       "prev": "0x678353abced20dc8467bcc2e0c70ae398cbd5bca05c590fa7287a8855111bf1c",
       "hash": "0x74352f6d751a18f003d0370741379011c87dec81e769865a1826c086ceed6c66"
+    },
+    {
+      "at": "2026-11-05T00:52:08Z",
+      "traceRoot": "0xf98a19476aace97f85d44ec177a4c17d50bb7bc468b356371590f1a6ddd56f1c",
+      "provenance": {
+        "live": 17
+      },
+      "evidenceMode": "real",
+      "decision": "SELECT CAP",
+      "candidates": [
+        {
+          "symbol": "CAP",
+          "decision": "SELECT",
+          "failed": []
+        },
+        {
+          "symbol": "ZANO",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C4:min_confluence",
+              "observed": "ZANO: confluence 0.33 < required 0.6."
+            },
+            {
+              "gate": "C5:min_turnover",
+              "observed": "ZANO: turnover 0.0190 < 0.05; a stop could not be filled near its modeled price."
+            },
+            {
+              "gate": "C15:min_planes",
+              "observed": "ZANO: only 0 of 2 required independent planes support entry."
+            }
+          ]
+        },
+        {
+          "symbol": "DGAI",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C4:min_confluence",
+              "observed": "DGAI: no measured confluence, so the minimum 0.6 cannot be shown to hold."
+            },
+            {
+              "gate": "C15:min_planes",
+              "observed": "DGAI: only 0 of 2 required independent planes support entry."
+            }
+          ]
+        },
+        {
+          "symbol": "FLUID",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C4:min_confluence",
+              "observed": "FLUID: no measured confluence, so the minimum 0.6 cannot be shown to hold."
+            },
+            {
+              "gate": "C7:require_measurement",
+              "observed": "FLUID: RYO returned rsi_14=null; a missing measurement is not treated as neutral."
+            },
+            {
+              "gate": "C8:require_measurement",
+              "observed": "FLUID: RYO returned atr_14_pct=null; a missing measurement is not treated as neutral."
+            },
+            {
+              "gate": "C15:min_planes",
+              "observed": "FLUID: only 1 of 2 required independent planes support entry."
+            },
+            {
+              "gate": "C16:price_agreement",
+              "observed": "FLUID: RYO's price is 3.98% away from okx FLUID/USDT 1h close; the mandate will not act on an unconfirmed price."
+            }
+          ]
+        },
+        {
+          "symbol": "SOL",
+          "decision": "SELECT",
+          "failed": []
+        },
+        {
+          "symbol": "PEPE",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C7:require_measurement",
+              "observed": "PEPE: RYO returned rsi_14=null; a missing measurement is not treated as neutral."
+            },
+            {
+              "gate": "C8:require_measurement",
+              "observed": "PEPE: RYO returned atr_14_pct=null; a missing measurement is not treated as neutral."
+            },
+            {
+              "gate": "C15:min_planes",
+              "observed": "PEPE: only 1 of 2 required independent planes support entry."
+            }
+          ]
+        }
+      ],
+      "stateHash": "0x5848c4f3112b6bfc4f7a04b4c5f46a8d6ed9005c8eaad712851d73174b227b4c",
+      "prev": "0x74352f6d751a18f003d0370741379011c87dec81e769865a1826c086ceed6c66",
+      "hash": "0x2a67421d8fb60fbc23426699e5d0f63025c3c30ea52943b0f8d74b3e57f27623"
     }
   ]
 }
