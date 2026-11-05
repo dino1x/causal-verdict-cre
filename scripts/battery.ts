@@ -48,7 +48,9 @@ function ledgerAttacks(l: Ledger): Attack[] {
   l.runs.forEach((r, i) => {
     a.push({ name: `run ${i}: flip decision`, kind: "edit", mutate: (x: Ledger) => (x.runs[i].decision = x.runs[i].decision === "NO TRADE" ? "SELECT SOL" : "NO TRADE") });
     a.push({ name: `run ${i}: rewrite provenance`, kind: "edit", mutate: (x: Ledger) => (x.runs[i].provenance = { live: 99 }) });
-    if (r.candidates?.length) a.push({ name: `run ${i}: erase a rejection reason`, kind: "edit", mutate: (x: Ledger) => (x.runs[i].candidates![0].failed = []) });
+    // Target a rejected candidate: a selected one has no reasons to erase, so "erasing" them would change nothing.
+    const rejected = r.candidates?.findIndex((c) => c.failed?.length) ?? -1;
+    if (rejected >= 0) a.push({ name: `run ${i}: erase a rejection reason`, kind: "edit", mutate: (x: Ledger) => (x.runs[i].candidates![rejected].failed = []) });
     a.push({ name: `run ${i}: delete`, kind: i === l.runs.length - 1 ? "truncate" : "delete", mutate: (x: Ledger) => x.runs.splice(i, 1) });
     if (i + 1 < l.runs.length) a.push({ name: `run ${i}: swap with next`, kind: "swap", mutate: (x: Ledger) => ([x.runs[i], x.runs[i + 1]] = [x.runs[i + 1], x.runs[i]]) });
   });
