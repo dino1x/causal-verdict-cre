@@ -4266,6 +4266,46 @@
       "i": 328,
       "prev": "0x572fcfffc0e685392866dcb2b18dfb18eeee966eed18e5328d9acaf08e84636d",
       "hash": "0x768101b665b2a8e1bc80ae37bfa22511dd7b54f98f7f1a619290006481987e5c"
+    },
+    {
+      "at": "2026-11-06T06:17:09Z",
+      "kind": "mark",
+      "symbol": "SOL",
+      "detail": "no RYO price this run — position not marked (missing, not assumed)",
+      "traceRoot": "0x80d6308cd8f3ae66f14d102abbfae0a365c2c6d4d0c7878f678614deada8126c",
+      "i": 329,
+      "prev": "0x768101b665b2a8e1bc80ae37bfa22511dd7b54f98f7f1a619290006481987e5c",
+      "hash": "0x9fc5a8367daded9741833b121c13194f38114c6fb271d56dfe6fd8062355fc8a"
+    },
+    {
+      "at": "2026-11-06T06:17:09Z",
+      "kind": "mark",
+      "symbol": "DGAI",
+      "detail": "no RYO price this run — position not marked (missing, not assumed)",
+      "traceRoot": "0x80d6308cd8f3ae66f14d102abbfae0a365c2c6d4d0c7878f678614deada8126c",
+      "i": 330,
+      "prev": "0x9fc5a8367daded9741833b121c13194f38114c6fb271d56dfe6fd8062355fc8a",
+      "hash": "0x842ef5ab02d4dc989762476ab35f30e27ef5d2c1198c9b6a117036cd1614141e"
+    },
+    {
+      "at": "2026-11-06T06:17:09Z",
+      "kind": "mark",
+      "symbol": "CAP",
+      "detail": "no RYO price this run — position not marked (missing, not assumed)",
+      "traceRoot": "0x80d6308cd8f3ae66f14d102abbfae0a365c2c6d4d0c7878f678614deada8126c",
+      "i": 331,
+      "prev": "0x842ef5ab02d4dc989762476ab35f30e27ef5d2c1198c9b6a117036cd1614141e",
+      "hash": "0xa5142f1d6dc748a92fb66dc6c1d0cf6aa105e63cc1239942015c5754337eeebd"
+    },
+    {
+      "at": "2026-11-06T06:17:09Z",
+      "kind": "no_trade",
+      "symbol": null,
+      "detail": "no candidate satisfied the mandate — SOL: C15:min_planes, C16:price_agreement · PEPE: C7:require_measurement, C8:require_measurement, C15:min_planes, C16:price_agreement",
+      "traceRoot": "0x80d6308cd8f3ae66f14d102abbfae0a365c2c6d4d0c7878f678614deada8126c",
+      "i": 332,
+      "prev": "0xa5142f1d6dc748a92fb66dc6c1d0cf6aa105e63cc1239942015c5754337eeebd",
+      "hash": "0xd8cc96f552d80c7e21d48fc0cc2205be91280f361a5caec592c12d878c87356a"
     }
   ],
   "runs": [
@@ -18799,6 +18839,58 @@
       "stateHash": "0xd921585423bb70ebd396bc05359a995f3e64b97bb49369e897fd5e058e80eac8",
       "prev": "0x812b26f19f108c433ad330dd168714dc2065527722946b5ad9cb176925c0b4b2",
       "hash": "0x605b8c07298f8a53a4464d9293335d9a62f2c39f9261c0ef90ed1c9854a06298"
+    },
+    {
+      "at": "2026-11-06T06:17:09Z",
+      "traceRoot": "0x80d6308cd8f3ae66f14d102abbfae0a365c2c6d4d0c7878f678614deada8126c",
+      "provenance": {
+        "live": 5,
+        "unavailable": 1,
+        "snapshot": 4
+      },
+      "evidenceMode": "real",
+      "decision": "NO TRADE",
+      "candidates": [
+        {
+          "symbol": "SOL",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C15:min_planes",
+              "observed": "SOL: only 1 of 2 required independent planes support entry."
+            },
+            {
+              "gate": "C16:price_agreement",
+              "observed": "SOL: RYO's price is 5.66% away from Chainlink SOL/USD; the mandate will not act on an unconfirmed price."
+            }
+          ]
+        },
+        {
+          "symbol": "PEPE",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C7:require_measurement",
+              "observed": "PEPE: RYO returned rsi_14=null; a missing measurement is not treated as neutral."
+            },
+            {
+              "gate": "C8:require_measurement",
+              "observed": "PEPE: RYO returned atr_14_pct=null; a missing measurement is not treated as neutral."
+            },
+            {
+              "gate": "C15:min_planes",
+              "observed": "PEPE: only 1 of 2 required independent planes support entry."
+            },
+            {
+              "gate": "C16:price_agreement",
+              "observed": "PEPE: RYO's price is 2.07% away from binance PEPE/USDT 1h close; the mandate will not act on an unconfirmed price."
+            }
+          ]
+        }
+      ],
+      "stateHash": "0xd921585423bb70ebd396bc05359a995f3e64b97bb49369e897fd5e058e80eac8",
+      "prev": "0x605b8c07298f8a53a4464d9293335d9a62f2c39f9261c0ef90ed1c9854a06298",
+      "hash": "0xd4dce9a5740470c47f258814b2444a02ef64a952aa49dc5c1e5bbc5789434f00"
     }
   ]
 }
