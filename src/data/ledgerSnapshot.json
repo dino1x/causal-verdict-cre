@@ -4306,6 +4306,46 @@
       "i": 332,
       "prev": "0xa5142f1d6dc748a92fb66dc6c1d0cf6aa105e63cc1239942015c5754337eeebd",
       "hash": "0xd8cc96f552d80c7e21d48fc0cc2205be91280f361a5caec592c12d878c87356a"
+    },
+    {
+      "at": "2026-11-06T07:17:21Z",
+      "kind": "mark",
+      "symbol": "SOL",
+      "detail": "no RYO price this run — position not marked (missing, not assumed)",
+      "traceRoot": "0x17d92d2fe6111e0d56abd6a0578801343fef46049a7a982cd4eb781c5c1d0b99",
+      "i": 333,
+      "prev": "0xd8cc96f552d80c7e21d48fc0cc2205be91280f361a5caec592c12d878c87356a",
+      "hash": "0xd9b572e2f57159b7335a75ee6add5524a2f8a57e9d55f39a70af5be922a917c2"
+    },
+    {
+      "at": "2026-11-06T07:17:21Z",
+      "kind": "mark",
+      "symbol": "DGAI",
+      "detail": "no RYO price this run — position not marked (missing, not assumed)",
+      "traceRoot": "0x17d92d2fe6111e0d56abd6a0578801343fef46049a7a982cd4eb781c5c1d0b99",
+      "i": 334,
+      "prev": "0xd9b572e2f57159b7335a75ee6add5524a2f8a57e9d55f39a70af5be922a917c2",
+      "hash": "0xd521a378f11c26995e644296cf4adfa82ca5a95465e9136db2a8d3a29e68be1d"
+    },
+    {
+      "at": "2026-11-06T07:17:21Z",
+      "kind": "mark",
+      "symbol": "CAP",
+      "detail": "no RYO price this run — position not marked (missing, not assumed)",
+      "traceRoot": "0x17d92d2fe6111e0d56abd6a0578801343fef46049a7a982cd4eb781c5c1d0b99",
+      "i": 335,
+      "prev": "0xd521a378f11c26995e644296cf4adfa82ca5a95465e9136db2a8d3a29e68be1d",
+      "hash": "0xf3a59e2c95d19dd4afef0fde06b19a9dec56f701072b762cf63d245f76c62205"
+    },
+    {
+      "at": "2026-11-06T07:17:21Z",
+      "kind": "no_trade",
+      "symbol": null,
+      "detail": "no candidate satisfied the mandate — SOL: C15:min_planes, C16:price_agreement · PEPE: C7:require_measurement, C8:require_measurement, C15:min_planes",
+      "traceRoot": "0x17d92d2fe6111e0d56abd6a0578801343fef46049a7a982cd4eb781c5c1d0b99",
+      "i": 336,
+      "prev": "0xf3a59e2c95d19dd4afef0fde06b19a9dec56f701072b762cf63d245f76c62205",
+      "hash": "0xa9663861e0e861743bf50e35f26ad8a9924de6d1ff7d50b32853095da1e34df1"
     }
   ],
   "runs": [
@@ -18891,6 +18931,54 @@
       "stateHash": "0xd921585423bb70ebd396bc05359a995f3e64b97bb49369e897fd5e058e80eac8",
       "prev": "0x605b8c07298f8a53a4464d9293335d9a62f2c39f9261c0ef90ed1c9854a06298",
       "hash": "0xd4dce9a5740470c47f258814b2444a02ef64a952aa49dc5c1e5bbc5789434f00"
+    },
+    {
+      "at": "2026-11-06T07:17:21Z",
+      "traceRoot": "0x17d92d2fe6111e0d56abd6a0578801343fef46049a7a982cd4eb781c5c1d0b99",
+      "provenance": {
+        "live": 5,
+        "unavailable": 1,
+        "snapshot": 4
+      },
+      "evidenceMode": "real",
+      "decision": "NO TRADE",
+      "candidates": [
+        {
+          "symbol": "SOL",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C15:min_planes",
+              "observed": "SOL: only 1 of 2 required independent planes support entry."
+            },
+            {
+              "gate": "C16:price_agreement",
+              "observed": "SOL: RYO's price is 5.66% away from Chainlink SOL/USD; the mandate will not act on an unconfirmed price."
+            }
+          ]
+        },
+        {
+          "symbol": "PEPE",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C7:require_measurement",
+              "observed": "PEPE: RYO returned rsi_14=null; a missing measurement is not treated as neutral."
+            },
+            {
+              "gate": "C8:require_measurement",
+              "observed": "PEPE: RYO returned atr_14_pct=null; a missing measurement is not treated as neutral."
+            },
+            {
+              "gate": "C15:min_planes",
+              "observed": "PEPE: only 1 of 2 required independent planes support entry."
+            }
+          ]
+        }
+      ],
+      "stateHash": "0xd921585423bb70ebd396bc05359a995f3e64b97bb49369e897fd5e058e80eac8",
+      "prev": "0xd4dce9a5740470c47f258814b2444a02ef64a952aa49dc5c1e5bbc5789434f00",
+      "hash": "0xe2356d489dc13e39c9d2d8fb8bb09d447d220a96d0173a1f47287975664a631b"
     }
   ]
 }
