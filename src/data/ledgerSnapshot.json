@@ -758,6 +758,11 @@
           "at": "2026-11-06T21:30:29Z",
           "price": 89.7748141233783,
           "source": "analyze_token(SOL) live as_of 2026-11-06T21:32:53Z sha 818c979165a6"
+        },
+        {
+          "at": "2026-11-06T22:27:07Z",
+          "price": 90.15245731120346,
+          "source": "analyze_token(SOL) live as_of 2026-11-06T22:29:13Z sha edcdc38c47b1"
         }
       ],
       "realizedPnlUsd": 0,
@@ -5061,6 +5066,46 @@
       "i": 400,
       "prev": "0x831b8073570235b2174a56f067bde121d9ad20ee4539d11a111ce4eada97e28f",
       "hash": "0x1f7314713b10a78cbdb620826824c7542d8d9bb8e1b53a4d8b4b90de204a865f"
+    },
+    {
+      "at": "2026-11-06T22:27:07Z",
+      "kind": "mark",
+      "symbol": "SOL",
+      "detail": "marked at 90.15245731120346 (unrealized -377.39 USD)",
+      "traceRoot": "0x0485454091a5e55358c64cde426268cbdc15bffd264b93d0ece1da071ea90e78",
+      "i": 401,
+      "prev": "0x1f7314713b10a78cbdb620826824c7542d8d9bb8e1b53a4d8b4b90de204a865f",
+      "hash": "0x527cce5025ae49bb72f4430d2e7156106f48d0b2192928ce7d23314e314e178d"
+    },
+    {
+      "at": "2026-11-06T22:27:07Z",
+      "kind": "mark",
+      "symbol": "DGAI",
+      "detail": "no RYO price this run — position not marked (missing, not assumed)",
+      "traceRoot": "0x0485454091a5e55358c64cde426268cbdc15bffd264b93d0ece1da071ea90e78",
+      "i": 402,
+      "prev": "0x527cce5025ae49bb72f4430d2e7156106f48d0b2192928ce7d23314e314e178d",
+      "hash": "0x1e0d61b1a503545d5a71b524cad94b508daf97e238815f25d88cdc9680322d4e"
+    },
+    {
+      "at": "2026-11-06T22:27:07Z",
+      "kind": "mark",
+      "symbol": "CAP",
+      "detail": "no RYO price this run — position not marked (missing, not assumed)",
+      "traceRoot": "0x0485454091a5e55358c64cde426268cbdc15bffd264b93d0ece1da071ea90e78",
+      "i": 403,
+      "prev": "0x1e0d61b1a503545d5a71b524cad94b508daf97e238815f25d88cdc9680322d4e",
+      "hash": "0x0812f7419ba72d31f633965b6b7ba62ce5ff9659d5be04a3d6ae89d661145786"
+    },
+    {
+      "at": "2026-11-06T22:27:07Z",
+      "kind": "no_trade",
+      "symbol": null,
+      "detail": "no candidate satisfied the mandate — TIT: C4:min_confluence, C5:min_turnover, C15:min_planes · AKE: C6:max_atr, C15:min_planes · ICX: C4:min_confluence, C5:min_turnover, C15:min_planes · ICNT: C4:min_confluence, C7:require_measurement, C8:require_measurement, C15:min_planes · SOL: C15:min_planes · PEPE: C7:require_measurement, C8:require_measurement, C15:min_planes",
+      "traceRoot": "0x0485454091a5e55358c64cde426268cbdc15bffd264b93d0ece1da071ea90e78",
+      "i": 404,
+      "prev": "0x0812f7419ba72d31f633965b6b7ba62ce5ff9659d5be04a3d6ae89d661145786",
+      "hash": "0xbfe445b1a48c7d6d44c72b567532b9e6df704268976dcbe389d3cd705c61d26e"
     }
   ],
   "runs": [
@@ -21432,6 +21477,120 @@
       "stateHash": "0x81b28885b6801dd5038a0b7e87d1b28ace6d27628ac19b4c242480d94e4eb4c1",
       "prev": "0x7ce3b4b23475bae582131be922ce810070223b9eecd19a99b37a51cb0ddf2a40",
       "hash": "0x8b1bdddeaf6ade317271f871848b616e5b7549b72896acecc4640e764ccd25ef"
+    },
+    {
+      "at": "2026-11-06T22:27:07Z",
+      "traceRoot": "0x0485454091a5e55358c64cde426268cbdc15bffd264b93d0ece1da071ea90e78",
+      "provenance": {
+        "live": 17
+      },
+      "evidenceMode": "real",
+      "decision": "NO TRADE",
+      "candidates": [
+        {
+          "symbol": "TIT",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C4:min_confluence",
+              "observed": "TIT: confluence 0.33 < required 0.6."
+            },
+            {
+              "gate": "C5:min_turnover",
+              "observed": "TIT: turnover 0.0001 < 0.05; a stop could not be filled near its modeled price."
+            },
+            {
+              "gate": "C15:min_planes",
+              "observed": "TIT: only 0 of 2 required independent planes support entry."
+            }
+          ]
+        },
+        {
+          "symbol": "AKE",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C6:max_atr",
+              "observed": "AKE: ATR(14) 210.21% > 25% tolerance."
+            },
+            {
+              "gate": "C15:min_planes",
+              "observed": "AKE: only 0 of 2 required independent planes support entry."
+            }
+          ]
+        },
+        {
+          "symbol": "ICX",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C4:min_confluence",
+              "observed": "ICX: no measured confluence, so the minimum 0.6 cannot be shown to hold."
+            },
+            {
+              "gate": "C5:min_turnover",
+              "observed": "ICX: turnover 0.0000 < 0.05; a stop could not be filled near its modeled price."
+            },
+            {
+              "gate": "C15:min_planes",
+              "observed": "ICX: only 0 of 2 required independent planes support entry."
+            }
+          ]
+        },
+        {
+          "symbol": "ICNT",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C4:min_confluence",
+              "observed": "ICNT: no measured confluence, so the minimum 0.6 cannot be shown to hold."
+            },
+            {
+              "gate": "C7:require_measurement",
+              "observed": "ICNT: RYO returned rsi_14=null; a missing measurement is not treated as neutral."
+            },
+            {
+              "gate": "C8:require_measurement",
+              "observed": "ICNT: RYO returned atr_14_pct=null; a missing measurement is not treated as neutral."
+            },
+            {
+              "gate": "C15:min_planes",
+              "observed": "ICNT: only 0 of 2 required independent planes support entry."
+            }
+          ]
+        },
+        {
+          "symbol": "SOL",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C15:min_planes",
+              "observed": "SOL: only 1 of 2 required independent planes support entry."
+            }
+          ]
+        },
+        {
+          "symbol": "PEPE",
+          "decision": "REJECT",
+          "failed": [
+            {
+              "gate": "C7:require_measurement",
+              "observed": "PEPE: RYO returned rsi_14=null; a missing measurement is not treated as neutral."
+            },
+            {
+              "gate": "C8:require_measurement",
+              "observed": "PEPE: RYO returned atr_14_pct=null; a missing measurement is not treated as neutral."
+            },
+            {
+              "gate": "C15:min_planes",
+              "observed": "PEPE: only 1 of 2 required independent planes support entry."
+            }
+          ]
+        }
+      ],
+      "stateHash": "0xe1f91cc43f76bd87774e1e4bb41546ba91e02e35ba2390dcc2938e25c643de7f",
+      "prev": "0x8b1bdddeaf6ade317271f871848b616e5b7549b72896acecc4640e764ccd25ef",
+      "hash": "0xd9095872ee08644c4d5f9091c8d1349ee650b42ea26e6808e80e4423187869b8"
     }
   ]
 }
