@@ -179,6 +179,8 @@ export async function proxyCall(tool: RyoTool, args: Record<string, unknown>, ch
       res = await proxyCall(tool, args, null);
       if (res.provenance === "live") return res;
       const retryAfter = Number((res.rate_limit as any)?.retryAfter);
+      // Minutes or more is not the 6/min window but an exhausted allowance (RYO sent ~19 days): stop, don't outwait the run.
+      if (retryAfter > 300) return res;
       await sleep(Number.isFinite(retryAfter) && retryAfter > 0 ? retryAfter * 1000 : 15_000 * attempt);
     }
     return res!;
