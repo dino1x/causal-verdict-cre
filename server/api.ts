@@ -197,7 +197,9 @@ export async function proxyCall(tool: RyoTool, args: Record<string, unknown>, ch
   else if (r.httpStatus === 0 || r.httpStatus === 429 || r.httpStatus === 503) breaker.consecutive++;
   // Open on an explicit 429/503, or after two consecutive network/timeout failures (one slow call is not an outage).
   if (!r.ok && (r.httpStatus === 429 || r.httpStatus === 503 || breaker.consecutive >= 2)) {
-    const wait = r.httpStatus === 429 && r.rateLimit?.retryAfter ? Number(r.rateLimit.retryAfter) * 1000 : 60000;
+    // At most 5 minutes: an exhausted allowance sends a Retry-After of weeks, and the site should notice within
+    // minutes once RYO restores it, without a restart.
+    const wait = Math.min(r.httpStatus === 429 && r.rateLimit?.retryAfter ? Number(r.rateLimit.retryAfter) * 1000 : 60000, 5 * 60_000);
     breaker.openUntil = Date.now() + wait;
     breaker.reason = `${r.httpStatus || "network"} ${String(r.error ?? "").slice(0, 80)}`;
   }
